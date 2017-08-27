@@ -1,0 +1,23 @@
+{
+  "name": "latynka",
+  "version": "0.1.0",
+  "description": "Ukrajinsjka Latynka / Українська Латинка",
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-json5-to-json": "^0.2.1",
+    "gulp-merge-json": "^1.1.0",
+    "http-server": "^0.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:firefox": "PLATFORM=firefox gulp clean && PLATFORM=firefox gulp build",
+    "build": "gulp clean && gulp build",
+    "watch": "gulp watch"
+  },
+  "author": "Pavel paiv Ivashkov",
+  "license": "MIT",
+  "repository": "https://github.com/paiv/latynka.git"
+}

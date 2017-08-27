@@ -1,0 +1,8 @@
+{
+    "extension_description": {
+        "message": "Транлітерація з кирилиці в латинку і навспак"
+    },
+    "extension_button_tooltip": {
+        "message": "Латинка"
+    }
+}

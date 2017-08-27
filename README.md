@@ -1,5 +1,15 @@
 
-Українська Латинка | Ukrajinsjka Latynka
+Ukrajinsjka Latynka / Українська Латинка
 ========================================
 
-Google Chrome Extension
+* Google Chrome extension
+* Mozilla Firefox extension
+
+
+Build
+-----
+
+```sh
+npm install
+npm run build
+```

@@ -1,0 +1,10 @@
+{
+    "extension_description": {
+        "message": "Convert between Cyrillic and Latin script of Ukrainian language",
+        "description": "Describes the extension, max 132 characters"
+    },
+    "extension_button_tooltip": {
+        "message": "Latynka",
+        "description": "Tooltip text when hovering extension button"
+    }
+}
