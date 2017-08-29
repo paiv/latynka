@@ -1,4 +1,10 @@
 {
+    "applications": {
+        "gecko": {
+            "strict_min_version": "50.0"
+        }
+    },
+
     "browser_action": {
         "browser_style": true
     },

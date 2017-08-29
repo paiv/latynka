@@ -9,13 +9,16 @@
     "gulp-concat": "^2.6.1",
     "gulp-json5-to-json": "^0.2.1",
     "gulp-merge-json": "^1.1.0",
+    "gulp-vinyl-zip": "^2.0.0",
     "http-server": "^0.10.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build:chrome": "PLATFORM=chrome gulp clean && PLATFORM=chrome gulp build",
     "build:firefox": "PLATFORM=firefox gulp clean && PLATFORM=firefox gulp build",
-    "build": "gulp clean && gulp build",
-    "watch": "gulp watch"
+    "build": "npm run build:chrome && npm run build:firefox",
+    "dist": "gulp dist",
+    "watch": "PLATFORM=chrome gulp watch"
   },
   "author": "Pavel paiv Ivashkov",
   "license": "MIT",

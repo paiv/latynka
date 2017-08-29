@@ -1,13 +1,13 @@
 {
     "manifest_version": 2,
-    "name": "Ukrajinsjka Latynka / Українська латинка",
+    "name": "Ukrajinsjka Latynka | Українська латинка",
     "short_name": "Latynka",
     "author": "Pavel paiv Ivashkov",
     "description": "__MSG_extension_description__",
 
-    "version": "0.1.0",
+    "version": "0.1.1",
 
-    "default_locale": "uk",
+    "default_locale": "en",
     "icons": {
         "16": "img/icon16.png",
         "32": "img/icon32.png",
