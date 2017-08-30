@@ -1,0 +1,11 @@
+branches:
+  only:
+    - ci
+
+language: node_js
+node_js:
+  - "node"
+
+cache:
+  directories:
+    - $HOME/.npm
