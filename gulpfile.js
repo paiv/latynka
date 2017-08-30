@@ -51,7 +51,7 @@ const gulp = require('gulp')
 
 
 gulp.task('scripts:content', (cb) => {
-    gulp.src([
+    return gulp.src([
         paths.src.jsroot + '/settings.js',
         paths.src.jsroot + '/content.js',
         ])
@@ -62,7 +62,7 @@ gulp.task('scripts:content', (cb) => {
 
 
 gulp.task('scripts:popup', (cb) => {
-    gulp.src([
+    return gulp.src([
         paths.src.jsroot + '/settings.js',
         paths.src.jsroot + '/popup.js',
         ])
@@ -73,7 +73,7 @@ gulp.task('scripts:popup', (cb) => {
 
 
 gulp.task('scripts:background', (cb) => {
-    gulp.src([
+    return gulp.src([
         paths.src.jsroot + '/settings.js',
         paths.src.jsroot + '/background.js',
         ])
@@ -83,33 +83,32 @@ gulp.task('scripts:background', (cb) => {
 })
 
 
-gulp.task('scripts', ['scripts:content', 'scripts:popup', 'scripts:background'], () => {
-})
+gulp.task('scripts', gulp.parallel('scripts:content', 'scripts:popup', 'scripts:background'))
 
 
 gulp.task('pages', (cb) => {
-    gulp.src(paths.src.html)
+    return gulp.src(paths.src.html)
         .pipe(gulp.dest(paths.dest.html))
         .on('end', cb)
 })
 
 
 gulp.task('images', (cb) => {
-    gulp.src(paths.src.img)
+    return gulp.src(paths.src.img)
         .pipe(gulp.dest(paths.dest.img))
         .on('end', cb)
 })
 
 
 gulp.task('data', (cb) => {
-    gulp.src(paths.src.translations)
+    return gulp.src(paths.src.translations)
         .pipe(gulp.dest(paths.dest.translations))
         .on('end', cb)
 })
 
 
 gulp.task('manifest', (cb) => {
-    gulp.src([paths.src.manifest, paths.platform.manifest])
+    return gulp.src([paths.src.manifest, paths.platform.manifest])
         .pipe(mergejson({
             json5: true,
             fileName: 'manifest.json',
@@ -120,12 +119,12 @@ gulp.task('manifest', (cb) => {
 })
 
 
-gulp.task('build', ['scripts', 'pages', 'images', 'data', 'manifest'], () => {
-})
+gulp.task('build', gulp.parallel('scripts', 'pages', 'images', 'data', 'manifest'))
 
 
-gulp.task('clean', () => {
+gulp.task('clean', (cb) => {
     del(build.platform)
+    cb()
 })
 
 
@@ -138,10 +137,10 @@ gulp.task('watch', () => {
 })
 
 
-gulp.task('dist', ['clean', 'build'], () => {
-    gulp.src(paths.dest.all_files)
+gulp.task('dist', gulp.series('clean', 'build'), () => {
+    return gulp.src(paths.dest.all_files)
         .pipe(zip.dest(paths.dest.dist_archive))
 })
 
 
-gulp.task('default', ['clean', 'build'], () => {})
+gulp.task('default', gulp.series('clean', 'build'))
