@@ -46,8 +46,10 @@ const gulp = require('gulp')
     , del = require('del')
     , json5 = require('gulp-json5-to-json')
     , mergejson = require('gulp-merge-json')
+    , editjson = require('gulp-json-modify')
     , concat = require('gulp-concat')
     , zip = require('gulp-vinyl-zip')
+    , package_json = require('./package.json')
 
 
 gulp.task('scripts:content', (cb) => {
@@ -114,6 +116,8 @@ gulp.task('manifest', (cb) => {
             fileName: 'manifest.json',
         }))
         .pipe(json5())
+        .pipe(gulp.dest(paths.dest.manifest))
+        .pipe(editjson({ key: 'version', value: package_json.version }))
         .pipe(gulp.dest(paths.dest.manifest))
         .on('end', cb)
 })

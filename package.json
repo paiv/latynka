@@ -1,6 +1,6 @@
 {
   "name": "latynka",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Ukrajinsjka Latynka | Українська Латинка",
   "dependencies": {},
   "devDependencies": {
@@ -8,6 +8,7 @@
     "del": "^3.0.0",
     "gulp": "git+https://github.com/gulpjs/gulp.git#4.0",
     "gulp-concat": "^2.6.1",
+    "gulp-json-modify": "^1.0.2",
     "gulp-json5-to-json": "^0.2.1",
     "gulp-merge-json": "^1.1.0",
     "gulp-vinyl-zip": "^2.0.0",
