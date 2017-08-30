@@ -9,8 +9,7 @@ cache:
 deploy:
   skip_cleanup: true
   provider: script
-  script: |
-    npm run publish:firefox
+  script: npm run publish:firefox
   on:
     branch: master
     tags: true
