@@ -10,7 +10,7 @@ deploy:
   provider: script
   script: npm run publish:chrome
   on:
-    branch: ci
+    branch: master
     tags: true
 
 env:
