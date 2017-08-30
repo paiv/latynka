@@ -5,3 +5,10 @@ node_js:
 cache:
   directories:
     - $HOME/.npm
+
+deploy:
+  provider: script
+  script: touch deployed.ok
+  on:
+    branch: ci
+    tags: true
