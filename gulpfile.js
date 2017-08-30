@@ -133,11 +133,11 @@ gulp.task('clean', (cb) => {
 
 
 gulp.task('watch', () => {
-    gulp.watch(paths.src.js, ['scripts'])
-    gulp.watch(paths.src.html, ['pages'])
-    gulp.watch(paths.src.img, ['images'])
-    gulp.watch(paths.src.translations, ['data'])
-    gulp.watch([paths.src.manifest, paths.platform.manifest], ['manifest'])
+    gulp.watch(paths.src.js, gulp.parallel('scripts'))
+    gulp.watch(paths.src.html, gulp.parallel('pages'))
+    gulp.watch(paths.src.img, gulp.parallel('images'))
+    gulp.watch(paths.src.translations, gulp.parallel('data'))
+    gulp.watch([paths.src.manifest, paths.platform.manifest], gulp.parallel('manifest'))
 })
 
 
