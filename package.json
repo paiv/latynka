@@ -1,6 +1,6 @@
 {
   "name": "latynka",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Ukrajinsjka Latynka | Українська Латинка",
   "dependencies": {},
   "devDependencies": {
@@ -13,7 +13,8 @@
     "gulp-merge-json": "^1.1.0",
     "gulp-vinyl-zip": "^2.0.0",
     "http-server": "^0.10.0",
-    "jasmine": "^2.8.0"
+    "jasmine": "^2.8.0",
+    "webext": "^1.9.1-with-submit.1"
   },
   "scripts": {
     "test": "jasmine",
@@ -22,7 +23,8 @@
     "build": "npm run build:chrome && npm run build:firefox",
     "dist": "gulp dist",
     "watch": "PLATFORM=chrome gulp watch",
-    "publish:chrome": "npm run build:chrome && webstore upload --source dist/build/chrome --auto-publish"
+    "publish:chrome": "npm run build:chrome && webstore upload --source dist/build/chrome --auto-publish",
+    "publish:firefox": "npm run build:firefox && cd dist/build/firefox && webext submit"
   },
   "author": "Pavel paiv Ivashkov",
   "license": "MIT",
