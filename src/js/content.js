@@ -31,11 +31,23 @@ class DomObserver {
 
     constructor(callback) {
         this.callback = callback
+        this._enabled = false
         this.excludeTags = new Set(['head', 'link', 'meta', 'script', 'style'])
         this.changedNodes = new Set()
         this.visited = new Set()
         this.observers = []
         this.timer = new AwesomeTimer(() => { this.processChanges() })
+    }
+
+    get enabled() {
+        return this._enabled
+    }
+
+    set enabled(value) {
+        this._enabled = value
+        if (this.changedNodes.length) {
+            this.timer.asap()
+        }
     }
 
     processChanges() {
@@ -71,7 +83,9 @@ class DomObserver {
                 }
             })
 
-            this.timer.asap()
+            if (this.enabled) {
+                this.timer.asap()
+            }
         }
 
         const observer = new MutationObserver(handleMutations)
@@ -282,24 +296,27 @@ const table_combining = {
 
 class Controller {
     constructor() {
-        this.settings = new Settings(storage, () => { this._check_enabled() })
-        this._check_enabled()
+        this.settings = new Settings(storage, () => { this._check_enabled(false) })
+        this._check_enabled(true)
     }
 
-    _check_enabled() {
+    _check_enabled(delayed) {
         if (this.settings.enabled) {
-            this.start()
+            this.start(delayed)
         }
         else {
             this.stop()
         }
     }
 
-    start() {
+    start(delayed) {
         if (!this.observer) {
             const translit = new Transliterator(table_combining)
             this.observer = new DomObserver((nodes) => translit.processTextNodes(nodes))
             this.observer.observe(document.documentElement)
+        }
+        if (!delayed) {
+            this.observer.enabled = true
         }
     }
 
