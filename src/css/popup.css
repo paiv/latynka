@@ -1,0 +1,36 @@
+
+
+body {
+    margin: 0;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 20em;
+}
+
+
+td, th {
+    padding: 0;
+}
+
+
+td {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+td > label {
+    display: block;
+    width: 100%;
+}
+
+
+thead {
+    background-color: #ddd;
+}
+
+tfoot {
+    background-color: #eee;
+}

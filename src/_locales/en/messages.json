@@ -6,5 +6,9 @@
     "extension_button_tooltip": {
         "message": "Latynka",
         "description": "Tooltip text when hovering extension button"
+    },
+    "popup_global_settings_enabled": {
+        "message": "Enabled",
+        "description": "Label for 'enabled' checkbox in global setting"
     }
 }

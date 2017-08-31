@@ -15,6 +15,7 @@ const paths = {
         js: 'src/**/*.js',
         jsroot: 'src/js',
         html: 'src/*.html',
+        css: 'src/css/*.css',
         img: 'src/img/*.png',
         translations: 'src/_locales/**/*.json',
         manifest: 'src/meta/manifest.json',
@@ -31,6 +32,7 @@ const paths = {
     dest: {
         js: build.platform + '/js',
         html: build.platform,
+        css: build.platform + '/css',
         img: build.platform + '/img',
         translations: build.platform + '/_locales',
         manifest: build.platform,
@@ -66,6 +68,7 @@ gulp.task('scripts:content', (cb) => {
 gulp.task('scripts:popup', (cb) => {
     return gulp.src([
         paths.src.jsroot + '/settings.js',
+        paths.src.jsroot + '/html_i18n.js',
         paths.src.jsroot + '/popup.js',
         ])
         .pipe(concat('popup.js'))
@@ -91,6 +94,13 @@ gulp.task('scripts', gulp.parallel('scripts:content', 'scripts:popup', 'scripts:
 gulp.task('pages', (cb) => {
     return gulp.src(paths.src.html)
         .pipe(gulp.dest(paths.dest.html))
+        .on('end', cb)
+})
+
+
+gulp.task('styles', (cb) => {
+    return gulp.src(paths.src.css)
+        .pipe(gulp.dest(paths.dest.css))
         .on('end', cb)
 })
 
@@ -123,7 +133,7 @@ gulp.task('manifest', (cb) => {
 })
 
 
-gulp.task('build', gulp.parallel('scripts', 'pages', 'images', 'data', 'manifest'))
+gulp.task('build', gulp.parallel('scripts', 'pages', 'styles', 'images', 'data', 'manifest'))
 
 
 gulp.task('clean', (cb) => {
@@ -135,6 +145,7 @@ gulp.task('clean', (cb) => {
 gulp.task('watch', () => {
     gulp.watch(paths.src.js, gulp.parallel('scripts'))
     gulp.watch(paths.src.html, gulp.parallel('pages'))
+    gulp.watch(paths.src.css, gulp.parallel('styles'))
     gulp.watch(paths.src.img, gulp.parallel('images'))
     gulp.watch(paths.src.translations, gulp.parallel('data'))
     gulp.watch([paths.src.manifest, paths.platform.manifest], gulp.parallel('manifest'))

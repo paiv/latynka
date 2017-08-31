@@ -1,11 +1,11 @@
 {
     "extension_description": {
-        "message": "Транслітерація з кирилиці в латинку і навспак"
+        "message": "Транслитерация кириллицы в латинский алфавит"
     },
     "extension_button_tooltip": {
         "message": "Латинка"
     },
     "popup_global_settings_enabled": {
-        "message": "Включити"
+        "message": "Включить"
     }
 }
