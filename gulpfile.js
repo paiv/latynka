@@ -58,6 +58,7 @@ gulp.task('scripts:content', (cb) => {
     return gulp.src([
         paths.src.jsroot + '/bundled_tables.js',
         paths.src.jsroot + '/settings.js',
+        paths.src.jsroot + '/translit.js',
         paths.src.jsroot + '/content.js',
         ])
         .pipe(concat('content.js'))

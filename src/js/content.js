@@ -125,32 +125,6 @@ class DomObserver {
 }
 
 
-class Transliterator {
-    constructor(table) {
-        this.table = Transliterator.compileTable(table)
-    }
-
-    processTextNodes(nodes) {
-        nodes.forEach((node) => {
-            const text = node.data || ''
-            node.data = text.replace(this.table.regex, this.table.callback)
-        })
-    }
-
-    static compileTable(table) {
-        const regexString = ['[', ...Object.keys(table), ']'].join('')
-        const rx = new RegExp(regexString, 'g')
-        const cb = (text) => {
-            return table[text] || text
-        }
-        return {
-            regex: rx,
-            callback: cb,
-        }
-    }
-}
-
-
 class Controller {
     constructor() {
         this.settings = new Settings(storage, () => { this._check_enabled(false) })

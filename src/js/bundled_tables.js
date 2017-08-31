@@ -1,9 +1,82 @@
 
 const BundledTranslitTables = {
 
-    'latynka': {
-        title: 'ja latynka',
-        description: '',
+    'nova_latynka': {
+        title: 'Nova Latynka',
+        description: 'https://nova-latynka.livejournal.com/775.html',
+        table: {
+            'а': 'a',
+            'б': 'b',
+            'в': 'v',
+            'г': 'h',
+            'ґ': 'g',
+            'д': 'd',
+            'е': 'e',
+            'є': 'je',
+            'ж': 'z\u030C', // 'ž'
+            'з': 'z',
+            'и': 'y',
+            'і': 'i',
+            'ї': 'ji',
+            'й': 'j',
+            'к': 'k',
+            'л': 'l',
+            'м': 'm',
+            'н': 'n',
+            'о': 'o',
+            'п': 'p',
+            'р': 'r',
+            'с': 's',
+            'т': 't',
+            'у': 'u',
+            'ф': 'f',
+            'х': 'x',
+            'ц': 'c',
+            'ч': 'c\u030C', // 'č'
+            'ш': 's\u030C', // 'š'
+            'щ': 's\u030Cc\u030C', // 'šč'
+            'ь': 'j',
+            'ю': 'ju',
+            'я': 'ja',
+            'А': 'A',
+            'Б': 'B',
+            'В': 'V',
+            'Г': 'H',
+            'Ґ': 'G',
+            'Д': 'D',
+            'Е': 'E',
+            'Є': 'Je',
+            'Ж': 'Z\u030C', // 'Ž'
+            'З': 'Z',
+            'И': 'Y',
+            'І': 'I',
+            'Ї': 'Ji',
+            'Й': 'J',
+            'К': 'K',
+            'Л': 'L',
+            'М': 'M',
+            'Н': 'N',
+            'О': 'O',
+            'П': 'P',
+            'Р': 'R',
+            'С': 'S',
+            'Т': 'T',
+            'У': 'U',
+            'Ф': 'F',
+            'Х': 'X',
+            'Ц': 'C',
+            'Ч': 'C\u030C', // 'Č'
+            'Ш': 'S\u030C', // 'Š'
+            'Щ': 'S\u030Cc\u030C', // 'Šč'
+            'Ь': 'J',
+            'Ю': 'Ju',
+            'Я': 'Ja',
+        },
+    },
+
+    'nova_latynka_alt': {
+        title: 'Nova Latynka alt',
+        description: 'https://nova-latynka.livejournal.com/775.html',
         table: {
             'а': 'a',
             'б': 'b',
@@ -74,9 +147,9 @@ const BundledTranslitTables = {
         },
     },
 
-    'latynka alt': {
-        title: 'ja latynka alt',
-        description: '',
+    'kmu_2010': {
+        title: 'Official KMU 2010',
+        description: 'http://zakon2.rada.gov.ua/laws/show/55-2010-%D0%BF',
         table: {
             'а': 'a',
             'б': 'b',
@@ -146,4 +219,12 @@ const BundledTranslitTables = {
             'Я': 'Ja',
         },
     },
+
+}
+
+
+if (typeof require !== 'undefined') {
+    module.exports = {
+        BundledTranslitTables,
+    }
 }
