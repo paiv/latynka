@@ -32,6 +32,7 @@ class DomObserver {
     constructor(callback) {
         this.callback = callback
         this._delayed = true
+        this.includeMatching = /[абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]/i
         this.excludeTags = new Set(['head', 'link', 'meta', 'script', 'style'])
         this.changedNodes = new Set()
         this.visited = new Set()
@@ -54,10 +55,38 @@ class DomObserver {
         const changes = this.changedNodes
         this.changedNodes = new Set()
 
-        this.visited.clear()
-        changes.forEach((node) => { this.visited.add(node) })
+        const filtered = new Set()
 
-        this.callback(changes)
+        changes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                if (this.includeMatching.test(node.data)) {
+                    filtered.add(node)
+                }
+            }
+            else if (node.nodeType === Node.ELEMENT_NODE && !this.excludeTags.has(node.localName)) {
+
+                const it = document.createNodeIterator(node,
+                    NodeFilter.SHOW_ELEMENT + NodeFilter.SHOW_TEXT,
+                    (node) => {
+                        return (node.nodeType === Node.TEXT_NODE) ?
+                            (this.includeMatching.test(node.data) ?
+                            NodeFilter.FILTER_ACCEPT :
+                            NodeFilter.FILTER_REJECT)
+                            :
+                            (this.excludeTags.has(node.localName) ?
+                            NodeFilter.FILTER_REJECT :
+                            NodeFilter.FILTER_SKIP)
+                    })
+
+                let child;
+                while (child = it.nextNode()) {
+                    filtered.add(child)
+                }
+            }
+        })
+
+        this.visited = filtered
+        this.callback(filtered)
     }
 
     add(node) {
@@ -69,29 +98,7 @@ class DomObserver {
     observe(node) {
         const handleMutations = (records) => {
             records.forEach((record) => {
-                if (record.type === 'characterData') {
-                    this.add(record.target)
-                }
-                else if (record.type === 'childList') {
-                    if (record.target.nodeType === Node.ELEMENT_NODE && !this.excludeTags.has(record.target.localName)) {
-
-                        const it = document.createNodeIterator(record.target,
-                            NodeFilter.SHOW_ELEMENT + NodeFilter.SHOW_TEXT,
-                            (node) => {
-                                return (node.nodeType === Node.TEXT_NODE) ?
-                                    NodeFilter.FILTER_ACCEPT
-                                    :
-                                    this.excludeTags.has(node.localName) ?
-                                    NodeFilter.FILTER_REJECT :
-                                    NodeFilter.FILTER_SKIP
-                            })
-
-                        let node;
-                        while (node = it.nextNode()) {
-                            this.add(node)
-                        }
-                    }
-                }
+                this.add(record.target)
             })
 
             if (!this.delayed) {
