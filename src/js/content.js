@@ -31,7 +31,7 @@ class DomObserver {
 
     constructor(callback) {
         this.callback = callback
-        this._enabled = false
+        this._delayed = true
         this.excludeTags = new Set(['head', 'link', 'meta', 'script', 'style'])
         this.changedNodes = new Set()
         this.visited = new Set()
@@ -39,13 +39,13 @@ class DomObserver {
         this.timer = new AwesomeTimer(() => { this.processChanges() })
     }
 
-    get enabled() {
-        return this._enabled
+    get delayed() {
+        return this._delayed
     }
 
-    set enabled(value) {
-        this._enabled = value
-        if (this.changedNodes.length) {
+    set delayed(value) {
+        this._delayed = value
+        if (!value && this.changedNodes.size) {
             this.timer.asap()
         }
     }
@@ -74,16 +74,27 @@ class DomObserver {
                 }
                 else if (record.type === 'childList') {
                     if (record.target.nodeType === Node.ELEMENT_NODE && !this.excludeTags.has(record.target.localName)) {
-                        record.addedNodes.forEach((node) => {
-                            if (node.nodeType === Node.TEXT_NODE) {
-                                this.add(node)
-                            }
-                        })
+
+                        const it = document.createNodeIterator(record.target,
+                            NodeFilter.SHOW_ELEMENT + NodeFilter.SHOW_TEXT,
+                            (node) => {
+                                return (node.nodeType === Node.TEXT_NODE) ?
+                                    NodeFilter.FILTER_ACCEPT
+                                    :
+                                    this.excludeTags.has(node.localName) ?
+                                    NodeFilter.FILTER_REJECT :
+                                    NodeFilter.FILTER_SKIP
+                            })
+
+                        let node;
+                        while (node = it.nextNode()) {
+                            this.add(node)
+                        }
                     }
                 }
             })
 
-            if (this.enabled) {
+            if (!this.delayed) {
                 this.timer.asap()
             }
         }
@@ -315,9 +326,7 @@ class Controller {
             this.observer = new DomObserver((nodes) => translit.processTextNodes(nodes))
             this.observer.observe(document.documentElement)
         }
-        if (!delayed) {
-            this.observer.enabled = true
-        }
+        this.observer.delayed = delayed
     }
 
     stop() {
