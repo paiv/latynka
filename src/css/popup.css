@@ -16,14 +16,41 @@ td, th {
 }
 
 
+th {
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+}
+
+
 td {
     padding-top: 0.2em;
     padding-bottom: 0.2em;
 }
 
+
 td > label {
     display: block;
     width: 100%;
+}
+
+
+td input[type="checkbox"] {
+    margin-right: 0.5em;
+}
+
+
+td input[type="radio"] {
+    margin-right: 1em;
+}
+
+
+td button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    width: 50%;
 }
 
 

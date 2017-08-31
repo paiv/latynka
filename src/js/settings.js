@@ -7,6 +7,7 @@ class Settings {
 
         this.storage_keys = {
             enabled: 'latynka:enabled',
+            selected_table_id: 'latynka:selected_table_id',
         }
 
         this.cache = {}
@@ -45,9 +46,27 @@ class Settings {
         this.db.set(obj)
     }
 
+    save(items) {
+        const obj = {}
+        for (let key in items) {
+            obj[this.storage_keys[key]] = items[key]
+        }
+        this.db.set(obj)
+    }
+
     _get_bool(key) {
         const value = this.cache[key]
         return value === false ? value : true
+    }
+
+    _get_int(key) {
+        const value = this.cache[key]
+        return Number.isInteger(value) ? value : 0
+    }
+
+    _get_string(key) {
+        const value = this.cache[key]
+        return '' + value
     }
 
     get enabled() {
@@ -58,11 +77,28 @@ class Settings {
         this._store(this.storage_keys.enabled, value)
     }
 
-    save(items) {
-        const obj = {}
-        for (let key in items) {
-            obj[this.storage_keys[key]] = items[key]
-        }
-        this.db.set(obj)
+    get selected_table_id() {
+        return this._get_string(this.storage_keys.selected_table_id)
+    }
+
+    set selected_table_id(value) {
+        this._store(this.storage_keys.selected_table_id, value)
+    }
+
+    get selected_translit_table() {
+        const tables = this.active_tables
+        return tables.find((tbl) => tbl.id === this.selected_table_id) || tables[0]
+    }
+
+    get active_tables() {
+        const all_tables = Object.keys(BundledTranslitTables).map((key) => Object.assign({id: key}, BundledTranslitTables[key]))
+
+        all_tables.sort((a,b) => (a.title || '').localeCompare(b.title))
+
+        return all_tables
+    }
+
+    set active_tables(value) {
+
     }
 }

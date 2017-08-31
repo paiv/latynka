@@ -30,7 +30,7 @@ class AwesomeTimer {
 class DomObserver {
 
     constructor(callback) {
-        this.callback = callback
+        this.callback = callback || (() => {})
         this._delayed = true
         this.includeMatching = /[абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]/i
         this.excludeTags = new Set(['head', 'link', 'meta', 'script', 'style'])
@@ -151,167 +151,6 @@ class Transliterator {
 }
 
 
-// class IframeObserver {
-//
-//     observe(node) {
-//         const handleMutations = (records) => {
-//             records.forEach((node) => {
-//                 console.log(node.target)
-//             })
-//         }
-//
-//         const observer = new MutationObserver(handleMutations)
-//         this.observers.push(observer)
-//
-//         observer.observe(node, {
-//             attributes: true,
-//             attributeFilter: ['src'],
-//         })
-//
-//     }
-// }
-
-
-const table_noncombining = {
-    'а': 'a',
-    'б': 'b',
-    'в': 'v',
-    'г': 'h',
-    'ґ': 'g',
-    'д': 'd',
-    'е': 'e',
-    'є': 'je',
-    'ж': 'ž', // 'z\u030C'
-    'з': 'z',
-    'и': 'y',
-    'і': 'i',
-    'ї': 'ji', // 'i\u0308'
-    'й': 'j',
-    'к': 'k',
-    'л': 'l',
-    'м': 'm',
-    'н': 'n',
-    'о': 'o',
-    'п': 'p',
-    'р': 'r',
-    'с': 's',
-    'т': 't',
-    'у': 'u',
-    'ф': 'f',
-    'х': 'x',
-    'ц': 'c',
-    'ч': 'č', // 'c\u030C'
-    'ш': 'š', // 's\u030C'
-    'щ': 'šč', // 's\u030Cc\u030C'
-    'ь': 'j',
-    'ю': 'ju',
-    'я': 'ja',
-    'А': 'A',
-    'Б': 'B',
-    'В': 'V',
-    'Г': 'H',
-    'Ґ': 'G',
-    'Д': 'D',
-    'Е': 'E',
-    'Є': 'Je',
-    'Ж': 'Ž', // 'Z\u030C'
-    'З': 'Z',
-    'И': 'Y',
-    'І': 'I',
-    'Ї': 'Ji', // 'I\u0308'
-    'Й': 'J',
-    'К': 'K',
-    'Л': 'L',
-    'М': 'M',
-    'Н': 'N',
-    'О': 'O',
-    'П': 'P',
-    'Р': 'R',
-    'С': 'S',
-    'Т': 'T',
-    'У': 'U',
-    'Ф': 'F',
-    'Х': 'X',
-    'Ц': 'C',
-    'Ч': 'Č', // 'C\u030C'
-    'Ш': 'Š', // 'S\u030C'
-    'Щ': 'Šč', // 'S\u030Cc\u030C'
-    'Ь': 'J',
-    'Ю': 'Ju',
-    'Я': 'Ja',
-}
-
-
-const table_combining = {
-    'а': 'a',
-    'б': 'b',
-    'в': 'v',
-    'г': 'h',
-    'ґ': 'g',
-    'д': 'd',
-    'е': 'e',
-    'є': 'je',
-    'ж': 'z\u030C', // 'ž'
-    'з': 'z',
-    'и': 'y',
-    'і': 'i',
-    'ї': 'ji', // 'i\u0308'
-    'й': 'j',
-    'к': 'k',
-    'л': 'l',
-    'м': 'm',
-    'н': 'n',
-    'о': 'o',
-    'п': 'p',
-    'р': 'r',
-    'с': 's',
-    'т': 't',
-    'у': 'u',
-    'ф': 'f',
-    'х': 'x',
-    'ц': 'c',
-    'ч': 'c\u030C', // 'č'
-    'ш': 's\u030C', // 'š'
-    'щ': 's\u030Cc\u030C', // 'šč'
-    'ь': 'j',
-    'ю': 'ju',
-    'я': 'ja',
-    'А': 'A',
-    'Б': 'B',
-    'В': 'V',
-    'Г': 'H',
-    'Ґ': 'G',
-    'Д': 'D',
-    'Е': 'E',
-    'Є': 'Je',
-    'Ж': 'Z\u030C', // 'Ž'
-    'З': 'Z',
-    'И': 'Y',
-    'І': 'I',
-    'Ї': 'Ji', // 'I\u0308'
-    'Й': 'J',
-    'К': 'K',
-    'Л': 'L',
-    'М': 'M',
-    'Н': 'N',
-    'О': 'O',
-    'П': 'P',
-    'Р': 'R',
-    'С': 'S',
-    'Т': 'T',
-    'У': 'U',
-    'Ф': 'F',
-    'Х': 'X',
-    'Ц': 'C',
-    'Ч': 'C\u030C', // 'Č'
-    'Ш': 'S\u030C', // 'Š'
-    'Щ': 'S\u030Cc\u030C', // 'Šč'
-    'Ь': 'J',
-    'Ю': 'Ju',
-    'Я': 'Ja',
-}
-
-
 class Controller {
     constructor() {
         this.settings = new Settings(storage, () => { this._check_enabled(false) })
@@ -320,19 +159,25 @@ class Controller {
 
     _check_enabled(delayed) {
         if (this.settings.enabled) {
-            this.start(delayed)
+            const table = this.settings.selected_translit_table
+            this.start(delayed, table.table)
         }
         else {
             this.stop()
         }
     }
 
-    start(delayed) {
+    start(delayed, table) {
         if (!this.observer) {
-            const translit = new Transliterator(table_combining)
-            this.observer = new DomObserver((nodes) => translit.processTextNodes(nodes))
+            this.observer = new DomObserver()
             this.observer.observe(document.documentElement)
         }
+
+        if (!delayed) {
+            const translit = new Transliterator(table)
+            this.observer.callback = (nodes) => translit.processTextNodes(nodes)
+        }
+
         this.observer.delayed = delayed
     }
 
