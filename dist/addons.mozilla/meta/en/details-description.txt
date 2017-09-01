@@ -4,6 +4,6 @@ This extension converts web pages with Ukrainian Cyrillic text to Latin script.
 
 This extension does minimal changes to original pages – only replacing Cyrillic letters with Latin. Still, some web pages might look broken, since page author did not account for this change. The cause for it is a font used on the page not handling Latin or extended Latin characters, like č and ž. To show these characters, browser will choose another font, which would change original page look.
 
-The extension is open-source, and has to ads or trackers, development is fully transparent.
+The extension is open-source, and has no ads or trackers, development is fully transparent.
 
 You can help by spreading the word about it, and sharing with your friends.
