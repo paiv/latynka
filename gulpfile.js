@@ -45,6 +45,8 @@ paths.platform = paths[platform]
 
 
 const gulp = require('gulp')
+    , browserify = require('browserify')
+    , source = require('vinyl-source-stream')
     , del = require('del')
     , json5 = require('gulp-json5-to-json')
     , mergejson = require('gulp-merge-json')
@@ -55,37 +57,39 @@ const gulp = require('gulp')
 
 
 gulp.task('scripts:content', (cb) => {
-    return gulp.src([
-        paths.src.jsroot + '/bundled_tables.js',
-        paths.src.jsroot + '/settings.js',
-        paths.src.jsroot + '/translit.js',
-        paths.src.jsroot + '/content.js',
-        ])
-        .pipe(concat('content.js'))
+    var brwsrf = browserify({
+        entries: paths.src.jsroot + '/content.js',
+        debug: false,
+    })
+
+    brwsrf.bundle()
+        .pipe(source('./content.js'))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })
 
 
 gulp.task('scripts:popup', (cb) => {
-    return gulp.src([
-        paths.src.jsroot + '/bundled_tables.js',
-        paths.src.jsroot + '/settings.js',
-        paths.src.jsroot + '/html_i18n.js',
-        paths.src.jsroot + '/popup.js',
-        ])
-        .pipe(concat('popup.js'))
+    var brwsrf = browserify({
+        entries: paths.src.jsroot + '/popup.js',
+        debug: false,
+    })
+
+    brwsrf.bundle()
+        .pipe(source('./popup.js'))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })
 
 
 gulp.task('scripts:background', (cb) => {
-    return gulp.src([
-        paths.src.jsroot + '/settings.js',
-        paths.src.jsroot + '/background.js',
-        ])
-        .pipe(concat('background.js'))
+    var brwsrf = browserify({
+        entries: paths.src.jsroot + '/background.js',
+        debug: false,
+    })
+
+    brwsrf.bundle()
+        .pipe(source('./background.js'))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })

@@ -1,10 +1,7 @@
 
-const app = () => {
+const Settings = require('./settings').Settings
 
-const browser = this.browser || this.chrome || this
-const storage = browser.storage
-const runtime = browser.runtime
-const browserAction = browser.browserAction
+const browserapi = chrome
 
 
 class Controller {
@@ -14,7 +11,7 @@ class Controller {
             32: 'img/icon-disabled32.png',
         }
 
-        this.settings = new Settings(storage, () => { this._check_enabled() })
+        this.settings = new Settings(browserapi.storage, () => { this._check_enabled() })
     }
 
     _check_enabled() {
@@ -22,16 +19,11 @@ class Controller {
     }
 
     _set_browser_icon(enabled) {
-        const manifest = runtime.getManifest()
+        const manifest = browserapi.runtime.getManifest()
         const icons = enabled ? manifest.browser_action.default_icon : this.disabledIcon
-        browserAction.setIcon({ path: icons })
+        browserapi.browserAction.setIcon({ path: icons })
     }
 }
 
 
 const ctl = new Controller()
-
-}
-
-
-app()

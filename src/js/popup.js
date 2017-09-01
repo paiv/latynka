@@ -1,10 +1,8 @@
 
-const app = () => {
+const Settings = require('./settings').Settings
+    , html_i18n = require('./html_i18n')
 
-
-const storage = this.storage || (this.chrome && this.chrome.storage)
-const tabs = this.tabs || (this.chrome && this.chrome.tabs)
-const windows = this.windows || (this.chrome && this.chrome.windows)
+const browserapi = chrome
 
 
 class View {
@@ -30,9 +28,9 @@ class View {
     }
 
     _onReloadButtonClick() {
-        tabs.query({ active: true, windowId: windows.WINDOW_ID_CURRENT }, (views) => {
+        browserapi.tabs.query({ active: true, windowId: browserapi.windows.WINDOW_ID_CURRENT }, (views) => {
             views.forEach((tab) => {
-                tabs.reload(tab.id)
+                browserapi.tabs.reload(tab.id)
             })
         })
     }
@@ -71,7 +69,7 @@ class View {
 
 class Controller {
     constructor() {
-        this.settings = new Settings(storage, () => { this._reloadView() })
+        this.settings = new Settings(browserapi.storage, () => { this._reloadView() })
         this.view = new View(document)
 
         this._localize_html(document)
@@ -98,8 +96,3 @@ class Controller {
 
 
 const ctl = new Controller()
-
-}
-
-
-app()

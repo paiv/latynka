@@ -4,6 +4,7 @@
   "description": "Ukrajinsjka Latynka | Українська Латинка",
   "dependencies": {},
   "devDependencies": {
+    "browserify": "^14.4.0",
     "chrome-webstore-upload-cli": "^1.1.1",
     "del": "^3.0.0",
     "gulp": "git+https://github.com/gulpjs/gulp.git#4.0",
@@ -14,6 +15,7 @@
     "gulp-vinyl-zip": "^2.0.0",
     "http-server": "^0.10.0",
     "jasmine": "^2.8.0",
+    "vinyl-source-stream": "^1.1.0",
     "webext": "^1.9.1-with-submit.1"
   },
   "scripts": {

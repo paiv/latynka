@@ -1,8 +1,5 @@
 
-const module = () => {
-const exports = {}
-
-const i18n = this.i18n || (this.chrome && this.chrome.i18n)
+const i18n = window.i18n || (window.chrome && window.chrome.i18n)
 
 
 class HtmlLocalizer {
@@ -35,14 +32,13 @@ class HtmlLocalizer {
 }
 
 
-exports.localize = (node) => {
+const localize = (node) => {
     const loc = new HtmlLocalizer()
     return loc.localize(node)
 }
 
 
-return exports
+module.exports = {
+    localize,
+    HtmlLocalizer,
 }
-
-
-const html_i18n = module()

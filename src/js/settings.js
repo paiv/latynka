@@ -1,4 +1,7 @@
 
+const BundledTranslitTables = require('./bundled_tables')
+
+
 class Settings {
 
     constructor(storage, callback) {
@@ -101,4 +104,9 @@ class Settings {
     set active_tables(value) {
 
     }
+}
+
+
+module.exports = {
+    Settings,
 }

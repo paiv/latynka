@@ -1,12 +1,12 @@
-const Transliterator = require('../src/js/translit').Transliterator
-    , BundledTranslitTables = require('../src/js/bundled_tables').BundledTranslitTables
+const BundledTranslitTables = require('../src/js/bundled_tables')
+    , Transliterator = require('../src/js/translit').Transliterator
 
 
 describe('Nova Latynka', function() {
 
     beforeEach(function() {
         this.table = BundledTranslitTables['nova_latynka']
-        this.translit = new Transliterator(this.table.table)
+        this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
 
@@ -22,17 +22,17 @@ describe('Nova Latynka', function() {
 
     it('converts жз chars', function() {
         const converted = this.convert('ж з')
-        expect(converted).toBe('z\u030C z')
+        expect(converted).toBe('ž z')
     })
 
     it('converts цч chars', function() {
         const converted = this.convert('ц ч')
-        expect(converted).toBe('c c\u030C')
+        expect(converted).toBe('c č')
     })
 
     it('converts шщ chars', function() {
         const converted = this.convert('ш щ')
-        expect(converted).toBe('s\u030C s\u030Cc\u030C')
+        expect(converted).toBe('š šč')
     })
 
     it('converts єюя chars', function() {
@@ -52,6 +52,6 @@ describe('Nova Latynka', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('S\u030Cc\u030Castjam b\'jes\u030C z\u030Cuk jix hlycju v fon j gedzj pric\u030C.')
+        expect(converted).toBe('Ščastjam b\'ješ žuk jix hlycju v fon j gedzj prič.')
     })
 })

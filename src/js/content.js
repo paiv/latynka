@@ -1,7 +1,8 @@
 
-const app = () => {
+const Settings = require('./settings').Settings
+    , Transliterator = require('./translit').Transliterator
 
-const storage = this.storage || (this.chrome && this.chrome.storage)
+const browserapi = chrome
 
 
 class AwesomeTimer {
@@ -127,28 +128,28 @@ class DomObserver {
 
 class Controller {
     constructor() {
-        this.settings = new Settings(storage, () => { this._check_enabled(false) })
+        this.settings = new Settings(browserapi.storage, () => { this._check_enabled(false) })
         this._check_enabled(true)
     }
 
     _check_enabled(delayed) {
         if (this.settings.enabled) {
             const table = this.settings.selected_translit_table
-            this.start(delayed, table.table)
+            this.start(delayed, table.rules)
         }
         else {
             this.stop()
         }
     }
 
-    start(delayed, table) {
+    start(delayed, rules) {
         if (!this.observer) {
             this.observer = new DomObserver()
             this.observer.observe(document.documentElement)
         }
 
         if (!delayed) {
-            const translit = new Transliterator(table)
+            const translit = new Transliterator(rules)
             this.observer.callback = (nodes) => translit.processTextNodes(nodes)
         }
 
@@ -165,9 +166,3 @@ class Controller {
 
 
 const ctl = new Controller()
-
-
-}
-
-
-app()
