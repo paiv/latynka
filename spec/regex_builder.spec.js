@@ -52,6 +52,11 @@ describe('RegexBuilder', function() {
         expect(this.source()).toBe('([x]abc)')
     })
 
+    it('groups with or', function() {
+        this.rxb = this.rxb.orgroup(this.rxb.chars('x'), 'abc')
+        expect(this.source()).toBe('([x]|abc)')
+    })
+
     it('groups noncapturing', function() {
         this.rxb = this.rxb.ngroup(this.rxb.chars('x'), 'abc')
         expect(this.source()).toBe('(?:[x]abc)')
@@ -69,5 +74,24 @@ describe('RegexBuilder', function() {
 
     it('has flags', function() {
         expect(this.regex('g').flags).toBe('g')
+    })
+
+
+    describe('none', function() {
+
+        it('is null', function() {
+            this.rxb = this.rxb.none()
+            expect(this.rxb.is_none()).toBe(true)
+            expect(this.rxb.toString()).toBeNull()
+        })
+
+        it('excludes nones', function() {
+            this.rxb = this.rxb.or(
+                'abc',
+                this.rxb.none(),
+                'qrx'
+            )
+            expect(this.source()).toBe('(?:abc|qrx)')
+        })
     })
 })

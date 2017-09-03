@@ -69,7 +69,7 @@ class Settings {
 
     _get_string(key) {
         const value = this.cache[key]
-        return '' + value
+        return ['', value].join('')
     }
 
     get enabled() {
@@ -81,7 +81,7 @@ class Settings {
     }
 
     get selected_table_id() {
-        return this._get_string(this.storage_keys.selected_table_id)
+        return this._get_string(this.storage_keys.selected_table_id) || 'nova_latynka'
     }
 
     set selected_table_id(value) {
@@ -90,7 +90,8 @@ class Settings {
 
     get selected_translit_table() {
         const tables = this.active_tables
-        return tables.find((tbl) => tbl.id === this.selected_table_id) || tables[0]
+        const selected_id = this.selected_table_id
+        return tables.find((tbl) => tbl.id === selected_id) || tables[0]
     }
 
     get active_tables() {

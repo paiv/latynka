@@ -11,8 +11,8 @@ describe('КМУ 2010', function() {
     })
 
     it('converts common chars', function() {
-        const converted = this.convert('абвдезклмнопрстф')
-        expect(converted).toBe('abvdezklmnoprstf')
+        const converted = this.convert('абвдезклмнопрстуф')
+        expect(converted).toBe('abvdezklmnoprstuf')
     })
 
     it('converts гґх chars', function() {

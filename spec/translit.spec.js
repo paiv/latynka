@@ -4,72 +4,178 @@ const Transliterator = require('../src/js/translit').Transliterator
 
 describe('Transliterator', function() {
 
+    beforeAll(function() {
+        this.vowels = 'аеєиіїоуюя'.split('')
+        const vow_stub = 'aeëyiïouüä'.split('')
+
+        this.consonants = 'бвгґджзйклмнпрстфхцчшщ'.split('')
+        const con_stub = 'bvhgdžzjklmnprstfxcčṡš'.split('')
+
+        const vstub = {}
+        this.vowels.forEach((x, i) => { vstub[x] = vow_stub[i] })
+        this.vowel_stub = vstub
+
+        const cstub = {}
+        this.consonants.forEach((x, i) => { cstub[x] = con_stub[i] })
+        this.cons_stub = cstub
+    })
+
+
     beforeEach(function() {
-        this.table = {
-            rules: {
+        this.convert = (text) => {
+            const translit = new Transliterator(this.rules)
+            return translit.convert(text)
+        }
+    })
+
+
+    describe('single char', function() {
+
+        beforeEach(function() {
+            this.rules = {
                 'ґ': 'g',
-                // 'є': 'je',
                 'є': {
-                    inner: 'je',
+                    other: 'je',
                 },
+            }
+        })
+
+        it('converts ґ char', function() {
+            const converted = this.convert('ґ')
+            expect(converted).toBe('g')
+        })
+
+        it('converts є char', function() {
+            const converted = this.convert('є')
+            expect(converted).toBe('je')
+        })
+
+        it('converts a word', function() {
+            const converted = this.convert('ґє')
+            expect(converted).toBe('gje')
+        })
+    })
+
+
+    describe('start rule', function() {
+
+        beforeEach(function() {
+            this.rules = {
                 'ї': {
                     start: 'yi',
-                    inner: 'ji',
+                    other: 'ji',
                 },
-                'єї': 'xxx',
-                'їґ': 'qq',
+                'к': 'k',
             }
-        }
+        })
 
-        this.translit = new Transliterator(this.table.rules)
-        this.convert = (text) => this.translit.convert(text)
-    })
+        describe('at word start', function() {
+            it('converts ї char', function() {
+                const converted = this.convert('ї їк')
+                expect(converted).toBe('yi yik')
+            })
+        })
 
-    it('converts ґ char', function() {
-        const converted = this.convert('ґ')
-        expect(converted).toBe('g')
-    })
-
-    it('converts є char', function() {
-        const converted = this.convert('є')
-        expect(converted).toBe('je')
-    })
-
-    it('converts a word', function() {
-        const converted = this.convert('ґє')
-        expect(converted).toBe('gje')
-    })
-
-
-    describe('at word start', function() {
-
-        it('converts ї char', function() {
-            const converted = this.convert('ї')
-            expect(converted).toBe('yi')
+        describe('inside word', function() {
+            it('converts ї char', function() {
+                const converted = this.convert('кї к\'ї')
+                expect(converted).toBe('kji k\'ji')
+            })
         })
     })
 
 
-    describe('inside word', function() {
+    describe('sequence', function() {
 
-        it('converts ї char', function() {
-            const converted = this.convert('ґї')
-            expect(converted).toBe('gji')
+        beforeEach(function() {
+            this.rules = {
+                'єї': 'xxx',
+                'єїк': 'zzz',
+                'їк': 'yy',
+                'к': 'k',
+                'єїкєк': 'qqqq'
+            }
+        })
+
+        it('converts єї', function() {
+            const converted = this.convert('єї кєї')
+            expect(converted).toBe('xxx kxxx')
+        })
+
+        it('converts їк', function() {
+            const converted = this.convert('їк кїк')
+            expect(converted).toBe('yy kyy')
+        })
+
+        it('priority for єїк', function() {
+            const converted = this.convert('єїк єї')
+            expect(converted).toBe('zzz xxx')
+        })
+
+        it('priority for longer', function() {
+            const converted = this.convert('єїкєк кїкєїкєк')
+            expect(converted).toBe('qqqq kyyqqqq')
         })
     })
 
-    it('converts єї special', function() {
-        const converted = this.convert('єї їєї')
-        expect(converted).toBe('xxx yixxx')
-    })
 
-    it('converts їґ special', function() {
-        const converted = this.convert('їґ їїґ')
-        expect(converted).toBe('qq yiqq')
+    describe('cons rule', function() {
+
+        beforeEach(function() {
+            this.rules = Object.assign({},
+                this.cons_stub,
+                this.vowel_stub,
+                {
+                    'я': {
+                        cons: 'ia',
+                        other: 'ja',
+                    },
+                    'ь': '_',
+                }
+            )
+        })
+
+        it('converts consontant-я pair', function() {
+            this.consonants.forEach((x) => {
+                const converted = this.convert(x + 'я')
+                expect(converted).toBe(this.cons_stub[x] + 'ia')
+            })
+        })
+
+        it('converts vowel-я pair', function() {
+            this.vowels.forEach((x) => {
+                if (x !== 'я') {
+                    const converted = this.convert(x + 'я')
+                    expect(converted).toBe(this.vowel_stub[x] + 'ja')
+                }
+            })
+        })
+
+        it('converts ья pair', function() {
+            const converted = this.convert('ья мья')
+            expect(converted).toBe('_ja m_ja')
+        })
+
+        it('converts apos-я', function() {
+            const converted = this.convert('\'я м\'я')
+            expect(converted).toBe('\'ja m\'ja')
+        })
     })
 
 
     describe('casing', function() {
+
+        beforeEach(function() {
+            this.rules = {
+                'ґ': 'g',
+                'є': {
+                    other: 'je',
+                },
+                'їґ': 'qq',
+                'єї': 'xxx',
+            }
+        })
+
         // TODO: preserve all-caps
 
         it('preserves 1-1 case', function() {
@@ -120,6 +226,34 @@ describe('Transliterator', function() {
         it('silly 2-3 case', function() {
             const converted = this.convert('єЇ')
             expect(converted).toBe('xxX')
+        })
+    })
+
+
+    describe('apos', function() {
+
+        beforeEach(function() {
+            this.rules = Object.assign({},
+                this.cons_stub,
+                {
+                    '\'': 'g',
+                }
+            )
+        })
+
+        it('converts ascii 27', function() {
+            const converted = this.convert('\' к\' \'к к\'к')
+            expect(converted).toBe('g kg gk kgk')
+        })
+
+        it('converts unicode 2019', function() {
+            const converted = this.convert('\u2019 k\u2019 \u2019k k\u2019k')
+            expect(converted).toBe('g kg gk kgk')
+        })
+
+        it('converts unicode 02BC', function() {
+            const converted = this.convert('\u02BC k\u02BC \u02BCk k\u02BCk')
+            expect(converted).toBe('g kg gk kgk')
         })
     })
 })
