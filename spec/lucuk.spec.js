@@ -2,10 +2,10 @@ const BundledTranslitTables = require('../src/js/bundled_tables')
     , Transliterator = require('../src/js/translit').Transliterator
 
 
-describe('Jirecek', function() {
+describe('Lucuk', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['jirecek']
+        this.table = BundledTranslitTables['lucuk']
         this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
@@ -17,7 +17,7 @@ describe('Jirecek', function() {
 
     it('converts гґх chars', function() {
         const converted = this.convert('г ґ х')
-        expect(converted).toBe('h g ch')
+        expect(converted).toBe('h g x')
     })
 
     it('converts шщ chars', function() {
@@ -146,6 +146,6 @@ describe('Jirecek', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ščasťam bješ žuk jich hlyću v fon j gedź prič.')
+        expect(converted).toBe('Ščasťam bješ žuk jix hlyću v fon j gedź prič.')
     })
 })
