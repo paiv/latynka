@@ -1,18 +1,18 @@
-const BundledTranslitTables = require('../src/js/bundled_tables')
-    , Transliterator = require('../src/js/translit').Transliterator
+const BundledTranslitTables = require('../../src/js/bundled_tables')
+    , Transliterator = require('../../src/js/translit').Transliterator
 
 
-describe('Abecadlo', function() {
+describe('Pseudo-Jirecek', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['abecadlo']
+        this.table = BundledTranslitTables['pseudo_jirecek']
         this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
 
     it('converts common chars', function() {
         const converted = this.convert('абвекмопуф')
-        expect(converted).toBe('abwekmopuf')
+        expect(converted).toBe('abvekmopuf')
     })
 
     it('converts гґх chars', function() {
@@ -21,8 +21,8 @@ describe('Abecadlo', function() {
     })
 
     it('converts шщ chars', function() {
-        const converted = this.convert('ш щ')
-        expect(converted).toBe('sz szcz')
+        const converted = this.convert('ш Ш щ')
+        expect(converted).toBe('š Š šč')
     })
 
     it('converts иіїй chars', function() {
@@ -31,8 +31,8 @@ describe('Abecadlo', function() {
     })
 
     it('converts ь chars', function() {
-        const converted = this.convert('ь ль')
-        expect(converted).toBe(' l')
+        const converted = this.convert('ь ьк')
+        expect(converted).toBe(' k')
     })
 
     describe('hard', function() {
@@ -44,12 +44,12 @@ describe('Abecadlo', function() {
 
         it('converts жз chars', function() {
             const converted = this.convert('ж Ж з')
-            expect(converted).toBe('ż Ż z')
+            expect(converted).toBe('ž Ž z')
         })
 
         it('converts л', function() {
             const converted = this.convert('л')
-            expect(converted).toBe('ł')
+            expect(converted).toBe('l')
         })
 
         it('converts н', function() {
@@ -73,8 +73,8 @@ describe('Abecadlo', function() {
         })
 
         it('converts цч chars', function() {
-            const converted = this.convert('ц ч')
-            expect(converted).toBe('c cz')
+            const converted = this.convert('ц Ц ч Ч')
+            expect(converted).toBe('c C č Č')
         })
     })
 
@@ -91,8 +91,8 @@ describe('Abecadlo', function() {
         })
 
         it('converts ль', function() {
-            const converted = this.convert('лє лі ль лю ля ллє ллі ллю лля')
-            expect(converted).toBe('le li l lu la lle lli llu lla')
+            const converted = this.convert('ль ЛЬ')
+            expect(converted).toBe('ľ Ľ')
         })
 
         it('converts нь', function() {
@@ -146,6 +146,6 @@ describe('Abecadlo', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Szczastiam bjesz żuk jich hłyciu w fon j gedź pricz.')
+        expect(converted).toBe('Ščastiam bješ žuk jich hlyciu v fon j gedź prič.')
     })
 })

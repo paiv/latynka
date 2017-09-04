@@ -1,11 +1,11 @@
-const BundledTranslitTables = require('../src/js/bundled_tables')
-    , Transliterator = require('../src/js/translit').Transliterator
+const BundledTranslitTables = require('../../src/js/bundled_tables')
+    , Transliterator = require('../../src/js/translit').Transliterator
 
 
-describe('GOST 7.79 System B', function() {
+describe('ТКПН intl', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['gost779b']
+        this.table = BundledTranslitTables['tkpn_intl']
         this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
@@ -16,8 +16,8 @@ describe('GOST 7.79 System B', function() {
     })
 
     it('converts гґх chars', function() {
-        const converted = this.convert('г ґ Ґ х')
-        expect(converted).toBe('g g\u0300 G\u0300 x')
+        const converted = this.convert('г ґ х')
+        expect(converted).toBe('gh g kh')
     })
 
     it('converts жз chars', function() {
@@ -27,12 +27,7 @@ describe('GOST 7.79 System B', function() {
 
     it('converts цч chars', function() {
         const converted = this.convert('ц ч')
-        expect(converted).toBe('cz ch')
-    })
-
-    it('converts ц- pairs', function() {
-        const converted = this.convert('ці ци цє цю ця')
-        expect(converted).toBe('ci cy\u0300 cye cyu cya')
+        expect(converted).toBe('c ch')
     })
 
     it('converts шщ chars', function() {
@@ -42,28 +37,44 @@ describe('GOST 7.79 System B', function() {
 
     it('converts ь chars', function() {
         const converted = this.convert('ь ль')
-        expect(converted).toBe('\u0300 l\u0300')
+        expect(converted).toBe('j lj')
     })
 
     it('converts єюя chars', function() {
         const converted = this.convert('є ю я')
-        expect(converted).toBe('ye yu ya')
+        expect(converted).toBe('je ju ja')
     })
 
     it('converts ийії chars', function() {
-        const converted = this.convert('и й і ї')
-        expect(converted).toBe('y\u0300 j i yi')
+        const converted = this.convert('и і ї й')
+        expect(converted).toBe('y i ji j')
     })
 
     it('converts apos', function() {
         const converted = this.convert('\' м\'я')
-        expect(converted).toBe('\' m\'ya')
+        expect(converted).toBe('\' m\'ja')
     })
 
+    it('adds hard apos', function() {
+        const converted = this.convert('бйо дйо вйо мйо пйо рйо')
+        expect(converted).toBe('b\'jo d\'jo v\'jo m\'jo p\'jo r\'jo')
+    })
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Shhastyam b\'yesh zhuk yix gly\u0300cyu v fon j g\u0300edz\u0300 prich.')
+        expect(converted).toBe('Shhastjam b\'jesh zhuk jikh ghlycju v fon j gedzj prich.')
     })
 
+    it('converts pryklady', function() {
+        const tests = [
+            ['Григор\'єв', 'Ghryghor\'jev'],
+            ['в\'юни', 'v\'juny'],
+            ['підйом', 'pid\'jom'],
+        ]
+
+        tests.forEach((t) => {
+            const converted = this.convert(t[0])
+            expect(converted).toBe(t[1])
+        })
+    })
 })

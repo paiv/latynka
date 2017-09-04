@@ -1,28 +1,28 @@
-const BundledTranslitTables = require('../src/js/bundled_tables')
-    , Transliterator = require('../src/js/translit').Transliterator
+const BundledTranslitTables = require('../../src/js/bundled_tables')
+    , Transliterator = require('../../src/js/translit').Transliterator
 
 
-describe('Lucuk', function() {
+describe('Abecadlo', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['lucuk']
+        this.table = BundledTranslitTables['abecadlo']
         this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
 
     it('converts common chars', function() {
         const converted = this.convert('абвекмопуф')
-        expect(converted).toBe('abvekmopuf')
+        expect(converted).toBe('abwekmopuf')
     })
 
     it('converts гґх chars', function() {
         const converted = this.convert('г ґ х')
-        expect(converted).toBe('h g x')
+        expect(converted).toBe('h g ch')
     })
 
     it('converts шщ chars', function() {
-        const converted = this.convert('ш Ш щ')
-        expect(converted).toBe('š Š šč')
+        const converted = this.convert('ш щ')
+        expect(converted).toBe('sz szcz')
     })
 
     it('converts иіїй chars', function() {
@@ -31,8 +31,8 @@ describe('Lucuk', function() {
     })
 
     it('converts ь chars', function() {
-        const converted = this.convert('ь ьк')
-        expect(converted).toBe(' k')
+        const converted = this.convert('ь ль')
+        expect(converted).toBe(' l')
     })
 
     describe('hard', function() {
@@ -44,12 +44,12 @@ describe('Lucuk', function() {
 
         it('converts жз chars', function() {
             const converted = this.convert('ж Ж з')
-            expect(converted).toBe('ž Ž z')
+            expect(converted).toBe('ż Ż z')
         })
 
         it('converts л', function() {
             const converted = this.convert('л')
-            expect(converted).toBe('l')
+            expect(converted).toBe('ł')
         })
 
         it('converts н', function() {
@@ -73,51 +73,51 @@ describe('Lucuk', function() {
         })
 
         it('converts цч chars', function() {
-            const converted = this.convert('ц Ц ч Ч')
-            expect(converted).toBe('c C č Č')
+            const converted = this.convert('ц ч')
+            expect(converted).toBe('c cz')
         })
     })
 
     describe('soft', function() {
 
         it('converts дь char', function() {
-            const converted = this.convert('дь Дь дє дю дя')
-            expect(converted).toBe('ď Ď ďe ďu ďa')
+            const converted = this.convert('дь Дь')
+            expect(converted).toBe('ď Ď')
         })
 
         it('converts зь', function() {
-            const converted = this.convert('зь Зь зє зю зя')
-            expect(converted).toBe('ź Ź źe źu źa')
+            const converted = this.convert('зь Зь')
+            expect(converted).toBe('ź Ź')
         })
 
         it('converts ль', function() {
-            const converted = this.convert('ль ЛЬ лє лю ля')
-            expect(converted).toBe('ľ Ľ ľe ľu ľa')
+            const converted = this.convert('лє лі ль лю ля ллє ллі ллю лля')
+            expect(converted).toBe('le li l lu la lle lli llu lla')
         })
 
         it('converts нь', function() {
-            const converted = this.convert('нь Нь нє ню ня')
-            expect(converted).toBe('ń Ń ńe ńu ńa')
+            const converted = this.convert('нь Нь')
+            expect(converted).toBe('ń Ń')
         })
 
         it('converts рь char', function() {
-            const converted = this.convert('рь Рь рє рю ря')
-            expect(converted).toBe('ŕ Ŕ ŕe ŕu ŕa')
+            const converted = this.convert('рь Рь')
+            expect(converted).toBe('ŕ Ŕ')
         })
 
         it('converts сь char', function() {
-            const converted = this.convert('сь Сь сє сю ся')
-            expect(converted).toBe('ś Ś śe śu śa')
+            const converted = this.convert('сь Сь')
+            expect(converted).toBe('ś Ś')
         })
 
         it('converts ть char', function() {
-            const converted = this.convert('ть Ть тє тю тя')
-            expect(converted).toBe('ť Ť ťe ťu ťa')
+            const converted = this.convert('ть Ть')
+            expect(converted).toBe('ť Ť')
         })
 
         it('converts ць chars', function() {
-            const converted = this.convert('ць Ць цє цю ця')
-            expect(converted).toBe('ć Ć će ću ća')
+            const converted = this.convert('ць Ць')
+            expect(converted).toBe('ć Ć')
         })
     })
 
@@ -125,7 +125,7 @@ describe('Lucuk', function() {
 
         it('converts consonant-єюя', function() {
             const converted = this.convert('тє тю тя')
-            expect(converted).toBe('ťe ťu ťa')
+            expect(converted).toBe('tie tiu tia')
         })
 
         it('converts word start єюя', function() {
@@ -146,6 +146,6 @@ describe('Lucuk', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ščasťam bješ žuk jix hlyću v fon j gedź prič.')
+        expect(converted).toBe('Szczastiam bjesz żuk jich hłyciu w fon j gedź pricz.')
     })
 })

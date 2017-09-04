@@ -1,11 +1,11 @@
-const BundledTranslitTables = require('../src/js/bundled_tables')
-    , Transliterator = require('../src/js/translit').Transliterator
+const BundledTranslitTables = require('../../src/js/bundled_tables')
+    , Transliterator = require('../../src/js/translit').Transliterator
 
 
-describe('Pseudo-Jirecek', function() {
+describe('Lucuk', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['pseudo_jirecek']
+        this.table = BundledTranslitTables['lucuk']
         this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
@@ -17,7 +17,7 @@ describe('Pseudo-Jirecek', function() {
 
     it('converts гґх chars', function() {
         const converted = this.convert('г ґ х')
-        expect(converted).toBe('h g ch')
+        expect(converted).toBe('h g x')
     })
 
     it('converts шщ chars', function() {
@@ -81,43 +81,43 @@ describe('Pseudo-Jirecek', function() {
     describe('soft', function() {
 
         it('converts дь char', function() {
-            const converted = this.convert('дь Дь')
-            expect(converted).toBe('ď Ď')
+            const converted = this.convert('дь Дь дє дю дя')
+            expect(converted).toBe('ď Ď ďe ďu ďa')
         })
 
         it('converts зь', function() {
-            const converted = this.convert('зь Зь')
-            expect(converted).toBe('ź Ź')
+            const converted = this.convert('зь Зь зє зю зя')
+            expect(converted).toBe('ź Ź źe źu źa')
         })
 
         it('converts ль', function() {
-            const converted = this.convert('ль ЛЬ')
-            expect(converted).toBe('ľ Ľ')
+            const converted = this.convert('ль ЛЬ лє лю ля')
+            expect(converted).toBe('ľ Ľ ľe ľu ľa')
         })
 
         it('converts нь', function() {
-            const converted = this.convert('нь Нь')
-            expect(converted).toBe('ń Ń')
+            const converted = this.convert('нь Нь нє ню ня')
+            expect(converted).toBe('ń Ń ńe ńu ńa')
         })
 
         it('converts рь char', function() {
-            const converted = this.convert('рь Рь')
-            expect(converted).toBe('ŕ Ŕ')
+            const converted = this.convert('рь Рь рє рю ря')
+            expect(converted).toBe('ŕ Ŕ ŕe ŕu ŕa')
         })
 
         it('converts сь char', function() {
-            const converted = this.convert('сь Сь')
-            expect(converted).toBe('ś Ś')
+            const converted = this.convert('сь Сь сє сю ся')
+            expect(converted).toBe('ś Ś śe śu śa')
         })
 
         it('converts ть char', function() {
-            const converted = this.convert('ть Ть')
-            expect(converted).toBe('ť Ť')
+            const converted = this.convert('ть Ть тє тю тя')
+            expect(converted).toBe('ť Ť ťe ťu ťa')
         })
 
         it('converts ць chars', function() {
-            const converted = this.convert('ць Ць')
-            expect(converted).toBe('ć Ć')
+            const converted = this.convert('ць Ць цє цю ця')
+            expect(converted).toBe('ć Ć će ću ća')
         })
     })
 
@@ -125,7 +125,7 @@ describe('Pseudo-Jirecek', function() {
 
         it('converts consonant-єюя', function() {
             const converted = this.convert('тє тю тя')
-            expect(converted).toBe('tie tiu tia')
+            expect(converted).toBe('ťe ťu ťa')
         })
 
         it('converts word start єюя', function() {
@@ -146,6 +146,6 @@ describe('Pseudo-Jirecek', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ščastiam bješ žuk jich hlyciu v fon j gedź prič.')
+        expect(converted).toBe('Ščasťam bješ žuk jix hlyću v fon j gedź prič.')
     })
 })

@@ -1,5 +1,5 @@
-const BundledTranslitTables = require('../src/js/bundled_tables')
-    , Transliterator = require('../src/js/translit').Transliterator
+const BundledTranslitTables = require('../../src/js/bundled_tables')
+    , Transliterator = require('../../src/js/translit').Transliterator
 
 
 describe('Melnyk', function() {

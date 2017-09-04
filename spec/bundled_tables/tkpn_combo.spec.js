@@ -1,18 +1,18 @@
-const BundledTranslitTables = require('../src/js/bundled_tables')
-    , Transliterator = require('../src/js/translit').Transliterator
+const BundledTranslitTables = require('../../src/js/bundled_tables')
+    , Transliterator = require('../../src/js/translit').Transliterator
 
 
-describe('ТКПН diac', function() {
+describe('ТКПН combo', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['tkpn_diac']
+        this.table = BundledTranslitTables['tkpn_combo']
         this.translit = new Transliterator(this.table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
 
     it('converts common chars', function() {
-        const converted = this.convert('абвдезклмнопрстуф')
-        expect(converted).toBe('abvdezklmnoprstuf')
+        const converted = this.convert('абвдеклмнопрстуф')
+        expect(converted).toBe('abvdeklmnoprstuf')
     })
 
     it('converts гґх chars', function() {
@@ -42,7 +42,7 @@ describe('ТКПН diac', function() {
 
     it('converts єюя chars', function() {
         const converted = this.convert('є ю я')
-        expect(converted).toBe('ë ü ä')
+        expect(converted).toBe('je ju ja')
     })
 
     it('converts ийії chars', function() {
@@ -52,11 +52,29 @@ describe('ТКПН diac', function() {
 
     it('converts apos', function() {
         const converted = this.convert('\' м\'я')
-        expect(converted).toBe('\' m\'ä')
+        expect(converted).toBe('\' m\'ja')
+    })
+
+    it('adds hard apos', function() {
+        const converted = this.convert('бйо дйо вйо мйо пйо рйо')
+        expect(converted).toBe('b\'jo d\'jo v\'jo m\'jo p\'jo r\'jo')
     })
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ŝastäm b\'ëš žuk ïx ğlycü v fon j gedzj prič.')
+        expect(converted).toBe('Ŝastjam b\'ješ žuk ïx ğlycju v fon j gedzj prič.')
+    })
+
+    it('converts pryklady', function() {
+        const tests = [
+            ['Григор\'єв', 'Ğryğor\'jev'],
+            ['в\'юни', 'v\'juny'],
+            ['підйом', 'pid\'jom'],
+        ]
+
+        tests.forEach((t) => {
+            const converted = this.convert(t[0])
+            expect(converted).toBe(t[1])
+        })
     })
 })
