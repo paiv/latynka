@@ -95,7 +95,20 @@ gulp.task('scripts:background', (cb) => {
 })
 
 
-gulp.task('scripts', gulp.parallel('scripts:content', 'scripts:popup', 'scripts:background'))
+gulp.task('scripts:options', (cb) => {
+    var brwsrf = browserify({
+        entries: paths.src.jsroot + '/options.js',
+        debug: false,
+    })
+
+    brwsrf.bundle()
+        .pipe(source('./options.js'))
+        .pipe(gulp.dest(paths.dest.js))
+        .on('end', cb)
+})
+
+
+gulp.task('scripts', gulp.parallel('scripts:content', 'scripts:popup', 'scripts:background', 'scripts:options'))
 
 
 gulp.task('pages', (cb) => {

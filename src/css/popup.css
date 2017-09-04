@@ -58,6 +58,22 @@ thead {
     background-color: #ddd;
 }
 
+
 tfoot {
     background-color: #eee;
+}
+
+
+tfoot td {
+    vertical-align: middle;
+}
+
+
+tfoot button {
+    display: inline;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: auto;
 }

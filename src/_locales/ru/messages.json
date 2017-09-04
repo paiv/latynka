@@ -6,6 +6,15 @@
         "message": "Латинка"
     },
     "popup_global_settings_enabled": {
-        "message": "Включить"
+        "message": "Включено"
+    },
+    "popup_reload_page": {
+        "message": "Обновить страницу"
+    },
+    "popup_open_options": {
+        "message": "Параметры"
+    },
+    "options_global_settings_enabled": {
+        "message": "Включено"
     }
 }

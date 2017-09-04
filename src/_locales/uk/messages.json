@@ -6,6 +6,15 @@
         "message": "Латинка"
     },
     "popup_global_settings_enabled": {
-        "message": "Включити"
+        "message": "Увімкнено"
+    },
+    "popup_reload_page": {
+        "message": "Перезавантажити сторінку"
+    },
+    "popup_open_options": {
+        "message": "Параметри"
+    },
+    "options_global_settings_enabled": {
+        "message": "Увімкнено"
     }
 }

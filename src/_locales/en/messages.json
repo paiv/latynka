@@ -5,10 +5,22 @@
     },
     "extension_button_tooltip": {
         "message": "Latynka",
-        "description": "Tooltip text when hovering extension button"
+        "description": "Browser button: tooltip text when hovered"
     },
     "popup_global_settings_enabled": {
         "message": "Enabled",
-        "description": "Label for 'enabled' checkbox in global setting"
+        "description": "Popup dialog: label for 'enabled' checkbox in global setting"
+    },
+    "popup_reload_page": {
+        "message": "Reload page",
+        "description": "Popup dialog: button to reload page on active tab"
+    },
+    "popup_open_options": {
+        "message": "Options",
+        "description": "Popup dialog: button to open extension options"
+    },
+    "options_global_settings_enabled": {
+        "message": "Enabled",
+        "description": "Optons dialog: label for 'enabled' checkbox in global setting"
     }
 }

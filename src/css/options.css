@@ -1,0 +1,39 @@
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+.settings {
+    display: flex;
+}
+
+
+.pane {
+    margin: 0;
+    padding: 0.5em;
+}
+
+
+.right-pane {
+    width: 40em;
+}
+
+
+.menu {
+    white-space: nowrap;
+    border-right: 1px solid #ccc;
+}
+
+
+.menu-general {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid #ccc;
+}
+
+
+.menu label {
+    display: block;
+}

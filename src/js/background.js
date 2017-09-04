@@ -1,3 +1,4 @@
+'use strict'
 
 const Settings = require('./settings').Settings
 

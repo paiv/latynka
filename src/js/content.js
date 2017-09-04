@@ -1,3 +1,4 @@
+'use strict'
 
 const Settings = require('./settings').Settings
     , Transliterator = require('./translit').Transliterator
@@ -134,7 +135,7 @@ class Controller {
 
     _check_enabled(delayed) {
         if (this.settings.enabled) {
-            const table = this.settings.selected_translit_table
+            const table = this.settings.selected_translit_table || {rules: {}}
             this.start(delayed, table.rules)
         }
         else {

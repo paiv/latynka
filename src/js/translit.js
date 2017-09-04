@@ -1,4 +1,4 @@
-var RegexBuilder = require('./regex_builder').RegexBuilder
+const RegexBuilder = require('./regex_builder').RegexBuilder
 
 
 class Transliterator {

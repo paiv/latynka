@@ -8,9 +8,21 @@ class Settings {
         this.db = storage.local
         this.callback = callback
 
+        this.default_active_tables = [
+            'abecadlo',
+            'jirecek',
+            'kmu_2010',
+            'lucuk',
+            'melnyk',
+            'nova_latynka',
+            'iso9_1995',
+            'tkpn_combo',
+        ]
+
         this.storage_keys = {
             enabled: 'latynka:enabled',
             selected_table_id: 'latynka:selected_table_id',
+            active_table_ids: 'latynka:active_table_ids',
         }
 
         this.cache = {}
@@ -67,9 +79,14 @@ class Settings {
         return Number.isInteger(value) ? value : 0
     }
 
-    _get_string(key) {
+    _get_string(key, default_value) {
         const value = this.cache[key]
-        return ['', value].join('')
+        return ['', value].join('') || default_value
+    }
+
+    _get_array(key, default_value) {
+        const value = this.cache[key]
+        return Array.isArray(value) ? value : default_value
     }
 
     get enabled() {
@@ -81,7 +98,7 @@ class Settings {
     }
 
     get selected_table_id() {
-        return this._get_string(this.storage_keys.selected_table_id) || 'nova_latynka'
+        return this._get_string(this.storage_keys.selected_table_id, 'nova_latynka')
     }
 
     set selected_table_id(value) {
@@ -94,16 +111,39 @@ class Settings {
         return tables.find((tbl) => tbl.id === selected_id) || tables[0]
     }
 
-    get active_tables() {
+    bundled_tables() {
         const all_tables = Object.keys(BundledTranslitTables).map((key) => Object.assign({id: key}, BundledTranslitTables[key]))
-
-        all_tables.sort((a,b) => (a.title || '').localeCompare(b.title))
-
         return all_tables
+            .sort((a,b) => (a.title || '').localeCompare(b.title))
     }
 
-    set active_tables(value) {
+    user_tables() {
+        const all_tables = []
+        return all_tables
+            .sort((a,b) => (a.title || '').localeCompare(b.title))
+    }
 
+    all_tables() {
+        return this.bundled_tables().concat(this.user_tables())
+    }
+
+    get active_table_ids() {
+        return this._get_array(this.storage_keys.active_table_ids, this.default_active_tables)
+    }
+
+    set active_table_ids(value) {
+        this._store(this.storage_keys.active_table_ids, value)
+    }
+
+    get active_tables() {
+        const active_ids = new Set(this.active_table_ids)
+        const all_tables = this.bundled_tables()
+
+        const filtered = all_tables
+            .filter((x) => active_ids.has(x.id) )
+            .sort((a,b) => (a.title || '').localeCompare(b.title))
+
+        return filtered
     }
 }
 
