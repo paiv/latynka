@@ -8,6 +8,9 @@
     "popup_global_settings_enabled": {
         "message": "Увімкнено"
     },
+    "popup_tables_header": {
+        "message": "система транслітерації"
+    },
     "popup_reload_page": {
         "message": "Перезавантажити сторінку"
     },

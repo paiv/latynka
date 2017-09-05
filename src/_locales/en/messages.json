@@ -11,6 +11,10 @@
         "message": "Enabled",
         "description": "Popup dialog: label for 'enabled' checkbox in global setting"
     },
+    "popup_tables_header": {
+        "message": "translit table",
+        "description": "Popup dialog: header text for transliteration table list"
+    },
     "popup_reload_page": {
         "message": "Reload page",
         "description": "Popup dialog: button to reload page on active tab"
