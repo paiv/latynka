@@ -16,5 +16,14 @@
     },
     "options_global_settings_enabled": {
         "message": "Увімкнено"
+    },
+    "rules_label_apostrophe": {
+        "message": "апостроф"
+    },
+    "rules_label_at_word_start": {
+        "message": "на початку слова"
+    },
+    "rules_label_after_consonants": {
+        "message": "після приголосних"
     }
 }

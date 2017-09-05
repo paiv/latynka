@@ -22,5 +22,17 @@
     "options_global_settings_enabled": {
         "message": "Enabled",
         "description": "Optons dialog: label for 'enabled' checkbox in global setting"
+    },
+    "rules_label_apostrophe": {
+        "message": "apostrophe",
+        "description": "Rules editor: label for 'apostrophe' rule"
+    },
+    "rules_label_at_word_start": {
+        "message": "at the beginning of a word",
+        "description": "Rules editor: label for 'at the beginning of a word' rule"
+    },
+    "rules_label_after_consonants": {
+        "message": "after consonants",
+        "description": "Rules editor: label for 'after consonants' rule"
     }
 }

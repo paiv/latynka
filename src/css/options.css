@@ -18,12 +18,34 @@ body {
 
 .right-pane {
     width: 40em;
+    overflow-x: scroll;
 }
 
 
 .menu {
     white-space: nowrap;
     border-right: 1px solid #ccc;
+}
+
+
+.menu input[type="checkbox"] {
+    margin-right: 0.4em;
+}
+
+.menu span {
+    vertical-align: middle;
+}
+
+
+.menu .menu-row {
+    display: block;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+
+.menu .menu-row-selected {
+    background-color: #eee;
 }
 
 
@@ -34,6 +56,46 @@ body {
 }
 
 
-.menu label {
-    display: block;
+.right-pane .details-descr {
+    margin-bottom: 0.4em;
+}
+
+
+.right-pane .rules {
+    height: 40em;
+    overflow-y: scroll;
+}
+
+.rules .rule-cell {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.rule-cell .rule-main {
+    padding-top: 1em;
+    padding-bottom: 0.2em;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.rule-cell .rule-extra {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: 0.17em;
+}
+
+.rule-main .rule-thumb {
+    background-color: #f0f0f0;
+    font-size: 4em;
+    margin-right: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.rule-extra .rule-thumb {
+    background-color: #f0f0f0;
+    font-size: 2em;
+    margin-right: 0.17em;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
 }

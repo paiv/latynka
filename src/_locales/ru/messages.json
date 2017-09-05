@@ -16,5 +16,14 @@
     },
     "options_global_settings_enabled": {
         "message": "Включено"
+    },
+    "rules_label_apostrophe": {
+        "message": "апостроф"
+    },
+    "rules_label_at_word_start": {
+        "message": "в начале слова"
+    },
+    "rules_label_after_consonants": {
+        "message": "после согласных"
     }
 }

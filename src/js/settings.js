@@ -145,6 +145,10 @@ class Settings {
 
         return filtered
     }
+
+    get_table(table_id) {
+        return this.all_tables().find((x) => x.id === table_id)
+    }
 }
 
 
