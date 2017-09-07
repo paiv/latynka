@@ -11,6 +11,10 @@
         "message": "Enabled",
         "description": "Popup dialog: label for 'enabled' checkbox in global setting"
     },
+    "popup_site_enabled": {
+        "message": "Enabled for this site",
+        "description": "Popup dialog: label for 'this site enabled for processing' checkbox"
+    },
     "popup_tables_header": {
         "message": "translit table",
         "description": "Popup dialog: header text for transliteration table list"
@@ -26,6 +30,30 @@
     "options_global_settings_enabled": {
         "message": "Enabled",
         "description": "Optons dialog: label for 'enabled' checkbox in global setting"
+    },
+    "options_site_blacklist": {
+        "message": "Site blacklist",
+        "description": "Optons dialog: label for 'site blacklist' menu item"
+    },
+    "options_site_whitelist": {
+        "message": "Site whitelist",
+        "description": "Optons dialog: label for 'site whitelist' menu item"
+    },
+    "options_blacklist_details_title": {
+        "message": "Site blacklist",
+        "description": "Blacklist editor: title label"
+    },
+    "options_whitelist_details_title": {
+        "message": "Site whitelist",
+        "description": "Whitelist editor: title label"
+    },
+    "options_blacklist_details_description": {
+        "message": "Never process these sites. One site per line. Format is: `hostname[:port]`",
+        "description": "Blacklist editor: description text"
+    },
+    "options_whitelist_details_description": {
+        "message": "Always process these sites (even if Enabled option is off). One site per line. Format is: `hostname[:port]`",
+        "description": "Whitelist editor: description text"
     },
     "rules_label_apostrophe": {
         "message": "apostrophe",

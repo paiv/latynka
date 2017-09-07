@@ -8,6 +8,9 @@
     "popup_global_settings_enabled": {
         "message": "Увімкнено"
     },
+    "popup_site_enabled": {
+        "message": "Увімкнено на цьому сайті"
+    },
     "popup_tables_header": {
         "message": "система транслітерації"
     },
@@ -19,6 +22,24 @@
     },
     "options_global_settings_enabled": {
         "message": "Увімкнено"
+    },
+    "options_site_blacklist": {
+        "message": "Чорний список сайтів"
+    },
+    "options_site_whitelist": {
+        "message": "Білий список сайтів"
+    },
+    "options_blacklist_details_title": {
+        "message": "Чорний список сайтів"
+    },
+    "options_whitelist_details_title": {
+        "message": "Білий список сайтів"
+    },
+    "options_blacklist_details_description": {
+        "message": "Не чіпати такі сайти. Один рядок – один сайт. Формат: `hostname[:port]`"
+    },
+    "options_whitelist_details_description": {
+        "message": "Завжди опрацьовувати такі сайти (не зважаючи на параметр Увімкнено). Один рядок – один сайт. Формат: `hostname[:port]`"
     },
     "rules_label_apostrophe": {
         "message": "апостроф"

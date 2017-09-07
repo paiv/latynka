@@ -6,14 +6,33 @@ const Settings = require('./settings').Settings
 const browserapi = chrome
 
 
+class Dom {
+    static el(name, classes) {
+        const x = document.createElement(name)
+        if (classes) classes.forEach((c) => x.classList.add(c))
+        return x
+    }
+
+    static text(value) {
+        return document.createTextNode(value)
+    }
+}
+
+
 class View {
     constructor(doc) {
         this.onChange = () => {}
         this.onOptionsClicked = () => {}
+        this.onReloadClicked = () => {}
+        this.onSiteEnabledChange = () => {}
 
         const form = doc.querySelector('[id="settings"]')
         this.enabled = form.querySelector('input[id="ext_enabled"]')
         this.enabled.addEventListener('change', () => { this._onEnabledChange() })
+
+        this.site_enabled_pane = form.querySelector('[id="site_enabled"]')
+        this.site_enabled = this.site_enabled_pane.querySelector('input')
+        this.site_enabled.addEventListener('change', () => { this._onSiteEnabledChange() })
 
         const reloadButton = doc.querySelector('button[id="page_reload"]')
         reloadButton.addEventListener('click', () => { this._onReloadButtonClick() })
@@ -32,19 +51,19 @@ class View {
         this._changed()
     }
 
+    _onSiteEnabledChange() {
+        this.onSiteEnabledChange()
+    }
+
     _onReloadButtonClick() {
-        browserapi.tabs.query({ active: true, windowId: browserapi.windows.WINDOW_ID_CURRENT }, (views) => {
-            views.forEach((tab) => {
-                browserapi.tabs.reload(tab.id)
-            })
-        })
+        this.onReloadClicked()
     }
 
     set_table_list(value, selected) {
-        this.tables_pane.innerHTML = '';
+        const pane = Dom.el('div')
 
         value.forEach((table) => {
-            const rad = document.createElement('input')
+            const rad = Dom.el('input')
             rad.type = 'radio'
             rad.name = 't'
             rad.value = table.id
@@ -56,13 +75,16 @@ class View {
                 rad.checked = true
             }
 
-            const lab = document.createElement('label')
-            const text = document.createTextNode(table.title)
+            const lab = Dom.el('label')
+            const text = Dom.text(table.title)
             lab.appendChild(rad)
             lab.appendChild(text)
 
-            this.tables_pane.appendChild(lab)
+            pane.appendChild(lab)
         })
+
+        const old = this.tables_pane.querySelector('div')
+        this.tables_pane.replaceChild(pane, old)
     }
 
     _onSelectedTableChange(radioButton) {
@@ -80,6 +102,10 @@ class View {
             this.optionsButton = undefined
         }
     }
+
+    set site_enabled_hidden(value) {
+        this.site_enabled_pane.style.display = value ? 'none' : 'block'
+    }
 }
 
 
@@ -93,6 +119,8 @@ class Controller {
         this._localize_html(document)
 
         this.view.onChange = () => { this._storeSettings() }
+        this.view.onSiteEnabledChange = () => { this._excludeSiteOnActiveTab() }
+        this.view.onReloadClicked = () => { this._reloadActiveTab() }
         this.view.onOptionsClicked = () => { this._openOptions() }
     }
 
@@ -100,6 +128,45 @@ class Controller {
         this.settings.save({
             enabled: this.view.enabled.checked,
             selected_table_id: this.view.selected_table,
+        })
+    }
+
+    _reloadActiveTab() {
+        browserapi.tabs.query({ active: true, windowId: browserapi.windows.WINDOW_ID_CURRENT }, (views) => {
+            views.forEach((tab) => {
+                browserapi.tabs.reload(tab.id)
+            })
+        })
+    }
+
+    _excludeSiteOnActiveTab() {
+        const extension_enabled = this.settings.enabled
+        const site_checked = this.view.site_enabled.checked
+
+        browserapi.tabs.query({ active: true, windowId: browserapi.windows.WINDOW_ID_CURRENT }, (views) => {
+            views.forEach((tab) => {
+                const site_url = tab.url
+
+                if (extension_enabled) {
+                    // blacklist
+                    if (site_checked) {
+                        this.settings.blacklist_remove(site_url)
+                    }
+                    else {
+                        this.settings.blacklist_add(site_url)
+                    }
+                }
+                else {
+                    // whitelist
+                    if (site_checked) {
+                        this.settings.whitelist_add(site_url)
+                    }
+                    else {
+                        this.settings.whitelist_remove(site_url)
+                    }
+                }
+
+            })
         })
     }
 
@@ -114,7 +181,14 @@ class Controller {
         }
 
         this.view.enabled.checked = this.settings.enabled
+        this.view.site_enabled_hidden = (this.settings.enabled && !this.settings.blacklist_enabled) ||
+           (!this.settings.enabled && !this.settings.whitelist_enabled)
+
         this.view.set_table_list(active_tables, selected_id)
+
+        browserapi.tabs.query({ active: true, windowId: browserapi.windows.WINDOW_ID_CURRENT }, (views) => {
+            this.view.site_enabled.checked = views.find((tab) => this.settings.enabled_for_url(tab.url))
+        })
     }
 
     _localize_html(doc) {

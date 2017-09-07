@@ -16,29 +16,41 @@ class Dom {
     static text(value) {
         return document.createTextNode(value)
     }
-
-    static html(value) {
-        const x = this.el('span')
-        x.innerHTML = value
-        return x
-    }
 }
 
 
 class View {
     constructor(doc) {
         this.onChange = () => {}
+        this.onMenuClickedBlacklist = () => {}
+        this.onMenuClickedWhitelist = () => {}
         this.onMenuClickedTableRow = (table_id) => {}
+        this.onBlacklistChange = (text) => {}
+        this.onWhitelistChange = (text) => {}
 
-        const form = doc.querySelector('[id="settings"]')
-        this.enabled = form.querySelector('input[id="ext_enabled"]')
+        this.form = doc.querySelector('[id="settings"]')
+        this.enabled = this.form.querySelector('input[id="ext_enabled"]')
         this.enabled.addEventListener('change', () => { this._onEnabledChange() })
 
         this.tables_pane = doc.querySelector('[id="translit_tables"]')
         this.active_tables = new Set()
 
-        this._selected_table_id = undefined
-        this.table_details = doc.querySelector('[id="table_details"]')
+        this._selected_menu_item = undefined
+        this.details_pane = doc.querySelector('[id="details"]')
+
+        const blacklist_pane = this.form.querySelector('[id="menu-site-blacklist"]')
+        this.blacklist_enabled = blacklist_pane.querySelector('input')
+        this.blacklist_item = blacklist_pane.querySelector('span')
+        this.blacklist_enabled.addEventListener('click', (event) => { event.stopPropagation() }, false)
+        this.blacklist_enabled.addEventListener('change', () => { this._onBlacklistEnabledChange() })
+        blacklist_pane.addEventListener('click', () => { this._onBlacklistMenuClicked() })
+
+        const whitelist_pane = this.form.querySelector('[id="menu-site-whitelist"]')
+        this.whitelist_enabled = whitelist_pane.querySelector('input')
+        this.whitelist_item = whitelist_pane.querySelector('span')
+        this.whitelist_enabled.addEventListener('click', (event) => { event.stopPropagation() }, false)
+        this.whitelist_enabled.addEventListener('change', () => { this._onWhitelistEnabledChange() })
+        whitelist_pane.addEventListener('click', () => { this._onWhitelistMenuClicked() })
     }
 
     _changed() {
@@ -49,11 +61,26 @@ class View {
         this._changed()
     }
 
+    _onBlacklistEnabledChange() {
+        this._changed()
+    }
+
+    _onWhitelistEnabledChange() {
+        this._changed()
+    }
+
+    _onBlacklistMenuClicked() {
+        this.onMenuClickedBlacklist()
+    }
+
+    _onWhitelistMenuClicked() {
+        this.onMenuClickedWhitelist()
+    }
+
     set_table_list(value, active) {
-        this.tables_pane.innerHTML = ''
         this.active_tables.clear()
 
-        const inner_pane = Dom.el('div')
+        const pane = Dom.el('div')
 
         value.forEach((table) => {
             const chk = Dom.el('input')
@@ -80,10 +107,11 @@ class View {
 
             row.addEventListener('click', () => { this._onTableRowClicked(table_id) })
 
-            inner_pane.appendChild(row)
+            pane.appendChild(row)
         })
 
-        this.tables_pane.appendChild(inner_pane)
+        const old = this.tables_pane.querySelector('div')
+        this.tables_pane.replaceChild(pane, old)
     }
 
     _onTableChkChange(chk, table_id) {
@@ -102,34 +130,36 @@ class View {
     }
 
     get selected_menu_row() {
-        return this._selected_table_id
+        return this._selected_menu_item
     }
 
-    set selected_menu_row(table_id) {
-        if (this._selected_table_id) {
-            const el = this.tables_pane.querySelector('#menu-' + this._selected_table_id)
+    set selected_menu_row(item_id) {
+        if (this._selected_menu_item) {
+            const el = this.form.querySelector('#menu-' + this._selected_menu_item)
             if (el) {
                 el.classList.remove('menu-row-selected')
             }
         }
 
-        const el = this.tables_pane.querySelector('#menu-' + table_id)
+        const el = this.form.querySelector('#menu-' + item_id)
         if (el) {
             el.classList.add('menu-row-selected')
         }
 
-        this._selected_table_id = table_id
+        this._selected_menu_item = item_id
     }
 
     show_table_details(table) {
-        const pane = this.table_details
+        let pane = this.details_pane.querySelector('div')
 
         let title = pane.querySelector('.details-title')
         let description = pane.querySelector('.details-descr')
         let rules_pane = pane.querySelector('.rules')
 
-        if (!title) {
-            pane.innerHTML = ''
+        if (!rules_pane) {
+            const old = pane
+            pane = Dom.el('div')
+            this.details_pane.replaceChild(pane, old)
 
             title = Dom.el('div', ['details-title'])
             pane.appendChild(title)
@@ -297,6 +327,48 @@ class View {
 
         apos_cell(rules_pane, table.rules, '\'')
     }
+
+    _show_blackwhitelist_details(title, description, list_rules) {
+        const old = this.details_pane.querySelector('div')
+        const pane = Dom.el('div')
+
+        const title_pane = Dom.el('div', ['details-title'])
+        pane.appendChild(title_pane)
+        title_pane.appendChild(Dom.text(title))
+
+        const descr_pane = Dom.el('div', ['details-descr'])
+        pane.appendChild(descr_pane)
+        descr_pane.appendChild(Dom.text(description))
+
+        const rules_pane = Dom.el('div', ['site-list'])
+        pane.appendChild(rules_pane)
+
+        const rules = Dom.el('textarea')
+        rules_pane.appendChild(rules)
+        rules.value = list_rules.join('\n')
+
+        this.details_pane.replaceChild(pane, old)
+    }
+
+    show_blacklist_details(blacklist) {
+        this._show_blackwhitelist_details(
+            browserapi.i18n.getMessage('options_blacklist_details_title'),
+            browserapi.i18n.getMessage('options_blacklist_details_description'),
+            blacklist)
+
+        const textarea = this.details_pane.querySelector('textarea')
+        textarea.addEventListener('change', () => { this.onBlacklistChange(textarea.value) })
+    }
+
+    show_whitelist_details(whitelist) {
+        this._show_blackwhitelist_details(
+            browserapi.i18n.getMessage('options_whitelist_details_title'),
+            browserapi.i18n.getMessage('options_whitelist_details_description'),
+            whitelist)
+
+            const textarea = this.details_pane.querySelector('textarea')
+            textarea.addEventListener('change', () => { this.onWhitelistChange(textarea.value) })
+    }
 }
 
 
@@ -308,23 +380,56 @@ class Controller {
         this._localize_html(document)
 
         this.view.onChange = () => { this._storeSettings() }
+        this.view.onMenuClickedBlacklist = () => { this._showBlacklistDetails() }
+        this.view.onMenuClickedWhitelist = () => { this._showWhitelistDetails() }
         this.view.onMenuClickedTableRow = (table_id) => { this._showTableDetails(table_id) }
+        this.view.onBlacklistChange = (text) => { this._storeBlacklist(text) }
+        this.view.onWhitelistChange = (text) => { this._storeWhitelist(text) }
     }
 
     _storeSettings() {
         this.settings.save({
             enabled: this.view.enabled.checked,
+            blacklist_enabled: this.view.blacklist_enabled.checked,
+            whitelist_enabled: this.view.whitelist_enabled.checked,
             active_table_ids: [...this.view.active_tables],
         })
     }
 
+    _storeBlacklist(text) {
+        this.settings.set_site_blacklist_from_text(text)
+    }
+
+    _storeWhitelist(text) {
+        this.settings.set_site_whitelist_from_text(text)
+    }
+
     _reloadView() {
         this.view.enabled.checked = this.settings.enabled
+        this.view.blacklist_enabled.checked = this.settings.blacklist_enabled
+        this.view.whitelist_enabled.checked = this.settings.whitelist_enabled
         this.view.set_table_list(this.settings.all_tables(), new Set(this.settings.active_table_ids))
+
+        if (this.view.selected_menu_row === 'site-blacklist') {
+            this.view.show_blacklist_details(this.settings.site_blacklist)
+        }
+        else if (this.view.selected_menu_row === 'site-whitelist') {
+            this.view.show_whitelist_details(this.settings.site_whitelist)
+        }
     }
 
     _localize_html(doc) {
         html_i18n.localize(doc)
+    }
+
+    _showBlacklistDetails() {
+        this.view.selected_menu_row = 'site-blacklist'
+        this.view.show_blacklist_details(this.settings.site_blacklist)
+    }
+
+    _showWhitelistDetails() {
+        this.view.selected_menu_row = 'site-whitelist'
+        this.view.show_whitelist_details(this.settings.site_whitelist)
     }
 
     _showTableDetails(table_id) {

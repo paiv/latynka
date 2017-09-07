@@ -8,6 +8,9 @@
     "popup_global_settings_enabled": {
         "message": "Включено"
     },
+    "popup_site_enabled": {
+        "message": "Включено на этом сайте"
+    },
     "popup_tables_header": {
         "message": "система транслитерации"
     },
@@ -19,6 +22,24 @@
     },
     "options_global_settings_enabled": {
         "message": "Включено"
+    },
+    "options_site_blacklist": {
+        "message": "Черный список сайтов"
+    },
+    "options_site_whitelist": {
+        "message": "Белый список сайтов"
+    },
+    "options_blacklist_details_title": {
+        "message": "Черный список сайтов"
+    },
+    "options_whitelist_details_title": {
+        "message": "Белый список сайтов"
+    },
+    "options_blacklist_details_description": {
+        "message": "Не трогать сайты из этого списка. Указывайте один сайт в строке, формат: `hostname[:port]`"
+    },
+    "options_whitelist_details_description": {
+        "message": "Всегда обрабатывать сайты из этого списка (при любом состоянии Включено). Указывайте один сайт в строке, формат: `hostname[:port]`"
     },
     "rules_label_apostrophe": {
         "message": "апостроф"

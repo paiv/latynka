@@ -134,7 +134,8 @@ class Controller {
     }
 
     _check_enabled(delayed) {
-        if (this.settings.enabled) {
+        const url = document.URL
+        if (this.settings.enabled_for_url(url)) {
             const table = this.settings.selected_translit_table || {rules: {}}
             this.start(delayed, table.rules)
         }

@@ -21,12 +21,20 @@ class Settings {
 
         this.storage_keys = {
             enabled: 'latynka:enabled',
+            whitelist_enabled: 'latynka:whitelist_enabled',
+            blacklist_enabled: 'latynka:blacklist_enabled',
+            site_whitelist: 'latynka:site_whitelist',
+            site_blacklist: 'latynka:site_blacklist',
             selected_table_id: 'latynka:selected_table_id',
             active_table_ids: 'latynka:active_table_ids',
         }
 
         this.cache = {}
+        this.blacklist = new Set()
+        this.whitelist = new Set()
+
         storage.onChanged.addListener((changes, area) => { this.onStorageChange(changes, area) })
+
         this._reload_cache()
     }
 
@@ -37,6 +45,13 @@ class Settings {
             if (change) {
                 this.cache[key] = change.newValue
                 has_changes = true
+
+                if (key === this.storage_keys.site_blacklist) {
+                    this.blacklist = new Set(this.site_blacklist)
+                }
+                else if (key === this.storage_keys.site_whitelist) {
+                    this.whitelist = new Set(this.site_whitelist)
+                }
             }
         })
         if (has_changes) {
@@ -50,7 +65,12 @@ class Settings {
             Object.values(this.storage_keys).forEach((key) => {
                 cache[key] = stored[key]
             })
+
             this.cache = cache
+
+            this.blacklist = new Set(this.site_blacklist)
+            this.whitelist = new Set(this.site_whitelist)
+
             this.callback()
         })
     }
@@ -69,9 +89,9 @@ class Settings {
         this.db.set(obj)
     }
 
-    _get_bool(key) {
+    _get_bool(key, default_value) {
         const value = this.cache[key]
-        return value === false ? value : true
+        return value === false ? value : value === true ? value : default_value
     }
 
     _get_int(key) {
@@ -86,15 +106,28 @@ class Settings {
 
     _get_array(key, default_value) {
         const value = this.cache[key]
-        return Array.isArray(value) ? value : default_value
+        return Array.isArray(value) ? value : (default_value || [])
     }
 
     get enabled() {
-        return this._get_bool(this.storage_keys.enabled)
+        return this._get_bool(this.storage_keys.enabled, true)
     }
-
     set enabled(value) {
         this._store(this.storage_keys.enabled, value)
+    }
+
+    get whitelist_enabled() {
+        return this._get_bool(this.storage_keys.whitelist_enabled, false)
+    }
+    set whitelist_enabled(value) {
+        this._store(this.storage_keys.whitelist_enabled, value)
+    }
+
+    get blacklist_enabled() {
+        return this._get_bool(this.storage_keys.blacklist_enabled, false)
+    }
+    set blacklist_enabled(value) {
+        this._store(this.storage_keys.blacklist_enabled, value)
     }
 
     get selected_table_id() {
@@ -148,6 +181,122 @@ class Settings {
 
     get_table(table_id) {
         return this.all_tables().find((x) => x.id === table_id)
+    }
+
+    get site_blacklist() {
+        return this._get_array(this.storage_keys.site_blacklist)
+    }
+
+    set site_blacklist(value) {
+        console.log('set site_blacklist', value)
+        return this._store(this.storage_keys.site_blacklist, value)
+    }
+
+    get site_whitelist() {
+        return this._get_array(this.storage_keys.site_whitelist)
+    }
+
+    set site_whitelist(value) {
+        console.log('set site_whitelist', value)
+        return this._store(this.storage_keys.site_whitelist, value)
+    }
+
+    _host(url) {
+        try {
+            if (!/:\/\//.test(url)) {
+                url = 'http://' + url
+            }
+            else if (!/^https?:\/\//i.test(url)) {
+                return undefined
+            }
+            const parts = new URL(url) || {}
+            return (parts.host || '').toLowerCase()
+        }
+        catch (e) {
+        }
+    }
+
+    _parse_site_list(text) {
+        return (text || '').split('\n')
+            .map((line) => this._host(line))
+            .filter((line) => !!line)
+    }
+
+    set_site_blacklist_from_text(text) {
+        this.site_blacklist = this._parse_site_list(text)
+    }
+
+    set_site_whitelist_from_text(text) {
+        this.site_whitelist = this._parse_site_list(text)
+    }
+
+    enabled_for_url(url) {
+        const host = this._host(url)
+
+        if (!host) {
+            return false
+        }
+
+        if (this.blacklist_enabled) {
+            if (this.blacklist.has(host)) {
+                return false
+            }
+            if (this.site_blacklist.find((rule) => rule.startsWith('.') && host.endsWith(rule))) {
+                return false
+            }
+        }
+
+        if (this.whitelist_enabled) {
+            if (this.whitelist.has(host)) {
+                return true
+            }
+            if (this.site_whitelist.find((rule) => rule.startsWith('.') && host.endsWith(rule))) {
+                return true
+            }
+        }
+
+        return this.enabled
+    }
+
+    whitelist_add(url) {
+        const host = this._host(url)
+        if (host) {
+            this.blacklist.delete(host)
+            this.whitelist.add(host)
+            this._store_whiteblacklist()
+        }
+    }
+
+    whitelist_remove(url) {
+        const host = this._host(url)
+        if (host) {
+            this.whitelist.delete(host)
+            this._store_whiteblacklist()
+        }
+    }
+
+    blacklist_add(url) {
+        const host = this._host(url)
+        if (host) {
+            this.whitelist.delete(host)
+            this.blacklist.add(host)
+            this._store_whiteblacklist()
+        }
+    }
+
+    blacklist_remove(url) {
+        const host = this._host(url)
+        if (host) {
+            this.blacklist.delete(host)
+            this._store_whiteblacklist()
+        }
+    }
+
+    _store_whiteblacklist() {
+        this.save({
+            site_whitelist: [...this.whitelist],
+            site_blacklist: [...this.blacklist],
+        })
     }
 }
 

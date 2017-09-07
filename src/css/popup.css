@@ -28,9 +28,14 @@ td {
 }
 
 
-td > label {
+td label {
     display: block;
     width: 100%;
+}
+
+
+label.indent-1 {
+    margin-left: 1em;
 }
 
 
