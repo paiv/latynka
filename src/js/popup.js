@@ -2,21 +2,8 @@
 
 const Settings = require('./settings').Settings
     , html_i18n = require('./html_i18n')
-
-const browserapi = chrome
-
-
-class Dom {
-    static el(name, classes) {
-        const x = document.createElement(name)
-        if (classes) classes.forEach((c) => x.classList.add(c))
-        return x
-    }
-
-    static text(value) {
-        return document.createTextNode(value)
-    }
-}
+    , Dom = require('./dom_builder').DomBuilder
+    , browserapi = require('./browserapi')
 
 
 class View {

@@ -2,8 +2,7 @@
 
 const Settings = require('./settings').Settings
     , Transliterator = require('./translit').Transliterator
-
-const browserapi = chrome
+    , browserapi = require('./browserapi')
 
 
 class AwesomeTimer {

@@ -1,8 +1,7 @@
 'use strict'
 
 const Settings = require('./settings').Settings
-
-const browserapi = chrome
+    , browserapi = require('./browserapi')
 
 
 class Controller {

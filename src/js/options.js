@@ -2,21 +2,9 @@
 
 const Settings = require('./settings').Settings
     , html_i18n = require('./html_i18n')
-
-const browserapi = chrome
-
-
-class Dom {
-    static el(name, classes) {
-        const x = document.createElement(name)
-        if (classes) classes.forEach((c) => x.classList.add(c))
-        return x
-    }
-
-    static text(value) {
-        return document.createTextNode(value)
-    }
-}
+    , Dom = require('./dom_builder').DomBuilder
+    , browserapi = require('./browserapi')
+    , markdown = require('./markdown')
 
 
 class View {
@@ -172,7 +160,9 @@ class View {
         }
 
         title.textContent = table.title
-        description.innerHTML = table.description
+
+        const desc = markdown.render(table.description)
+        Dom.resetChildren(description, desc)
 
         const loabc = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя'
         const nbsp = '\u00A0'
@@ -198,7 +188,7 @@ class View {
                 pane.appendChild(cell)
             }
             else {
-                cell.innerHTML = ''
+                Dom.resetChildren(cell)
             }
 
 
@@ -294,7 +284,7 @@ class View {
                 pane.appendChild(cell)
             }
             else {
-                cell.innerHTML = ''
+                Dom.resetChildren(cell)
             }
 
             const extra_row = Dom.el('div', ['rule-extra'])

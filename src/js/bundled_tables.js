@@ -4,7 +4,7 @@ const BundledTranslitTables = {
 
     'nova_latynka': {
         title: 'Nova Latynka',
-        description: '<a href="https://nova-latynka.livejournal.com/775.html">nova-latynka.livejournal.com</a>',
+        description: '[nova-latynka.livejournal.com](https://nova-latynka.livejournal.com/775.html)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -44,7 +44,7 @@ const BundledTranslitTables = {
 
     'nova_latynka_alt': {
         title: 'Nova Latynka alt',
-        description: '<a href="https://nova-latynka.livejournal.com/775.html">nova-latynka.livejournal.com</a>',
+        description: '[nova-latynka.livejournal.com](https://nova-latynka.livejournal.com/775.html)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -84,7 +84,7 @@ const BundledTranslitTables = {
 
     'kmu_2010': {
         title: 'Official КМУ 2010',
-        description: '<a href="http://zakon2.rada.gov.ua/laws/show/55-2010-%D0%BF">rada.gov.ua</a>',
+        description: '[rada.gov.ua](http://zakon2.rada.gov.ua/laws/show/55-2010-%D0%BF)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -141,7 +141,7 @@ const BundledTranslitTables = {
 
     'abecadlo': {
         title: 'Abecadło Лозинського 1834',
-        description: '<a href="https://uk.wikipedia.org/wiki/%D0%90%D0%B1%D0%B5%D1%86%D0%B0%D0%B4%D0%BB%D0%BE">wikipedia.org</a>',
+        description: '[wikipedia.org](https://uk.wikipedia.org/wiki/%D0%90%D0%B1%D0%B5%D1%86%D0%B0%D0%B4%D0%BB%D0%BE)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -208,7 +208,7 @@ const BundledTranslitTables = {
 
     'pseudo_jirecek': {
         title: 'Псевдо-Їречківка',
-        description: '<a href="https://uk.wikipedia.org/wiki/%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D1%81%D1%8C%D0%BA%D0%B0_%D0%BB%D0%B0%D1%82%D0%B8%D0%BD%D0%BA%D0%B0">wikipedia.org</a>',
+        description: '[wikipedia.org](https://uk.wikipedia.org/wiki/%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D1%81%D1%8C%D0%BA%D0%B0_%D0%BB%D0%B0%D1%82%D0%B8%D0%BD%D0%BA%D0%B0)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -266,7 +266,7 @@ const BundledTranslitTables = {
 
     'jirecek': {
         title: 'Їречківка 1859',
-        description: '<a href="http://latynka.tak.today/works/proekt-jirecheka/">latynka.tak.today</a>',
+        description: '[latynka.tak.today](http://latynka.tak.today/works/proekt-jirecheka/)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -339,7 +339,7 @@ const BundledTranslitTables = {
 
     'lucuk': {
         title: 'Лучуківка 2000',
-        description: '<a href="http://www.vntl.com/im/pdf/pravopys.pdf">pravopys.pdf</a>',
+        description: '[pravopys.pdf](http://www.vntl.com/im/pdf/pravopys.pdf)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -412,7 +412,7 @@ const BundledTranslitTables = {
 
     'melnyk': {
         title: 'Meĺnyk 2008',
-        description: '<a href="http://web.archive.org/web/20090901072239/http://www.latynka.com/pravopys/">archive</a>',
+        description: '[archive](http://web.archive.org/web/20090901072239/http://www.latynka.com/pravopys/)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -483,7 +483,7 @@ const BundledTranslitTables = {
 
     'iso9_1995': {
         title: 'ISO 9:1995, GOST 7.79 System A',
-        description: '<a href="https://en.wikipedia.org/wiki/ISO_9">wikipedia.org</a>',
+        description: '[wikipedia.org](https://en.wikipedia.org/wiki/ISO_9)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -524,7 +524,7 @@ const BundledTranslitTables = {
 
     'gost779b': {
         title: 'GOST 7.79 System B',
-        description: '<a href="https://en.wikipedia.org/wiki/ISO_9">wikipedia.org</a>',
+        description: '[wikipedia.org](https://en.wikipedia.org/wiki/ISO_9)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -570,7 +570,7 @@ const BundledTranslitTables = {
 
     'tkpn_intl': {
         title: 'ТКПН Вакуленко 1994 intl',
-        description: '<a href="http://linguistics.kspu.edu/webfm_send/945">linguistics.kspu.edu</a>',
+        description: '[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -617,7 +617,7 @@ const BundledTranslitTables = {
 
     'tkpn_diac': {
         title: 'ТКПН Вакуленко 1994 diac',
-        description: '<a href="http://linguistics.kspu.edu/webfm_send/945">linguistics.kspu.edu</a>',
+        description: '[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)',
         rules: {
             'а': 'a',
             'б': 'b',
@@ -664,7 +664,7 @@ const BundledTranslitTables = {
 
     'tkpn_combo': {
         title: 'ТКПН Вакуленко 1994 combo',
-        description: '<a href="http://linguistics.kspu.edu/webfm_send/945">linguistics.kspu.edu</a>',
+        description: '[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)',
         rules: {
             'а': 'a',
             'б': 'b',

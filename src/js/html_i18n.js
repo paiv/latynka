@@ -1,5 +1,5 @@
 
-const browserapi = chrome
+const browserapi = require('./browserapi')
 
 
 class HtmlLocalizer {
