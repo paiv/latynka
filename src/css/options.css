@@ -25,6 +25,9 @@ body {
 .menu {
     white-space: nowrap;
     border-right: 1px solid #ccc;
+    max-width: 20em;
+    max-height: 40em;
+    overflow-x: scroll;
 }
 
 
@@ -62,7 +65,7 @@ body {
 
 
 .right-pane .rules {
-    height: 40em;
+    max-height: 40em;
     overflow-y: scroll;
 }
 
@@ -110,4 +113,22 @@ body {
 .site-list textarea {
     width: 100%;
     height: 100%;
+}
+
+
+#details-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+    padding: 1em;
+}
+
+#details-actions button {
+    display: block;
+    margin-bottom: 1em;
+}
+
+#details-actions .confirm-delete {
+    color: red;
 }

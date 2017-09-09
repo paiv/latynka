@@ -5,6 +5,12 @@ const Settings = require('./settings').Settings
     , Dom = require('./dom_builder').DomBuilder
     , browserapi = require('./browserapi')
     , markdown = require('./markdown')
+    , random = require('./random')
+
+
+function _safe_element_id(value) {
+    return (value || '').replace(/[^\w\-]/g, '-')
+}
 
 
 class View {
@@ -25,6 +31,7 @@ class View {
 
         this._selected_menu_item = undefined
         this.details_pane = doc.querySelector('[id="details"]')
+        this.details_actions_pane = doc.querySelector('[id="details-actions"]')
 
         const blacklist_pane = this.form.querySelector('[id="menu-site-blacklist"]')
         this.blacklist_enabled = blacklist_pane.querySelector('input')
@@ -73,8 +80,9 @@ class View {
         value.forEach((table) => {
             const chk = Dom.el('input')
             const table_id = table.id
+            const element_id = _safe_element_id(table_id)
             chk.type = 'checkbox'
-            chk.name = 'chk-' + table_id
+            chk.name = 'chk-' + element_id
 
             if (active.has(table_id)) {
                 chk.checked = true
@@ -85,10 +93,10 @@ class View {
             chk.addEventListener('change', () => { this._onTableChkChange(chk, table_id) })
 
             const text = Dom.el('span')
-            text.textContent = table.title
+            text.textContent = table.title || table.id
 
             const row = Dom.el('div', ['menu-row'])
-            row.id = 'menu-' + table_id
+            row.id = 'menu-' + element_id
 
             row.appendChild(chk)
             row.appendChild(text)
@@ -137,7 +145,18 @@ class View {
         this._selected_menu_item = item_id
     }
 
-    show_table_details(table) {
+    clear_details() {
+        let pane = Dom.el('div')
+        Dom.resetChildren(this.details_pane, pane)
+        this._show_detail_actions([])
+    }
+
+    show_table_details(table, actions) {
+        this._show_table_rules(table)
+        this._show_detail_actions(actions)
+    }
+
+    _show_table_rules(table) {
         let pane = this.details_pane.querySelector('div')
 
         let title = pane.querySelector('.details-title')
@@ -318,7 +337,45 @@ class View {
         apos_cell(rules_pane, table.rules, '\'')
     }
 
+    _show_detail_actions(actions) {
+        let pane = Dom.el('div')
+
+        actions.forEach((action) => {
+            const button = Dom.el('button')
+            button.appendChild(Dom.text(action.title))
+            button.addEventListener('click', action.handler)
+            pane.appendChild(button)
+        })
+
+        let old = this.details_actions_pane.querySelector('div')
+        this.details_actions_pane.replaceChild(pane, old)
+    }
+
+    get confirm_delete_visible() {
+        return !!this.details_actions_pane.querySelector('.confirm-delete')
+    }
+
+    set confirm_delete_visible(value) {
+        const pane = this.details_actions_pane.querySelector('div')
+
+        let el = pane.querySelector('.confirm-delete')
+        if (!value) {
+            if (el) {
+                pane.removeChild(el)
+            }
+        }
+        else {
+            if (!el) {
+                el = Dom.el('div', ['confirm-delete'])
+                el.textContent = 'Confirm Delete'
+                pane.appendChild(el)
+            }
+        }
+    }
+
     _show_blackwhitelist_details(title, description, list_rules) {
+        this._show_detail_actions([])
+
         const old = this.details_pane.querySelector('div')
         const pane = Dom.el('div')
 
@@ -406,6 +463,12 @@ class Controller {
         else if (this.view.selected_menu_row === 'site-whitelist') {
             this.view.show_whitelist_details(this.settings.site_whitelist)
         }
+        else if (this.selected_table_id) {
+            this._showTableDetails(this.selected_table_id)
+        }
+        else {
+            this.view.clear_details()
+        }
     }
 
     _localize_html(doc) {
@@ -414,18 +477,101 @@ class Controller {
 
     _showBlacklistDetails() {
         this.view.selected_menu_row = 'site-blacklist'
+        this.selected_table_id = null
         this.view.show_blacklist_details(this.settings.site_blacklist)
     }
 
     _showWhitelistDetails() {
         this.view.selected_menu_row = 'site-whitelist'
+        this.selected_table_id = null
         this.view.show_whitelist_details(this.settings.site_whitelist)
     }
 
     _showTableDetails(table_id) {
         const table = this.settings.get_table(table_id) || {}
-        this.view.selected_menu_row = table.id
-        this.view.show_table_details(table)
+        table_id = table.id
+        this.selected_table_id = table_id
+
+        const element_id = _safe_element_id(table_id)
+        const is_bundled = table_id && !(/\./.test(table_id))
+
+        this.view.selected_menu_row = element_id
+
+        const actions = []
+
+        if (is_bundled) {
+            actions.push({
+                title: 'edit',
+                handler: () => { this._createEditableCopy(table_id) }
+            })
+        }
+        else {
+            actions.push({
+                title: 'copy',
+                handler: () => { this._createEditableCopy(table_id) }
+            })
+
+            actions.push({
+                title: 'delete',
+                handler: () => { this._deleteTable(table_id) }
+            })
+        }
+
+        this.view.show_table_details(table, actions)
+    }
+
+    _createEditableCopy(table_id) {
+        const table = this.settings.get_table(table_id) || {}
+        const seq_no = this.settings.user_tables_seq_no
+
+        const newtable = {
+            id: this._generate_table_id(table.id, seq_no),
+            seq_no: seq_no,
+            title: this._generate_table_title(table.title),
+            rules: JSON.parse(JSON.stringify(table.rules)),
+        }
+
+        this.view.selected_menu_row = _safe_element_id(newtable.id)
+        this.selected_table_id = newtable.id
+
+        this.settings.import_table(newtable)
+    }
+
+    _generate_table_id(from_id, seq_no) {
+        seq_no = `000${seq_no}`.slice(-3)
+
+        from_id = (from_id || '').replace(/\..*$/, '')
+        const suffix = random.string(8)
+
+        return `${from_id}.${seq_no}.${suffix}`
+    }
+
+    _generate_table_title(from_title) {
+        const prefix = browserapi.i18n.getMessage('options_table_title_copy_prefix')
+
+        if (from_title && from_title.startsWith(prefix)) {
+            from_title = from_title.substring(prefix.length)
+            const match = /^\s*\((\d+)\)\s*(.*)/.exec(from_title)
+            if (match) {
+                const count = parseInt(match[1], 10)
+                return `${prefix}(${count + 1}) ${match[2]}`
+            }
+            else {
+                return `${prefix}(1) ${from_title}`
+            }
+        }
+
+        return `${prefix}${from_title}`
+    }
+
+    _deleteTable(table_id) {
+        if (this.view.confirm_delete_visible) {
+            this.selected_table_id = null
+            this.settings.delete_user_table(table_id)
+        }
+        else {
+            this.view.confirm_delete_visible = true
+        }
     }
 }
 

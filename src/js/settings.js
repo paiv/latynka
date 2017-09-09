@@ -27,6 +27,7 @@ class Settings {
             site_blacklist: 'latynka:site_blacklist',
             selected_table_id: 'latynka:selected_table_id',
             active_table_ids: 'latynka:active_table_ids',
+            user_tables: 'latynka:user_tables',
         }
 
         this.cache = {}
@@ -106,7 +107,7 @@ class Settings {
 
     _get_array(key, default_value) {
         const value = this.cache[key]
-        return Array.isArray(value) ? value : (default_value || [])
+        return Array.isArray(value) ? value.slice() : (default_value || [])
     }
 
     get enabled() {
@@ -146,14 +147,18 @@ class Settings {
 
     bundled_tables() {
         const all_tables = Object.keys(BundledTranslitTables).map((key) => Object.assign({id: key}, BundledTranslitTables[key]))
-        return all_tables
+        return all_tables.slice()
             .sort((a,b) => (a.title || '').localeCompare(b.title))
     }
 
     user_tables() {
-        const all_tables = []
+        const all_tables = this._get_array(this.storage_keys.user_tables)
         return all_tables
-            .sort((a,b) => (a.title || '').localeCompare(b.title))
+            .sort((a,b) => (a.seq_no || 0) - (b.seq_no || 0))
+    }
+
+    get user_tables_seq_no() {
+        return 1 + ((this.user_tables().pop() || {}).seq_no || 0)
     }
 
     all_tables() {
@@ -170,13 +175,10 @@ class Settings {
 
     get active_tables() {
         const active_ids = new Set(this.active_table_ids)
-        const all_tables = this.bundled_tables()
+        const all_tables = this.all_tables()
 
-        const filtered = all_tables
+        return all_tables
             .filter((x) => active_ids.has(x.id) )
-            .sort((a,b) => (a.title || '').localeCompare(b.title))
-
-        return filtered
     }
 
     get_table(table_id) {
@@ -296,6 +298,32 @@ class Settings {
         this.save({
             site_whitelist: [...this.whitelist],
             site_blacklist: [...this.blacklist],
+        })
+    }
+
+    import_table(table) {
+        const user_tables = this.user_tables()
+        user_tables.push(table)
+
+        const active = this.active_table_ids
+        active.push(table.id)
+
+        this.save({
+            user_tables: user_tables,
+            active_table_ids: active,
+        })
+    }
+
+    delete_user_table(table_id) {
+        const user_tables = this.user_tables()
+            .filter((table) => table.id !== table_id)
+
+        const active = new Set(this.active_table_ids)
+        active.delete(table_id)
+
+        this.save({
+            user_tables: user_tables,
+            active_table_ids: [...active],
         })
     }
 }

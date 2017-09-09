@@ -41,6 +41,9 @@
     "options_whitelist_details_description": {
         "message": "Завжди опрацьовувати такі сайти (не зважаючи на параметр Увімкнено). Один рядок – один сайт. Формат: `hostname[:port]`"
     },
+    "options_table_title_copy_prefix": {
+        "message": "Копія "
+    },
     "rules_label_apostrophe": {
         "message": "апостроф"
     },

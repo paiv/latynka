@@ -55,6 +55,10 @@
         "message": "Always process these sites (even if Enabled option is off). One site per line. Format is: `hostname[:port]`",
         "description": "Whitelist editor: description text"
     },
+    "options_table_title_copy_prefix": {
+        "message": "Copy of ",
+        "description": "Options dialog: title prefix to prepend on copy"
+    },
     "rules_label_apostrophe": {
         "message": "apostrophe",
         "description": "Rules editor: label for 'apostrophe' rule"

@@ -10,6 +10,10 @@ class Markdown {
     render(md) {
         const pane = Dom.el('div')
 
+        if (!md) {
+            return pane
+        }
+
         let offset = 0
         let match;
 

@@ -41,6 +41,9 @@
     "options_whitelist_details_description": {
         "message": "Всегда обрабатывать сайты из этого списка (при любом состоянии Включено). Указывайте один сайт в строке, формат: `hostname[:port]`"
     },
+    "options_table_title_copy_prefix": {
+        "message": "Копия "
+    },
     "rules_label_apostrophe": {
         "message": "апостроф"
     },
