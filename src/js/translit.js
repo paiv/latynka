@@ -95,6 +95,7 @@ class Transliterator {
             x.toLocaleUpperCase()
         ]).reduce((acc, x) => acc.concat(x), [])
 
+        const consonants_keyset = consonants + consonants.toLocaleUpperCase()
         const after_cons_keyset = Object.keys(after_cons_rules).map((x) => [
             x.toLocaleLowerCase(),
             x.toLocaleUpperCase()
@@ -122,7 +123,7 @@ class Transliterator {
                     ...(default_keyset2.length > 0 ? default_keyset2 : ['xx'])
                 ),
                 rxb.group(  // 4
-                    rxb.chars(consonants),
+                    rxb.chars(consonants_keyset),
                     rxb.chars(...after_cons_keyset)
                 ),
                 rxb.orgroup(  // 5

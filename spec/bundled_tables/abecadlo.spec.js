@@ -148,4 +148,21 @@ describe('Abecadlo', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
         expect(converted).toBe('Szczastiam bjesz żuk jich hłyciu w fon j gedź pricz.')
     })
+
+    it('converts testset', function() {
+        const tests = [
+            ['дятлик', 'diatłyk'],
+            ['в\'яз', 'wjaz'],
+            ['Рєпін', 'Riepin'],
+            ['В\'єтнам', 'Wjetnam'],
+            ['бюргер', 'biurher'],
+            ['в\'юнок', 'wjunok'],
+        ]
+
+        tests.forEach((t) => {
+            const converted = this.convert(t[0])
+            expect(converted).toBe(t[1])
+        })
+    })
+
 })
