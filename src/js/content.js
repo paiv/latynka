@@ -60,11 +60,11 @@ class DomObserver {
 
         changes.forEach((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-                if (this.includeMatching.test(node.data)) {
+                if (this.includeMatching.test(node.data) && !node.parentElement.isContentEditable) {
                     filtered.add(node)
                 }
             }
-            else if (node.nodeType === Node.ELEMENT_NODE && !this.excludeTags.has(node.localName)) {
+            else if (node.nodeType === Node.ELEMENT_NODE && !this.excludeTags.has(node.localName) && !node.isContentEditable) {
 
                 const it = document.createNodeIterator(node,
                     NodeFilter.SHOW_ELEMENT + NodeFilter.SHOW_TEXT,
