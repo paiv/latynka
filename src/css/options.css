@@ -116,6 +116,31 @@ body {
 }
 
 
+.right-pane .title-editor {
+    margin-bottom: 1em;
+}
+
+
+.title-editor input {
+    display: block;
+    width: 80%;
+}
+
+
+.right-pane .rules-editor {
+    height: 40em;
+    overflow-y: scroll;
+}
+
+
+.rules-editor textarea {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 150%;
+    width: 100%;
+    height: 100%;
+}
+
+
 #details-actions {
     position: absolute;
     top: 0;
@@ -127,8 +152,10 @@ body {
 #details-actions button {
     display: block;
     margin-bottom: 1em;
+    margin-left: auto;
 }
 
 #details-actions .confirm-delete {
     color: red;
+    margin-bottom: 1em;
 }

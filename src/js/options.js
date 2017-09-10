@@ -6,6 +6,7 @@ const Settings = require('./settings').Settings
     , browserapi = require('./browserapi')
     , markdown = require('./markdown')
     , random = require('./random')
+    , jaaml = require('./jaaml')
 
 
 function _safe_element_id(value) {
@@ -156,6 +157,11 @@ class View {
         this._show_detail_actions(actions)
     }
 
+    show_table_editor(table, text, actions) {
+        this._show_rules_editor(table, text)
+        this._show_detail_actions(actions)
+    }
+
     _show_table_rules(table) {
         let pane = this.details_pane.querySelector('div')
 
@@ -186,10 +192,17 @@ class View {
         const loabc = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя'
         const nbsp = '\u00A0'
 
-        const rule_tag = (ch) => 'rule-' + ch.codePointAt(0).toString(16)
+        function codePoint(s) {
+            if (s.codePointAt) {
+                return s.codePointAt(0)
+            }
+            return s.charCodeAt(0)
+        }
+
+        const rule_tag = (ch) => 'rule-' + codePoint(ch).toString(16)
 
         const print_char = (ch) => {
-            const code = ch.codePointAt(0)
+            const code = codePoint(ch)
             if ((code >= 0x02B0 && code < 0x0370)) {
                 return [nbsp, ch].join('')
             }
@@ -218,7 +231,12 @@ class View {
                 source.appendChild(Dom.text([hikey, nbsp, lokey].join('')))
                 main_row.appendChild(source)
 
-                const rule = rules[ch]
+                let rule = rules[ch]
+
+                if (rule === undefined || rule === null) {
+                    rule = ''
+                }
+
                 let value = rule
 
                 if (typeof rule === 'object') {
@@ -275,7 +293,12 @@ class View {
                 source.appendChild(Dom.text(key))
                 extra_row.appendChild(source)
 
-                const rule = rules[key]
+                let rule = rules[key]
+
+                if (rule === undefined || rule === null) {
+                    rule = ''
+                }
+
                 let value = rule
 
                 if (typeof rule === 'object') {
@@ -313,7 +336,8 @@ class View {
             extra_row.appendChild(source)
 
             let rule = rules[ch]
-            if (typeof rule === 'undefined') {
+
+            if (rule === undefined || rule === null) {
                 rule = ''
             }
 
@@ -337,11 +361,43 @@ class View {
         apos_cell(rules_pane, table.rules, '\'')
     }
 
+    _show_rules_editor(table, text) {
+        let pane = Dom.el('div')
+
+        const title_pane = Dom.el('div', ['title-editor'])
+        pane.appendChild(title_pane)
+
+        let title = Dom.el('input')
+        title.value = table.title
+        title_pane.appendChild(title)
+
+        const rules_pane = Dom.el('div', ['rules-editor'])
+        pane.appendChild(rules_pane)
+
+        let textarea = Dom.el('textarea')
+        rules_pane.appendChild(textarea)
+
+        textarea.textContent = text
+
+        Dom.resetChildren(this.details_pane, pane)
+
+        title.focus()
+    }
+
+    get rules_editor() {
+        return this.details_pane.querySelector('.rules-editor > textarea')
+    }
+
+    get title_editor() {
+        return this.details_pane.querySelector('.title-editor > input')
+    }
+
     _show_detail_actions(actions) {
         let pane = Dom.el('div')
 
         actions.forEach((action) => {
             const button = Dom.el('button')
+            button.id = action.id
             button.appendChild(Dom.text(action.title))
             button.addEventListener('click', action.handler)
             pane.appendChild(button)
@@ -367,8 +423,15 @@ class View {
         else {
             if (!el) {
                 el = Dom.el('div', ['confirm-delete'])
-                el.textContent = 'Confirm Delete'
-                pane.appendChild(el)
+                el.textContent = browserapi.i18n.getMessage('options_table_confirm_delete')
+
+                const actionDelete = pane.querySelector('[id="action-delete"]')
+                if (actionDelete) {
+                    pane.insertBefore(el, actionDelete)
+                }
+                else {
+                    pane.appendChild(el)
+                }
             }
         }
     }
@@ -464,7 +527,12 @@ class Controller {
             this.view.show_whitelist_details(this.settings.site_whitelist)
         }
         else if (this.selected_table_id) {
-            this._showTableDetails(this.selected_table_id)
+            if (this._in_edit_mode) {
+                this._editMode(this.selected_table_id)
+            }
+            else {
+                this._showTableDetails(this.selected_table_id)
+            }
         }
         else {
             this.view.clear_details()
@@ -490,6 +558,12 @@ class Controller {
     _showTableDetails(table_id) {
         const table = this.settings.get_table(table_id) || {}
         table_id = table.id
+
+        if (!table.rules) {
+            table.rules = {}
+        }
+
+        this._in_edit_mode = false
         this.selected_table_id = table_id
 
         const element_id = _safe_element_id(table_id)
@@ -501,18 +575,27 @@ class Controller {
 
         if (is_bundled) {
             actions.push({
-                title: 'edit',
-                handler: () => { this._createEditableCopy(table_id) }
+                id: 'action-edit',
+                title: browserapi.i18n.getMessage('options_table_action_edit'),
+                handler: () => { this._createEditableCopy(table_id, true) }
             })
         }
         else {
             actions.push({
-                title: 'copy',
+                id: 'action-edit',
+                title: browserapi.i18n.getMessage('options_table_action_edit'),
+                handler: () => { this._editMode(table_id) }
+            })
+
+            actions.push({
+                id: 'action-copy',
+                title: browserapi.i18n.getMessage('options_table_action_copy'),
                 handler: () => { this._createEditableCopy(table_id) }
             })
 
             actions.push({
-                title: 'delete',
+                id: 'action-delete',
+                title: browserapi.i18n.getMessage('options_table_action_delete'),
                 handler: () => { this._deleteTable(table_id) }
             })
         }
@@ -520,7 +603,7 @@ class Controller {
         this.view.show_table_details(table, actions)
     }
 
-    _createEditableCopy(table_id) {
+    _createEditableCopy(table_id, edit_mode) {
         const table = this.settings.get_table(table_id) || {}
         const seq_no = this.settings.user_tables_seq_no
 
@@ -531,8 +614,13 @@ class Controller {
             rules: JSON.parse(JSON.stringify(table.rules)),
         }
 
+        if (!newtable.rules) {
+            newtable.rules = {}
+        }
+
         this.view.selected_menu_row = _safe_element_id(newtable.id)
         this.selected_table_id = newtable.id
+        this._in_edit_mode = edit_mode
 
         this.settings.import_table(newtable)
     }
@@ -572,6 +660,70 @@ class Controller {
         else {
             this.view.confirm_delete_visible = true
         }
+    }
+
+    _editMode(table_id) {
+        const table = this.settings.get_table(table_id) || {}
+        table_id = table.id
+        this._in_edit_mode = true
+        this.view.selected_menu_row = _safe_element_id(table_id)
+        this.selected_table_id = table_id
+
+        const rules = {}
+        Object.keys(table.rules)
+            .sort((a,b) => a.localeCompare(b))
+            .forEach((key) => rules[key] = table.rules[key])
+
+        let rules_text
+
+        try {
+            rules_text = jaaml.stringify(rules)
+        }
+        catch (e) {
+            rules_text = e.toString()
+        }
+
+        const actions = []
+
+        actions.push({
+            id: 'action-save-edit',
+            title: browserapi.i18n.getMessage('options_rules_editor_save'),
+            handler: () => { this._saveEdit(table) }
+        })
+
+        actions.push({
+            id: 'action-cancel-edit',
+            title: browserapi.i18n.getMessage('options_rules_editor_cancel'),
+            handler: () => { this._cancelEdit(table_id) }
+        })
+
+        this.view.show_table_editor(table, rules_text, actions)
+    }
+
+    _saveEdit(table) {
+        const title = this.view.title_editor.value
+        const text = this.view.rules_editor.value
+        let rules
+
+        try {
+            rules = jaaml.parse(text)
+        }
+        catch (e) {
+            console.log(e.toString())
+            return
+        }
+
+        const newtable = Object.assign({}, table, {rules: null})
+        newtable.title = title
+        newtable.rules = rules
+
+        this.settings.update_user_table(newtable)
+
+        this._showTableDetails(newtable.id)
+    }
+
+    _cancelEdit(table_id) {
+        this._showTableDetails(table_id)
     }
 }
 

@@ -59,6 +59,30 @@
         "message": "Copy of ",
         "description": "Options dialog: title prefix to prepend on copy"
     },
+    "options_table_action_edit": {
+        "message": "edit",
+        "description": "Options dialogs, table details: title for edit action"
+    },
+    "options_table_action_copy": {
+        "message": "copy",
+        "description": "Options dialogs, table details: title for copy action"
+    },
+    "options_table_action_delete": {
+        "message": "delete",
+        "description": "Options dialogs, table details: title for delete action"
+    },
+    "options_table_confirm_delete": {
+        "message": "Confirm Delete",
+        "description": "Options dialogs, table details: label asking to confirm delete action"
+    },
+    "options_rules_editor_save": {
+        "message": "save",
+        "description": "Options dialogs, rules editor: title for save action"
+    },
+    "options_rules_editor_cancel": {
+        "message": "cancel",
+        "description": "Options dialogs, rules editor: title for editor cancel action"
+    },
     "rules_label_apostrophe": {
         "message": "apostrophe",
         "description": "Rules editor: label for 'apostrophe' rule"

@@ -190,7 +190,6 @@ class Settings {
     }
 
     set site_blacklist(value) {
-        console.log('set site_blacklist', value)
         return this._store(this.storage_keys.site_blacklist, value)
     }
 
@@ -199,7 +198,6 @@ class Settings {
     }
 
     set site_whitelist(value) {
-        console.log('set site_whitelist', value)
         return this._store(this.storage_keys.site_whitelist, value)
     }
 
@@ -324,6 +322,19 @@ class Settings {
         this.save({
             user_tables: user_tables,
             active_table_ids: [...active],
+        })
+    }
+
+    update_user_table(table) {
+        const table_id = table.id
+
+        const user_tables = this.user_tables()
+            .filter((table) => table.id !== table_id)
+
+        user_tables.push(table)
+
+        this.save({
+            user_tables: user_tables,
         })
     }
 }

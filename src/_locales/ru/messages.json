@@ -44,6 +44,24 @@
     "options_table_title_copy_prefix": {
         "message": "Копия "
     },
+    "options_table_action_edit": {
+        "message": "изменить"
+    },
+    "options_table_action_copy": {
+        "message": "копировать"
+    },
+    "options_table_action_delete": {
+        "message": "удалить"
+    },
+    "options_table_confirm_delete": {
+        "message": "Подтвердите удаление"
+    },
+    "options_rules_editor_save": {
+        "message": "сохранить"
+    },
+    "options_rules_editor_cancel": {
+        "message": "отменить"
+    },
     "rules_label_apostrophe": {
         "message": "апостроф"
     },

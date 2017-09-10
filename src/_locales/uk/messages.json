@@ -1,6 +1,6 @@
 {
     "extension_description": {
-        "message": "Транслітерація з кирилиці в латинку і навспак"
+        "message": "Транслітерація з кирилиці в латинку"
     },
     "extension_button_tooltip": {
         "message": "Латинка"
@@ -43,6 +43,24 @@
     },
     "options_table_title_copy_prefix": {
         "message": "Копія "
+    },
+    "options_table_action_edit": {
+        "message": "редагувати"
+    },
+    "options_table_action_copy": {
+        "message": "копія"
+    },
+    "options_table_action_delete": {
+        "message": "видалити"
+    },
+    "options_table_confirm_delete": {
+        "message": "Підтвердьте видалення"
+    },
+    "options_rules_editor_save": {
+        "message": "зберегти"
+    },
+    "options_rules_editor_cancel": {
+        "message": "скасувати"
     },
     "rules_label_apostrophe": {
         "message": "апостроф"
