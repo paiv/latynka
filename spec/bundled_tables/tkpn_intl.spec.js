@@ -56,8 +56,21 @@ describe('ТКПН intl', function() {
     })
 
     it('adds hard apos', function() {
-        const converted = this.convert('бйо дйо вйо мйо пйо рйо')
-        expect(converted).toBe('b\'jo d\'jo v\'jo m\'jo p\'jo r\'jo')
+        const tests = [
+            ['бйо', 'b\'jo'],
+            ['вйо', 'v\'jo'],
+            ['дйо', 'd\'jo'],
+            ['зйо', 'z\'jo'],
+            ['мйо', 'm\'jo'],
+            ['пйо', 'p\'jo'],
+            ['рйо', 'r\'jo'],
+            ['сйо', 's\'jo'],
+        ]
+
+        tests.forEach((t) => {
+            const converted = this.convert(t[0])
+            expect(converted).toBe(t[1])
+        })
     })
 
     it('converts pangram', function() {
