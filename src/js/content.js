@@ -35,6 +35,7 @@ class DomObserver {
         this._delayed = true
         this.includeMatching = /[абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]/i
         this.excludeTags = new Set(['head', 'link', 'meta', 'script', 'style'])
+        this.excludeClass = 'notranslit'
         this.changedNodes = new Set()
         this.visited = new Set()
         this.observers = []
@@ -58,17 +59,39 @@ class DomObserver {
 
         const filtered = new Set()
 
+        function has_class_or_ancestor(el, classname) {
+            if (!classname) {
+                return false
+            }
+            for (; el && el.nodeType !== Node.DOCUMENT_NODE; el = el.parentElement) {
+                if (el.nodeType === Node.ELEMENT_NODE && el.classList.contains(classname)) {
+                    return true
+                }
+            }
+            return false
+        }
+
         changes.forEach((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-                if (this.includeMatching.test(node.data) && !node.parentElement.isContentEditable) {
+                if (!node.parentElement.isContentEditable &&
+                    !has_class_or_ancestor(node, this.excludeClass) &&
+                    this.includeMatching.test(node.data)) {
+
                     filtered.add(node)
                 }
             }
-            else if (node.nodeType === Node.ELEMENT_NODE && !this.excludeTags.has(node.localName) && !node.isContentEditable) {
+            else if (node.nodeType === Node.ELEMENT_NODE &&
+                !node.isContentEditable &&
+                !this.excludeTags.has(node.localName) &&
+                !has_class_or_ancestor(node, this.excludeClass)) {
 
                 const it = document.createNodeIterator(node,
                     NodeFilter.SHOW_ELEMENT + NodeFilter.SHOW_TEXT,
                     (node) => {
+                        if (has_class_or_ancestor(node, this.excludeClass)) {
+                            return NodeFilter.FILTER_REJECT
+                        }
+
                         return (node.nodeType === Node.TEXT_NODE) ?
                             (this.includeMatching.test(node.data) ?
                             NodeFilter.FILTER_ACCEPT :
