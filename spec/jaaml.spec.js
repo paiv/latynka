@@ -47,13 +47,13 @@ describe('jaaml', function() {
             })
 
             it('error for undefined', function() {
-                expect(function() {
+                expect(() => {
                     jaaml.parse()
                 }).toThrow()
             })
 
             it('error for null', function() {
-                expect(function() {
+                expect(() => {
                     jaaml.parse(null)
                 }).toThrow()
             })
@@ -218,7 +218,7 @@ describe('jaaml', function() {
                 })
 
                 it('error on short indent', function() {
-                    expect(function() {
+                    expect(() => {
                         jaaml.parse(' a:\nb:c')
                     }).toThrow()
                 })
@@ -260,7 +260,7 @@ l:m
         })
 
         it('error for array', function() {
-            expect(function() {
+            expect(() => {
                 jaaml.stringify([])
             }).toThrow()
         })

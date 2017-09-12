@@ -37,6 +37,8 @@ describe('Transliterator', function() {
                 'є': {
                     other: 'je',
                 },
+                'ї': '',
+                'я': null,
             }
         })
 
@@ -53,6 +55,21 @@ describe('Transliterator', function() {
         it('converts a word', function() {
             const converted = this.convert('ґє')
             expect(converted).toBe('gje')
+        })
+
+        it('removes a char when empty', function() {
+            const converted = this.convert('їґ')
+            expect(converted).toBe('g')
+        })
+
+        it('removes a char when null', function() {
+            const converted = this.convert('яґ')
+            expect(converted).toBe('g')
+        })
+
+        it('preserves char not in rules', function() {
+            const converted = this.convert('єк')
+            expect(converted).toBe('jeк')
         })
     })
 
@@ -254,6 +271,27 @@ describe('Transliterator', function() {
         it('converts unicode 02BC', function() {
             const converted = this.convert('\u02BC k\u02BC \u02BCk k\u02BCk')
             expect(converted).toBe('g kg gk kgk')
+        })
+    })
+
+    describe('apos erasure', function() {
+
+        it('removes when empty', function() {
+            this.rules = {'\'': ''}
+            const converted = this.convert('\'')
+            expect(converted).toBe('')
+        })
+
+        it('removes when null', function() {
+            this.rules = {'\'': null}
+            const converted = this.convert('\'')
+            expect(converted).toBe('')
+        })
+
+        it('preserves when absent', function() {
+            this.rules = {}
+            const converted = this.convert('\'')
+            expect(converted).toBe('\'')
         })
     })
 })

@@ -75,6 +75,10 @@
         "message": "Confirm Delete",
         "description": "Options dialogs, table details: label asking to confirm delete action"
     },
+    "options_table_action_share": {
+        "message": "share",
+        "description": "Options dialogs, table details: title for share action"
+    },
     "options_rules_editor_save": {
         "message": "save",
         "description": "Options dialogs, rules editor: title for save action"
@@ -94,5 +98,9 @@
     "rules_label_after_consonants": {
         "message": "after consonants",
         "description": "Rules editor: label for 'after consonants' rule"
+    },
+    "share_dialog_close": {
+        "message": "close",
+        "description": "Share dialog: label for 'close' action"
     }
 }

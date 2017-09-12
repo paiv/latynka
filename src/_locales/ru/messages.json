@@ -56,6 +56,9 @@
     "options_table_confirm_delete": {
         "message": "Подтвердите удаление"
     },
+    "options_table_action_share": {
+        "message": "поделиться"
+    },
     "options_rules_editor_save": {
         "message": "сохранить"
     },
@@ -70,5 +73,8 @@
     },
     "rules_label_after_consonants": {
         "message": "после согласных"
+    },
+    "share_dialog_close": {
+        "message": "закрыть"
     }
 }

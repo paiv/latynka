@@ -7,6 +7,7 @@ const Settings = require('./settings').Settings
     , markdown = require('./markdown')
     , random = require('./random')
     , jaaml = require('./jaaml')
+    , sharer = require('./sharer')
 
 
 function _safe_element_id(value) {
@@ -159,6 +160,11 @@ class View {
 
     show_table_editor(table, text, actions) {
         this._show_rules_editor(table, text)
+        this._show_detail_actions(actions)
+    }
+
+    show_share_pane(table, actions) {
+        this._show_sharing(table)
         this._show_detail_actions(actions)
     }
 
@@ -384,6 +390,48 @@ class View {
         title.focus()
     }
 
+    _show_sharing(table) {
+        let details = this.details_pane.querySelector('div')
+        let rules_pane = details.querySelector('.rules')
+
+        function link_row(url, description) {
+            let row = Dom.el('div', ['share-row'])
+
+            let desc = Dom.el('div', ['share-descr'])
+            desc.appendChild(Dom.text(description))
+            row.appendChild(desc)
+
+            let copy = Dom.el('button')
+            copy.appendChild(Dom.text('Copy'))
+            row.appendChild(copy)
+
+            let link = Dom.el('input')
+            link.type = "text"
+            link.readOnly = true
+            link.value = url
+            row.appendChild(link)
+
+            copy.addEventListener('click', () => {
+                link.select()
+                document.execCommand('copy')
+            })
+
+            return row
+        }
+
+        let pane = Dom.el('div', ['share'])
+
+        let full_pane = link_row(table.share_link, 'Full URL:')
+        full_pane.classList.add('full-link')
+        pane.appendChild(full_pane)
+
+        let short_pane = link_row('https://goo.gl/xxx', 'Short URL:')
+        short_pane.classList.add('short-link')
+        pane.appendChild(short_pane)
+
+        details.replaceChild(pane, rules_pane)
+    }
+
     get rules_editor() {
         return this.details_pane.querySelector('.rules-editor > textarea')
     }
@@ -573,6 +621,12 @@ class Controller {
 
         const actions = []
 
+        actions.push({
+            id: 'action-share',
+            title: browserapi.i18n.getMessage('options_table_action_share'),
+            handler: () => { this._sharingMode(table_id) }
+        })
+
         if (is_bundled) {
             actions.push({
                 id: 'action-edit',
@@ -724,6 +778,25 @@ class Controller {
 
     _cancelEdit(table_id) {
         this._showTableDetails(table_id)
+    }
+
+    _sharingMode(table_id) {
+        const table = this.settings.get_table(table_id) || {}
+        table_id = table.id
+
+        if (!table.share_link) {
+            table.share_link = sharer.makeShareLink(table)
+        }
+
+        const actions = []
+
+        actions.push({
+            id: 'action-share-close',
+            title: browserapi.i18n.getMessage('share_dialog_close'),
+            handler: () => { this._showTableDetails(table_id) }
+        })
+
+        this.view.show_share_pane(table, actions)
     }
 }
 

@@ -1,4 +1,7 @@
 
+const hex = require('./hex')
+
+
 const fromCodePoint = (typeof String.fromCodePoint !== 'undefined') ?
     String.fromCodePoint : String.fromCharCode
 
@@ -23,11 +26,6 @@ class JaamlGeneratorError {
     toString() {
         return `JaamlGeneratorError{${this.message}}`
     }
-}
-
-
-function toHex(value, width) {
-    return (Array(width + 1).join('0') + value.toString(16).toLowerCase()).slice(-width)
 }
 
 
@@ -259,7 +257,7 @@ class JaamlParser {
                     const escaped = text.substr(offset + 1, 2)
                     const value = Number.parseInt(escaped, 16)
                     if (Number.isFinite(value)) {
-                        if (toHex(value, 2) === escaped.toLowerCase()) {
+                        if (hex.toHex(value, 2) === escaped.toLowerCase()) {
                             return [String.fromCharCode(value), offset + 2]
                         }
                     }
@@ -271,7 +269,7 @@ class JaamlParser {
                     const value = Number.parseInt(escaped, 16)
 
                     if (Number.isFinite(value)) {
-                        if (toHex(value, 4) === escaped.toLowerCase()) {
+                        if (hex.toHex(value, 4) === escaped.toLowerCase()) {
                             const uvalue = fromCodePoint(value)
                             return [uvalue, offset + 4]
                         }
@@ -355,7 +353,7 @@ class JaamlGenerator {
         })
 
         value = value.replace(/[\x00-\x1F]/g, (char) => {
-            const xx = toHex(char.charCodeAt(0), 2)
+            const xx = hex.toHex(char.charCodeAt(0), 2)
             return `\\x${xx}`
         })
 
@@ -367,7 +365,7 @@ class JaamlGenerator {
         }
 
         value = value.replace(/[\u02b0-\u036f]/g, (char) => {
-            const xx = toHex(codePoint(char), 4)
+            const xx = hex.toHex(codePoint(char), 4)
             return `\\u${xx}`
         })
 

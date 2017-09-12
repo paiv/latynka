@@ -27,6 +27,10 @@ class Transliterator {
             const hikey = lokey.toLocaleUpperCase()
             let rule = rules[key]
 
+            if (rule == null) {
+                rule = ''
+            }
+
             if (typeof rule === 'object') {
 
                 if ('start' in rule) {
