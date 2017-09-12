@@ -12,6 +12,8 @@
     "gulp-json-modify": "^1.0.2",
     "gulp-json5-to-json": "^0.2.1",
     "gulp-merge-json": "^1.1.0",
+    "gulp-streamify": "^1.0.2",
+    "gulp-strip-comments": "^2.5.1",
     "gulp-vinyl-zip": "^2.0.0",
     "http-server": "^0.10.0",
     "jasmine": "^2.8.0",

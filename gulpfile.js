@@ -47,11 +47,13 @@ paths.platform = paths[platform]
 const gulp = require('gulp')
     , browserify = require('browserify')
     , source = require('vinyl-source-stream')
+    , streamify = require('gulp-streamify')
     , del = require('del')
     , json5 = require('gulp-json5-to-json')
     , mergejson = require('gulp-merge-json')
     , editjson = require('gulp-json-modify')
     , concat = require('gulp-concat')
+    , stripjs = require('gulp-strip-comments')
     , zip = require('gulp-vinyl-zip')
     , package_json = require('./package.json')
 
@@ -64,6 +66,7 @@ gulp.task('scripts:content', (cb) => {
 
     brwsrf.bundle()
         .pipe(source('./content.js'))
+        .pipe(streamify(stripjs()))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })
@@ -77,6 +80,7 @@ gulp.task('scripts:popup', (cb) => {
 
     brwsrf.bundle()
         .pipe(source('./popup.js'))
+        .pipe(streamify(stripjs()))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })
@@ -90,6 +94,7 @@ gulp.task('scripts:background', (cb) => {
 
     brwsrf.bundle()
         .pipe(source('./background.js'))
+        .pipe(streamify(stripjs()))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })
@@ -103,6 +108,7 @@ gulp.task('scripts:options', (cb) => {
 
     brwsrf.bundle()
         .pipe(source('./options.js'))
+        .pipe(streamify(stripjs()))
         .pipe(gulp.dest(paths.dest.js))
         .on('end', cb)
 })
