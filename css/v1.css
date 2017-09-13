@@ -1,0 +1,76 @@
+.app {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.app .app-rules {
+}
+
+.app .app-preview {
+    flex: 1;
+    min-width: 8em;
+}
+
+
+.rules {
+}
+
+
+.rules .rule-cell {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.rule-cell .rule-main {
+    padding-top: 1em;
+    padding-bottom: 0.2em;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.rule-cell .rule-extra {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: 0.17em;
+}
+
+.rule-main .rule-thumb {
+    background-color: #f0f0f0;
+    font-size: 4em;
+    margin-right: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.rule-extra .rule-thumb {
+    background-color: #f0f0f0;
+    font-size: 2em;
+    margin-right: 0.17em;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+}
+
+
+.app .app-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+    padding: 1em;
+}
+
+.app-actions button {
+    display: block;
+    margin-bottom: 1em;
+    margin-left: auto;
+}
+
+.app-actions .confirm-delete {
+    color: red;
+    margin-bottom: 1em;
+}
+
+
+.app-preview .content {
+}

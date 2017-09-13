@@ -2,5 +2,4 @@
 Ukrajinsjka Latynka / Українська Латинка
 ========================================
 
-* Google Chrome extension
-* Mozilla Firefox extension
+https://github.com/paiv/latynka
