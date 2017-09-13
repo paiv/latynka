@@ -1586,6 +1586,7 @@ module.exports = {
 const Dom = require('./dom_builder').DomBuilder
     , browserapi = require('./browserapi')
     , translit = require('./translit')
+    , urlshortener = require('./urlshortener')
 
 
 class Renderer {
@@ -1815,6 +1816,38 @@ class Renderer {
 
         Dom.resetChildren(this.preview_pane, pane)
     }
+
+    show_share_pane(url) {
+        const pane = this.details_actions_pane.querySelector('div')
+
+        function link_row(url, description) {
+            let row = Dom.el('div', ['share-row'])
+
+            let desc = Dom.el('div', ['share-descr'])
+            desc.appendChild(Dom.text(description))
+            row.appendChild(desc)
+
+            let link = Dom.el('input')
+            link.type = "text"
+            link.readOnly = true
+            link.value = url
+            row.appendChild(link)
+
+            let copy = Dom.el('button')
+            copy.appendChild(Dom.text('Copy'))
+            row.appendChild(copy)
+
+            copy.addEventListener('click', () => {
+                link.select()
+                document.execCommand('copy')
+            })
+
+            return row
+        }
+
+        const row = link_row(url, 'Short URL:')
+        pane.appendChild(row)
+    }
 }
 
 
@@ -1840,6 +1873,12 @@ function render(table) {
         text = tr.convert(text)
         rx.show_preview(text)
     })
+
+    const url = window.location.href
+
+    urlshortener.shorten(url, (short_url) => {
+        rx.show_share_pane(short_url)
+    })
 }
 
 
@@ -1847,7 +1886,7 @@ module.exports = {
     render,
 }
 
-},{"./browserapi":7,"./dom_builder":8,"./translit":12}],11:[function(require,module,exports){
+},{"./browserapi":7,"./dom_builder":8,"./translit":12,"./urlshortener":13}],11:[function(require,module,exports){
 
 const punycode = require('punycode')
     , url = require('url')
@@ -2199,6 +2238,41 @@ module.exports = {
 
 },{"./regex_builder":9}],13:[function(require,module,exports){
 
+class GitioUrlShortener {
+    constructor() {
+        this.serviceUrl = 'https://git.io'
+    }
+
+    shorten(url, callback) {
+        const xhr = new XMLHttpRequest()
+        const form = new FormData()
+
+        form.append('url', url)
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4 && xhr.status === 201) {
+                callback(xhr.getResponseHeader('Location'))
+            }
+        }
+
+        xhr.open('POST', this.serviceUrl, true)
+        xhr.send(form)
+    }
+}
+
+
+function shorten(url, callback) {
+    const service = new GitioUrlShortener()
+    return service.shorten(url, callback)
+}
+
+
+module.exports = {
+    shorten,
+}
+
+},{}],14:[function(require,module,exports){
+
 const sharer = require('./sharer')
     , renderer = require('./renderer')
 
@@ -2216,4 +2290,4 @@ function app() {
 
 window.addEventListener('load', () => app())
 
-},{"./renderer":10,"./sharer":11}]},{},[13]);
+},{"./renderer":10,"./sharer":11}]},{},[14]);

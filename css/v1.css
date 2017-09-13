@@ -10,6 +10,11 @@
 .app .app-preview {
     flex: 1;
     min-width: 8em;
+    margin-right: 2em;
+}
+
+.app .app-actions {
+    min-width: 8em;
 }
 
 
@@ -37,7 +42,7 @@
 
 .rule-main .rule-thumb {
     background-color: #f0f0f0;
-    font-size: 4em;
+    font-size: 3em;
     margin-right: 0.2em;
     padding-left: 0.2em;
     padding-right: 0.2em;
@@ -45,20 +50,12 @@
 
 .rule-extra .rule-thumb {
     background-color: #f0f0f0;
-    font-size: 2em;
+    font-size: 1.5em;
     margin-right: 0.17em;
     padding-left: 0.1em;
     padding-right: 0.1em;
 }
 
-
-.app .app-actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: auto;
-    padding: 1em;
-}
 
 .app-actions button {
     display: block;

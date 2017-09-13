@@ -2,6 +2,7 @@
 const Dom = require('./dom_builder').DomBuilder
     , browserapi = require('./browserapi')
     , translit = require('./translit')
+    , urlshortener = require('./urlshortener')
 
 
 class Renderer {
@@ -231,6 +232,38 @@ class Renderer {
 
         Dom.resetChildren(this.preview_pane, pane)
     }
+
+    show_share_pane(url) {
+        const pane = this.details_actions_pane.querySelector('div')
+
+        function link_row(url, description) {
+            let row = Dom.el('div', ['share-row'])
+
+            let desc = Dom.el('div', ['share-descr'])
+            desc.appendChild(Dom.text(description))
+            row.appendChild(desc)
+
+            let link = Dom.el('input')
+            link.type = "text"
+            link.readOnly = true
+            link.value = url
+            row.appendChild(link)
+
+            let copy = Dom.el('button')
+            copy.appendChild(Dom.text('Copy'))
+            row.appendChild(copy)
+
+            copy.addEventListener('click', () => {
+                link.select()
+                document.execCommand('copy')
+            })
+
+            return row
+        }
+
+        const row = link_row(url, 'Short URL:')
+        pane.appendChild(row)
+    }
 }
 
 
@@ -255,6 +288,12 @@ function render(table) {
     request_url('preview.txt', (text) => {
         text = tr.convert(text)
         rx.show_preview(text)
+    })
+
+    const url = window.location.href
+
+    urlshortener.shorten(url, (short_url) => {
+        rx.show_share_pane(short_url)
     })
 }
 
