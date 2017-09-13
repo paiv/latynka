@@ -15,6 +15,16 @@ describe('Sharer', function() {
     })
 
 
+    describe('github quirks', function() {
+
+        it('escapes hyphen', function() {
+            const link = sharer.makeShareLink({rules:{'ї': ''}})
+
+            expect(link).not.toContain('-')
+        })
+    })
+
+
     describe('encoder', function() {
 
         beforeEach(function() {

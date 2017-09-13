@@ -8,6 +8,7 @@ const Settings = require('./settings').Settings
     , random = require('./random')
     , jaaml = require('./jaaml')
     , sharer = require('./sharer')
+    , urlshortener = require('./urlshortener')
 
 
 function _safe_element_id(value) {
@@ -392,7 +393,7 @@ class View {
 
     _show_sharing(table) {
         let details = this.details_pane.querySelector('div')
-        let rules_pane = details.querySelector('.rules')
+        let rules_pane = details.querySelector('.rules') || details.querySelector('.share')
 
         function link_row(url, description) {
             let row = Dom.el('div', ['share-row'])
@@ -425,7 +426,9 @@ class View {
         full_pane.classList.add('full-link')
         pane.appendChild(full_pane)
 
-        let short_pane = link_row('https://goo.gl/xxx', 'Short URL:')
+        const placeholder = 'loading...'
+
+        let short_pane = link_row(table.short_share_link || placeholder, 'Short URL:')
         short_pane.classList.add('short-link')
         pane.appendChild(short_pane)
 
@@ -797,6 +800,16 @@ class Controller {
         })
 
         this.view.show_share_pane(table, actions)
+
+        if (!table.short_share_link) {
+            urlshortener.shorten(table.share_link, (short_url) => {
+                table.short_share_link = short_url
+
+                if (this.selected_table_id == table_id) {
+                    this.view.show_share_pane(table, actions)
+                }
+            })
+        }
     }
 }
 
