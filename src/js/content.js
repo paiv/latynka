@@ -58,16 +58,35 @@ class DomObserver {
         this.changedNodes = new Set()
 
         const filtered = new Set()
+        const excludeMemo = new Set()
+        const includeMemo = new Set()
 
-        function has_class_or_ancestor(el, classname) {
+        function has_class_or_ancestor(child, classname) {
             if (!classname) {
                 return false
             }
-            for (; el && el.nodeType !== Node.DOCUMENT_NODE; el = el.parentElement) {
-                if (el.nodeType === Node.ELEMENT_NODE && el.classList.contains(classname)) {
+
+            for (let el = child; el && el.nodeType !== Node.DOCUMENT_NODE; el = el.parentElement) {
+                if (excludeMemo.has(el)) {
+                    excludeMemo.add(child)
+                    return false
+                }
+
+                if (includeMemo.has(el)) {
+                    includeMemo.add(child)
                     return true
                 }
+
+                if (el.nodeType === Node.ELEMENT_NODE) {
+                    if (el.classList.contains(classname)) {
+                        includeMemo.add(el)
+                        includeMemo.add(child)
+                        return true
+                    }
+                }
             }
+
+            excludeMemo.add(child)
             return false
         }
 
