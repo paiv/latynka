@@ -15,7 +15,6 @@ class Renderer {
 
     show_table_details(table, actions) {
         this._show_table_rules(table)
-        this._show_detail_actions(actions)
     }
 
     _show_table_rules(table) {
@@ -204,21 +203,6 @@ class Renderer {
         apos_cell(rules_pane, table.rules, '\'')
     }
 
-    _show_detail_actions(actions) {
-        let pane = Dom.el('div')
-
-        actions.forEach((action) => {
-            const button = Dom.el('button')
-            button.id = action.id
-            button.appendChild(Dom.text(action.title))
-            button.addEventListener('click', action.handler)
-            pane.appendChild(button)
-        })
-
-        let old = this.details_actions_pane.querySelector('div')
-        this.details_actions_pane.replaceChild(pane, old)
-    }
-
     show_preview(text) {
         const pane = Dom.el('div', ['content'])
 
@@ -232,69 +216,51 @@ class Renderer {
 
         Dom.resetChildren(this.preview_pane, pane)
     }
-
-    show_share_pane(url) {
-        const pane = this.details_actions_pane.querySelector('div')
-
-        function link_row(url, description) {
-            let row = Dom.el('div', ['share-row'])
-
-            let desc = Dom.el('div', ['share-descr'])
-            desc.appendChild(Dom.text(description))
-            row.appendChild(desc)
-
-            let link = Dom.el('input')
-            link.type = "text"
-            link.readOnly = true
-            link.value = url
-            row.appendChild(link)
-
-            let copy = Dom.el('button')
-            copy.appendChild(Dom.text('Copy'))
-            row.appendChild(copy)
-
-            copy.addEventListener('click', () => {
-                link.select()
-                document.execCommand('copy')
-            })
-
-            return row
-        }
-
-        const row = link_row(url, 'Short URL:')
-        pane.appendChild(row)
-    }
 }
 
 
-function request_url(url, callback) {
-    var xhr = new XMLHttpRequest()
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            callback(xhr.responseText)
-        }
+class Controller {
+    constructor() {
+        this.view = new Renderer(document)
     }
-    xhr.open('GET', url, true)
-    xhr.send()
+
+    _request_url(url, callback) {
+        var xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                callback(xhr.responseText)
+            }
+        }
+        xhr.open('GET', url, true)
+        xhr.send()
+    }
+
+    render(table) {
+        const tr = new translit.Transliterator(table.rules)
+
+        this.view.show_table_details(table, [])
+
+        this._request_url('preview.txt', (text) => {
+            text = tr.convert(text)
+            this.view.show_preview(text)
+        })
+
+
+        // git.io needs CORS
+        // See https://github.com/isaacs/github/issues/973
+
+        // const url = window.location.href
+        //
+        // urlshortener.shorten(url, (short_url) => {
+        //     this.view.show_share_pane(short_url)
+        // })
+    }
 }
 
 
 function render(table) {
-    const tr = new translit.Transliterator(table.rules)
-    const rx = new Renderer(document)
-
-    rx.show_table_details(table, [])
-
-    request_url('preview.txt', (text) => {
-        text = tr.convert(text)
-        rx.show_preview(text)
-    })
-
-    const url = window.location.href
-
-    urlshortener.shorten(url, (short_url) => {
-        rx.show_share_pane(short_url)
-    })
+    const ctl = new Controller()
+    return ctl.render(table)
 }
 
 

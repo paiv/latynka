@@ -3,18 +3,21 @@
     flex-wrap: wrap;
 }
 
-
 .app .app-rules {
 }
 
-.app .app-preview {
+.app .right-pane {
     flex: 1;
     min-width: 8em;
+}
+
+.right-pane .app-preview {
     margin-right: 2em;
 }
 
 .app .app-actions {
-    min-width: 8em;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -57,15 +60,63 @@
 }
 
 
-.app-actions button {
-    display: block;
-    margin-bottom: 1em;
-    margin-left: auto;
+.app-actions .link {
+    background-color: #f0f0f0;
+    cursor: pointer;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
 }
 
-.app-actions .confirm-delete {
-    color: red;
+
+.app-actions .row {
+    display: flex;
+    flex-flow: row;
     margin-bottom: 1em;
+}
+
+.app-actions .row > div {
+    margin-right: 1em;
+}
+
+
+.app-actions .shorturl {
+    display: none;
+}
+
+.app-actions .import, .imported {
+    display: none;
+}
+
+.app-actions .import span {
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+.app-actions .import .error {
+    color: red;
+    display: none;
+    font-size: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.app-actions .import img {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+
+
+.app-actions .imported span {
+    vertical-align: middle;
+}
+
+.app-actions .imported img {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.5em;
+    vertical-align: middle;
 }
 
 
