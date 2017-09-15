@@ -1,7 +1,7 @@
 
 class GitioUrlShortener {
     constructor() {
-        this.serviceUrl = 'https://git.io'
+        this.serviceUrl = 'https://git.io/'
     }
 
     shorten(url, callback) {

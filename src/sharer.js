@@ -37,6 +37,7 @@ class Sharer {
         }
 
         const fragment = Object.keys(rules)
+            .sort((a,b) => a.localeCompare(b))
             .map((key) => {
                 const rule = rules[key]
 
@@ -68,6 +69,8 @@ class Sharer {
         }
 
         const encoded = encodeURIComponent(punycode.encode(fragment))
+            .replace(/\-/g, '%2D')
+
         const url = `${this.baseUrl}?r=${encoded}`
         return url
     }
@@ -157,8 +160,15 @@ function decodeShareLink(link) {
 }
 
 
+function normalize(link) {
+    const table = decodeShareLink(link)
+    return makeShareLink(table)
+}
+
+
 module.exports = {
     Sharer,
     makeShareLink,
     decodeShareLink,
+    normalize,
 }
