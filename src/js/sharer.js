@@ -160,8 +160,15 @@ function decodeShareLink(link) {
 }
 
 
+function normalize(link) {
+    const table = decodeShareLink(link)
+    return makeShareLink(table)
+}
+
+
 module.exports = {
     Sharer,
     makeShareLink,
     decodeShareLink,
+    normalize,
 }

@@ -1,5 +1,6 @@
 
 const BundledTranslitTables = require('./bundled_tables')
+    , random = require('./random')
 
 
 class Settings {
@@ -300,6 +301,12 @@ class Settings {
     }
 
     import_table(table) {
+        if (!table.id) {
+            const seq_no = this.user_tables_seq_no
+            table.id = this.generate_table_id('', seq_no)
+            table.seq_no = seq_no
+        }
+
         const user_tables = this.user_tables()
         user_tables.push(table)
 
@@ -310,6 +317,15 @@ class Settings {
             user_tables: user_tables,
             active_table_ids: active,
         })
+    }
+
+    generate_table_id(from_id, seq_no) {
+        seq_no = `000${seq_no}`.slice(-3)
+
+        from_id = (from_id || '').replace(/\..*$/, '')
+        const suffix = random.string(8)
+
+        return `${from_id}.${seq_no}.${suffix}`
     }
 
     delete_user_table(table_id) {

@@ -72,6 +72,20 @@ gulp.task('scripts:content', (cb) => {
 })
 
 
+gulp.task('scripts:github_v1', (cb) => {
+    var brwsrf = browserify({
+        entries: paths.src.jsroot + '/github_v1.js',
+        debug: false,
+    })
+
+    brwsrf.bundle()
+        .pipe(source('./github_v1.js'))
+        .pipe(streamify(stripjs()))
+        .pipe(gulp.dest(paths.dest.js))
+        .on('end', cb)
+})
+
+
 gulp.task('scripts:popup', (cb) => {
     var brwsrf = browserify({
         entries: paths.src.jsroot + '/popup.js',
@@ -114,7 +128,12 @@ gulp.task('scripts:options', (cb) => {
 })
 
 
-gulp.task('scripts', gulp.parallel('scripts:content', 'scripts:popup', 'scripts:background', 'scripts:options'))
+gulp.task('scripts', gulp.parallel(
+    'scripts:content',
+    'scripts:github_v1',
+    'scripts:popup',
+    'scripts:background',
+    'scripts:options'))
 
 
 gulp.task('pages', (cb) => {

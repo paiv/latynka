@@ -1,7 +1,4 @@
 
-// const browserapi = require('./browserapi')
-
-
 class GitioUrlShortener {
     constructor() {
         this.serviceUrl = 'https://git.io/'
@@ -22,16 +19,6 @@ class GitioUrlShortener {
         xhr.open('POST', this.serviceUrl, true)
         xhr.send(form)
     }
-
-    // _ask_permission(callback) {
-    //     const handler = (granted) => {
-    //         if (granted) {
-    //             callback()
-    //         }
-    //     }
-    //
-    //     browserapi.permissions.request({origins: [this.serviceUrl]}, handler)
-    // }
 }
 
 

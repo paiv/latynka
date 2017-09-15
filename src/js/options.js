@@ -665,7 +665,7 @@ class Controller {
         const seq_no = this.settings.user_tables_seq_no
 
         const newtable = {
-            id: this._generate_table_id(table.id, seq_no),
+            id: this.settings.generate_table_id(table.id, seq_no),
             seq_no: seq_no,
             title: this._generate_table_title(table.title),
             rules: JSON.parse(JSON.stringify(table.rules)),
@@ -680,15 +680,6 @@ class Controller {
         this._in_edit_mode = edit_mode
 
         this.settings.import_table(newtable)
-    }
-
-    _generate_table_id(from_id, seq_no) {
-        seq_no = `000${seq_no}`.slice(-3)
-
-        from_id = (from_id || '').replace(/\..*$/, '')
-        const suffix = random.string(8)
-
-        return `${from_id}.${seq_no}.${suffix}`
     }
 
     _generate_table_title(from_title) {
