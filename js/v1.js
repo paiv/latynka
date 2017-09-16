@@ -1960,7 +1960,7 @@ class SharerDecoderError {
 
 class Sharer {
     constructor(baseUrl) {
-        const canonicalUrl = 'https://paiv.github.io/latynka/v1.html'
+        const canonicalUrl = 'https://paiv.github.io/latynka/v1'
         this.baseUrl = (baseUrl || canonicalUrl).toLowerCase()
     }
 
