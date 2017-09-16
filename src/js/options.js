@@ -8,6 +8,7 @@ const Settings = require('./settings').Settings
     , random = require('./random')
     , jaaml = require('./jaaml')
     , sharer = require('./sharer')
+    , translit = require('./translit')
     , urlshortener = require('./urlshortener')
 
 
@@ -24,6 +25,9 @@ class View {
         this.onMenuClickedTableRow = (table_id) => {}
         this.onBlacklistChange = (text) => {}
         this.onWhitelistChange = (text) => {}
+        this.onRulesEditorInput = (text) => {}
+        this.onPreviewEditClick = () => {}
+        this.onPreviewSaveClick = () => {}
 
         this.form = doc.querySelector('[id="settings"]')
         this.enabled = this.form.querySelector('input[id="ext_enabled"]')
@@ -369,26 +373,71 @@ class View {
     }
 
     _show_rules_editor(table, text) {
-        let pane = Dom.el('div')
+        const pane = Dom.el('div')
 
-        const title_pane = Dom.el('div', ['title-editor'])
-        pane.appendChild(title_pane)
+        {
+            const title_pane = Dom.el('div', ['title-editor'])
+            pane.appendChild(title_pane)
 
-        let title = Dom.el('input')
-        title.value = table.title
-        title_pane.appendChild(title)
+            var title = Dom.el('input')
+            title.value = table.title
+            title_pane.appendChild(title)
 
-        const rules_pane = Dom.el('div', ['rules-editor'])
-        pane.appendChild(rules_pane)
+            const rules_pane = Dom.el('div', ['rules-editor'])
+            pane.appendChild(rules_pane)
 
-        let textarea = Dom.el('textarea')
-        rules_pane.appendChild(textarea)
+            const textarea = Dom.el('textarea')
+            rules_pane.appendChild(textarea)
 
-        textarea.textContent = text
+            textarea.textContent = text
+
+            textarea.addEventListener('input', () => { this.onRulesEditorInput(textarea.value) })
+        }
+
+        {
+            const info_pane = Dom.el('div', ['editor-info'])
+            pane.appendChild(info_pane)
+
+            const status = Dom.el('div', ['status'])
+            info_pane.appendChild(status)
+
+            const preview = Dom.el('div', ['preview'])
+            info_pane.appendChild(preview)
+
+            const textarea = Dom.el('textarea')
+            preview.appendChild(textarea)
+            textarea.readOnly = true
+
+            const editPreview = Dom.el('button')
+            editPreview.textContent = 'edit'
+            preview.appendChild(editPreview)
+
+            editPreview.addEventListener('click', () => { this.onPreviewEditClick() })
+        }
 
         Dom.resetChildren(this.details_pane, pane)
 
         title.focus()
+    }
+
+    get preview_text() {
+        const textarea = this.details_pane.querySelector('.editor-info .preview textarea')
+        return textarea.textContent
+    }
+
+    set preview_text(value) {
+        const textarea = this.details_pane.querySelector('.editor-info .preview textarea')
+        textarea.textContent = value
+    }
+
+    get rules_editor_error() {
+        const error = this.details_pane.querySelector('.editor-info .status')
+        return error.textContent
+    }
+
+    set rules_editor_error(value) {
+        const error = this.details_pane.querySelector('.editor-info .status')
+        error.textContent = value
     }
 
     _show_sharing(table) {
@@ -546,6 +595,9 @@ class Controller {
         this.view.onMenuClickedTableRow = (table_id) => { this._showTableDetails(table_id) }
         this.view.onBlacklistChange = (text) => { this._storeBlacklist(text) }
         this.view.onWhitelistChange = (text) => { this._storeWhitelist(text) }
+        this.view.onRulesEditorInput = (text) => { this._checkRulesEditorInput(text) }
+        this.view.onPreviewEditClick = () => { this._editPreviewText() }
+        this.view.onPreviewSaveClick = () => { this._savePreviewText() }
     }
 
     _storeSettings() {
@@ -746,6 +798,10 @@ class Controller {
         })
 
         this.view.show_table_editor(table, rules_text, actions)
+
+        const trx = new translit.Transliterator(table.rules)
+        const preview = trx.convert(this.settings.preview_text)
+        this.view.preview_text = preview
     }
 
     _saveEdit(table) {
@@ -801,6 +857,43 @@ class Controller {
                 }
             })
         }
+    }
+
+    _checkRulesEditorInput(text) {
+        this._delayed_overlapping('rules-editor', 200, () => {
+            this._checkRulesEditor(text)
+        })
+    }
+
+    _delayed_overlapping(key, interval, handler) {
+        if (!this._delayed_overlapping_ids) {
+            this._delayed_overlapping_ids = new Object()
+        }
+
+        const other = this._delayed_overlapping_ids[key]
+        window.clearTimeout(other)
+        this._delayed_overlapping_ids[key] = window.setTimeout(handler, interval)
+    }
+
+    _checkRulesEditor(rulesText) {
+        try {
+            const rules = jaaml.parse(rulesText)
+            const trx = new translit.Transliterator(rules)
+            const preview = trx.convert(this.settings.preview_text)
+            this.view.preview_text = preview
+            this.view.rules_editor_error = ''
+        }
+        catch (e) {
+            this.view.rules_editor_error = e.toString()
+        }
+    }
+
+    _editPreviewText() {
+
+    }
+
+    _savePreviewText() {
+
     }
 }
 
