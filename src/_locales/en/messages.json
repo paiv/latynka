@@ -59,6 +59,10 @@
         "message": "Copy of ",
         "description": "Options dialog: title prefix to prepend on copy"
     },
+    "options_table_title_import_prefix": {
+        "message": "Imported ",
+        "description": "Options dialog: title prefix to prepend on import"
+    },
     "options_table_action_edit": {
         "message": "edit",
         "description": "Options dialogs, table details: title for edit action"

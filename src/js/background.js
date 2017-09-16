@@ -37,7 +37,7 @@ class Controller {
     _importTableFromUrl(url) {
         try {
             const table = sharer.decodeShareLink(url)
-            table.title = 'Imported ' + new Date().toLocaleString()
+            table.title = browserapi.i18n.getMessage('options_table_title_import_prefix') + new Date().toLocaleString()
             this.settings.import_table(table)
             return table.title
         }

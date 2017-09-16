@@ -44,6 +44,9 @@
     "options_table_title_copy_prefix": {
         "message": "Копия "
     },
+    "options_table_title_import_prefix": {
+        "message": "Импорт "
+    },
     "options_table_action_edit": {
         "message": "изменить"
     },
