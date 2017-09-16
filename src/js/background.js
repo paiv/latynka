@@ -15,6 +15,12 @@ class Controller {
         this.settings = new Settings(browserapi.storage, () => { this._check_enabled() })
 
         browserapi.runtime.onMessage.addListener((message, sender, callback) => this._handleMessage(message, sender, callback))
+
+        browserapi.runtime.onInstalled.addListener((details) => this._handleInstalled(details))
+    }
+
+    _handleInstalled(details) {
+        this.settings.set_defaults()
     }
 
     _check_enabled() {

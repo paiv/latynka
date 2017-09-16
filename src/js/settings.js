@@ -1,6 +1,8 @@
 
 const BundledTranslitTables = require('./bundled_tables')
+    , browserapi = require('./browserapi')
     , random = require('./random')
+    , requests = require('./requests')
 
 
 class Settings {
@@ -29,6 +31,8 @@ class Settings {
             selected_table_id: 'latynka:selected_table_id',
             active_table_ids: 'latynka:active_table_ids',
             user_tables: 'latynka:user_tables',
+            preview_text: 'latynka:preview_text',
+            default_preview_text: 'latynka:default_preview_text',
         }
 
         this.cache = {}
@@ -202,6 +206,22 @@ class Settings {
         return this._store(this.storage_keys.site_whitelist, value)
     }
 
+    get default_preview_text() {
+        return this._get_string(this.storage_keys.default_preview_text)
+    }
+
+    set default_preview_text(value) {
+        this._store(this.storage_keys.default_preview_text, value)
+    }
+
+    get preview_text() {
+        return this._get_string(this.storage_keys.preview_text) || this.default_preview_text
+    }
+
+    set preview_text(value) {
+        this._store(this.storage_keys.preview_text, value)
+    }
+
     _host(url) {
         try {
             if (!/:\/\//.test(url)) {
@@ -351,6 +371,12 @@ class Settings {
 
         this.save({
             user_tables: user_tables,
+        })
+    }
+
+    set_defaults() {
+        requests.get(browserapi.runtime.getURL('data/preview.txt'), (text) => {
+            this.default_preview_text = text
         })
     }
 }

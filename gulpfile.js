@@ -18,6 +18,7 @@ const paths = {
         css: 'src/css/*.css',
         img: 'src/img/*.png',
         translations: 'src/_locales/**/*.json',
+        data: ['src/data/*.txt', 'src/data/*.json'],
         manifest: 'src/meta/manifest.json',
     },
 
@@ -35,6 +36,7 @@ const paths = {
         css: build.platform + '/css',
         img: build.platform + '/img',
         translations: build.platform + '/_locales',
+        data: build.platform + '/data',
         manifest: build.platform,
         all_files: build.platform + '/**/*',
         dist_archive: build.root + '/' + platform + '.zip',
@@ -157,11 +159,21 @@ gulp.task('images', (cb) => {
 })
 
 
-gulp.task('data', (cb) => {
+gulp.task('data:translations', (cb) => {
     return gulp.src(paths.src.translations)
         .pipe(gulp.dest(paths.dest.translations))
         .on('end', cb)
 })
+
+
+gulp.task('data:settings', (cb) => {
+    return gulp.src(paths.src.data)
+        .pipe(gulp.dest(paths.dest.data))
+        .on('end', cb)
+})
+
+
+gulp.task('data', gulp.parallel('data:translations', 'data:settings'))
 
 
 gulp.task('manifest', (cb) => {
@@ -193,6 +205,7 @@ gulp.task('watch', () => {
     gulp.watch(paths.src.css, gulp.parallel('styles'))
     gulp.watch(paths.src.img, gulp.parallel('images'))
     gulp.watch(paths.src.translations, gulp.parallel('data'))
+    gulp.watch(paths.src.data, gulp.parallel('data'))
     gulp.watch([paths.src.manifest, paths.platform.manifest], gulp.parallel('manifest'))
 })
 
