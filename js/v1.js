@@ -1468,16 +1468,14 @@ module.exports = {
 
 },{}],7:[function(require,module,exports){
 
-const i18n = {
-    getMessage: (key) => { return key }
-}
+const i18n = require('./i18n')
 
 
 module.exports = {
-    i18n,
+    i18n: i18n,
 }
 
-},{}],8:[function(require,module,exports){
+},{"./i18n":9}],8:[function(require,module,exports){
 
 class DomBuilder {
     static el(name, classes) {
@@ -1507,6 +1505,90 @@ module.exports = {
 }
 
 },{}],9:[function(require,module,exports){
+
+const messages = {
+    en: {
+        "rules_label_apostrophe": {
+            "message": "apostrophe"
+        },
+        "rules_label_at_word_start": {
+            "message": "at the beginning of a word"
+        },
+        "rules_label_after_consonants": {
+            "message": "after consonants"
+        },
+        "extension_action_install": {
+            "message": "Install browser extension"
+        },
+        "extension_action_import": {
+            "message": "Import"
+        },
+        "extension_action_copy_to_clipboard": {
+            "message": "Copy to clipboard"
+        },
+    },
+
+    ru: {
+        "rules_label_apostrophe": {
+            "message": "апостроф"
+        },
+        "rules_label_at_word_start": {
+            "message": "в начале слова"
+        },
+        "rules_label_after_consonants": {
+            "message": "после согласных"
+        },
+        "extension_action_install": {
+            "message": "Установить расширение для браузера"
+        },
+        "extension_action_import": {
+            "message": "Импортировать"
+        },
+        "extension_action_copy_to_clipboard": {
+            "message": "Копировать в буфер обмена"
+        },
+    },
+
+    uk: {
+        "rules_label_apostrophe": {
+            "message": "апостроф"
+        },
+        "rules_label_at_word_start": {
+            "message": "на початку слова"
+        },
+        "rules_label_after_consonants": {
+            "message": "після приголосних"
+        },
+        "extension_action_install": {
+            "message": "Встановити розширення до браузера"
+        },
+        "extension_action_import": {
+            "message": "Зберегти"
+        },
+        "extension_action_copy_to_clipboard": {
+            "message": "Скопіювати в буфер"
+        },
+    },
+}
+
+
+class Localizator {
+    constructor() {
+        const lang = (window.navigator || window.browser || window).language
+        this.lang = (lang || 'en').toLowerCase().substr(0, 2)
+        this.messages = messages[this.lang] || messages['en']
+    }
+
+    getMessage(key) {
+        const transl = this.messages[key] || {}
+        return transl.message || key
+    }
+}
+
+
+module.exports = new Localizator()
+
+},{}],10:[function(require,module,exports){
 
 class RegexBuilder {
     constructor(op, args) {
@@ -1581,7 +1663,7 @@ module.exports = {
     RegexBuilder,
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 
 const Dom = require('./dom_builder').DomBuilder
     , browserapi = require('./browserapi')
@@ -1595,6 +1677,13 @@ class Renderer {
         this.details_pane = doc.querySelector('.app .app-rules')
         this.details_actions_pane = doc.querySelector('.app .app-actions')
         this.preview_pane = doc.querySelector('.app .app-preview')
+
+        this._localize()
+    }
+
+    _localize() {
+        this.details_actions_pane.querySelector('.install a').textContent = browserapi.i18n.getMessage('extension_action_install')
+        this.details_actions_pane.querySelector('.import button span').textContent = browserapi.i18n.getMessage('extension_action_import')
     }
 
     show_table_details(table, actions) {
@@ -1833,7 +1922,7 @@ class Controller {
         // git.io needs CORS
         // See https://github.com/isaacs/github/issues/973
 
-        // const url = window.location.href
+        // const url = document.URL
         //
         // urlshortener.shorten(url, (short_url) => {
         //     this.view.show_share_pane(short_url)
@@ -1852,7 +1941,7 @@ module.exports = {
     render,
 }
 
-},{"./browserapi":7,"./dom_builder":8,"./translit":12,"./urlshortener":13}],11:[function(require,module,exports){
+},{"./browserapi":7,"./dom_builder":8,"./translit":13,"./urlshortener":14}],12:[function(require,module,exports){
 
 const punycode = require('punycode')
     , url = require('url')
@@ -1892,6 +1981,7 @@ class Sharer {
         }
 
         const fragment = Object.keys(rules)
+            .sort((a,b) => a.localeCompare(b))
             .map((key) => {
                 const rule = rules[key]
 
@@ -1923,6 +2013,8 @@ class Sharer {
         }
 
         const encoded = encodeURIComponent(punycode.encode(fragment))
+            .replace(/\-/g, '%2D')
+
         const url = `${this.baseUrl}?r=${encoded}`
         return url
     }
@@ -2012,13 +2104,20 @@ function decodeShareLink(link) {
 }
 
 
+function normalize(link) {
+    const table = decodeShareLink(link)
+    return makeShareLink(table)
+}
+
+
 module.exports = {
     Sharer,
     makeShareLink,
     decodeShareLink,
+    normalize,
 }
 
-},{"punycode":1,"url":5}],12:[function(require,module,exports){
+},{"punycode":1,"url":5}],13:[function(require,module,exports){
 const RegexBuilder = require('./regex_builder').RegexBuilder
 
 
@@ -2202,11 +2301,11 @@ module.exports = {
     Transliterator,
 }
 
-},{"./regex_builder":9}],13:[function(require,module,exports){
+},{"./regex_builder":10}],14:[function(require,module,exports){
 
 class GitioUrlShortener {
     constructor() {
-        this.serviceUrl = 'https://git.io'
+        this.serviceUrl = 'https://git.io/'
     }
 
     shorten(url, callback) {
@@ -2237,7 +2336,7 @@ module.exports = {
     shorten,
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 
 const sharer = require('./sharer')
     , renderer = require('./renderer')
@@ -2248,7 +2347,7 @@ function app() {
     const baseUrl = `${loc.protocol}//${loc.host}${loc.pathname}`
     const share = new sharer.Sharer(baseUrl)
 
-    const table = share.decodeShareLink(window.location.href)
+    const table = share.decodeShareLink(document.URL)
 
     renderer.render(table)
 }
@@ -2256,4 +2355,4 @@ function app() {
 
 window.addEventListener('load', () => app())
 
-},{"./renderer":10,"./sharer":11}]},{},[14]);
+},{"./renderer":11,"./sharer":12}]},{},[15]);

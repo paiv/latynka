@@ -8,7 +8,7 @@ function app() {
     const baseUrl = `${loc.protocol}//${loc.host}${loc.pathname}`
     const share = new sharer.Sharer(baseUrl)
 
-    const table = share.decodeShareLink(window.location.href)
+    const table = share.decodeShareLink(document.URL)
 
     renderer.render(table)
 }

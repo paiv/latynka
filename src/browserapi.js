@@ -1,9 +1,7 @@
 
-const i18n = {
-    getMessage: (key) => { return key }
-}
+const i18n = require('./i18n')
 
 
 module.exports = {
-    i18n,
+    i18n: i18n,
 }

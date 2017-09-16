@@ -11,6 +11,13 @@ class Renderer {
         this.details_pane = doc.querySelector('.app .app-rules')
         this.details_actions_pane = doc.querySelector('.app .app-actions')
         this.preview_pane = doc.querySelector('.app .app-preview')
+
+        this._localize()
+    }
+
+    _localize() {
+        this.details_actions_pane.querySelector('.install a').textContent = browserapi.i18n.getMessage('extension_action_install')
+        this.details_actions_pane.querySelector('.import button span').textContent = browserapi.i18n.getMessage('extension_action_import')
     }
 
     show_table_details(table, actions) {
@@ -249,7 +256,7 @@ class Controller {
         // git.io needs CORS
         // See https://github.com/isaacs/github/issues/973
 
-        // const url = window.location.href
+        // const url = document.URL
         //
         // urlshortener.shorten(url, (short_url) => {
         //     this.view.show_share_pane(short_url)
