@@ -10,7 +10,7 @@ describe('Sharer', function() {
 
         it('makes url for empty table', function() {
             const link = sharer.makeShareLink({rules:{}})
-            expect(link).toEqual('https://paiv.github.io/latynka/v1.html')
+            expect(link).toEqual('https://paiv.github.io/latynka/v1')
         })
     })
 

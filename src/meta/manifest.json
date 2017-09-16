@@ -36,7 +36,7 @@
             "js": ["js/content.js"]
         },
         {
-            "matches": ["https://paiv.github.io/latynka/v1.html*"],
+            "matches": ["https://paiv.github.io/latynka/v1*"],
             "run_at": "document_end",
             "js": ["js/github_v1.js"]
         }
