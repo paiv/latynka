@@ -83,13 +83,22 @@ describe('Transliterator', function() {
                     other: 'ji',
                 },
                 'к': 'k',
+                'ґ': {
+                    start: null,
+                },
             }
         })
 
         describe('at word start', function() {
+
             it('converts ї char', function() {
                 const converted = this.convert('ї їк')
                 expect(converted).toBe('yi yik')
+            })
+
+            it('clears ґ char', function() {
+                const converted = this.convert('ґ ґї')
+                expect(converted).toBe(' ji')
             })
         })
 
@@ -97,6 +106,11 @@ describe('Transliterator', function() {
             it('converts ї char', function() {
                 const converted = this.convert('кї к\'ї')
                 expect(converted).toBe('kji k\'ji')
+            })
+
+            it('clears ґ char', function() {
+                const converted = this.convert('кґ кґї')
+                expect(converted).toBe('k kji')
             })
         })
     })
@@ -176,6 +190,35 @@ describe('Transliterator', function() {
         it('converts apos-я', function() {
             const converted = this.convert('\'я м\'я')
             expect(converted).toBe('\'ja m\'ja')
+        })
+
+
+        describe('empty', function() {
+            beforeEach(function() {
+                this.rules = Object.assign({},
+                    this.cons_stub,
+                    this.vowel_stub,
+                    {
+                        'я': {
+                            cons: 'ia',
+                            other: 'ja',
+                        },
+                        'ю': {
+                            cons: null,
+                        },
+                    }
+                )
+            })
+
+            it('clears ю after cons', function() {
+                const converted = this.convert('кю')
+                expect(converted).toBe('k')
+            })
+
+            it('clears ю after non-cons', function() {
+                const converted = this.convert('яю')
+                expect(converted).toBe('ja')
+            })
         })
     })
 

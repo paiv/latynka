@@ -34,7 +34,7 @@ class Transliterator {
             if (typeof rule === 'object') {
 
                 if ('start' in rule) {
-                    const value = rule.start
+                    const value = rule.start || ''
                     word_start_rules[lokey] = value
                     word_start_rules[hikey] = TitleCase(value)
                     if (key.length > 1) {
@@ -44,12 +44,12 @@ class Transliterator {
                 }
 
                 if ('cons' in rule) {
-                    const value = rule.cons
+                    const value = rule.cons || ''
                     after_cons_rules[lokey] = value
                     after_cons_rules[hikey] = TitleCase(value)
                 }
 
-                const value = rule.other
+                const value = rule.other || ''
                 default_rules[lokey] = value
                 default_rules[hikey] = TitleCase(value)
                 if (key.length > 1) {
