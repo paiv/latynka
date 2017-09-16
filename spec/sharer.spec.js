@@ -1,7 +1,6 @@
 
 const sharer = require('../src/js/sharer')
     , punycode = require('punycode')
-    , BundledTranslitTables = require('../src/js/bundled_tables')
 
 
 describe('Sharer', function() {

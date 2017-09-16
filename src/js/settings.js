@@ -1,6 +1,5 @@
 
-const BundledTranslitTables = require('./bundled_tables')
-    , browserapi = require('./browserapi')
+const browserapi = require('./browserapi')
     , random = require('./random')
     , requests = require('./requests')
 
@@ -30,6 +29,7 @@ class Settings {
             site_blacklist: 'latynka:site_blacklist',
             selected_table_id: 'latynka:selected_table_id',
             active_table_ids: 'latynka:active_table_ids',
+            bundled_tables: 'latynka:bundled_tables',
             user_tables: 'latynka:user_tables',
             preview_text: 'latynka:preview_text',
             default_preview_text: 'latynka:default_preview_text',
@@ -151,9 +151,18 @@ class Settings {
     }
 
     bundled_tables() {
-        const all_tables = Object.keys(BundledTranslitTables).map((key) => Object.assign({id: key}, BundledTranslitTables[key]))
-        return all_tables.slice()
+        const all_tables = this._get_array(this.storage_keys.bundled_tables)
+        return all_tables
             .sort((a,b) => (a.title || '').localeCompare(b.title))
+    }
+
+    set_bundled_tables(value) {
+        const all_tables = Object.keys(value).map((key) => value[key])
+            .sort((a,b) => (a.title || '').localeCompare(b.title))
+
+        this.save({
+            bundled_tables: all_tables,
+        })
     }
 
     user_tables() {
@@ -375,6 +384,10 @@ class Settings {
     }
 
     set_defaults() {
+        requests.get(browserapi.runtime.getURL('data/bundled_tables.json'), (text) => {
+            this.set_bundled_tables(JSON.parse(text))
+        })
+
         requests.get(browserapi.runtime.getURL('data/preview.txt'), (text) => {
             this.default_preview_text = text
         })

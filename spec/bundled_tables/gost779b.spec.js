@@ -1,12 +1,11 @@
-const BundledTranslitTables = require('../../src/js/bundled_tables')
-    , Transliterator = require('../../src/js/translit').Transliterator
+const Transliterator = require('../../src/js/translit').Transliterator
+    , bundled_table = require('../../src/data/bundled_tables/gost779b.json')
 
 
 describe('GOST 7.79 System B', function() {
 
     beforeEach(function() {
-        this.table = BundledTranslitTables['gost779b']
-        this.translit = new Transliterator(this.table.rules)
+        this.translit = new Transliterator(bundled_table.rules)
         this.convert = (text) => this.translit.convert(text)
     })
 

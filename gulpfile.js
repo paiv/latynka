@@ -18,6 +18,7 @@ const paths = {
         css: 'src/css/*.css',
         img: 'src/img/*.png',
         translations: 'src/_locales/**/*.json',
+        bundled_tables: 'src/data/bundled_tables/*.json',
         data: ['src/data/*.txt', 'src/data/*.json'],
         manifest: 'src/meta/manifest.json',
     },
@@ -166,6 +167,23 @@ gulp.task('data:translations', (cb) => {
 })
 
 
+gulp.task('data:bundled_tables', (cb) => {
+    return gulp.src(paths.src.bundled_tables)
+        .pipe(mergejson({
+            json5: true,
+            fileName: 'bundled_tables.json',
+            edit: (obj) => {
+                const res = {}
+                res[obj.id] = obj
+                return res
+            },
+        }))
+        .pipe(json5())
+        .pipe(gulp.dest(paths.dest.data))
+        .on('end', cb)
+})
+
+
 gulp.task('data:settings', (cb) => {
     return gulp.src(paths.src.data)
         .pipe(gulp.dest(paths.dest.data))
@@ -173,7 +191,7 @@ gulp.task('data:settings', (cb) => {
 })
 
 
-gulp.task('data', gulp.parallel('data:translations', 'data:settings'))
+gulp.task('data', gulp.parallel('data:translations', 'data:bundled_tables', 'data:settings'))
 
 
 gulp.task('manifest', (cb) => {
@@ -205,6 +223,7 @@ gulp.task('watch', () => {
     gulp.watch(paths.src.css, gulp.parallel('styles'))
     gulp.watch(paths.src.img, gulp.parallel('images'))
     gulp.watch(paths.src.translations, gulp.parallel('data'))
+    gulp.watch(paths.src.bundled_tables, gulp.parallel('data'))
     gulp.watch(paths.src.data, gulp.parallel('data'))
     gulp.watch([paths.src.manifest, paths.platform.manifest], gulp.parallel('manifest'))
 })
