@@ -130,7 +130,7 @@ class Settings {
     }
 
     get blacklist_enabled() {
-        return this._get_bool(this.storage_keys.blacklist_enabled, false)
+        return this._get_bool(this.storage_keys.blacklist_enabled, true)
     }
     set blacklist_enabled(value) {
         this._store(this.storage_keys.blacklist_enabled, value)
