@@ -208,7 +208,6 @@ body {
 }
 
 .preview button {
-    display: none;
     position: absolute;
     top: -2em;
     right: 0.1em;

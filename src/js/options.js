@@ -389,7 +389,7 @@ class View {
             const textarea = Dom.el('textarea')
             rules_pane.appendChild(textarea)
 
-            textarea.textContent = text
+            textarea.value = text
 
             textarea.addEventListener('input', () => { this.onRulesEditorInput(textarea.value) })
         }
@@ -408,11 +408,17 @@ class View {
             preview.appendChild(textarea)
             textarea.readOnly = true
 
-            const editPreview = Dom.el('button')
+            const editPreview = Dom.el('button', ['edit-preview'])
             editPreview.textContent = 'edit'
             preview.appendChild(editPreview)
 
+            const savePreview = Dom.el('button', ['save-preview'])
+            savePreview.textContent = 'save'
+            savePreview.style.display = 'none'
+            preview.appendChild(savePreview)
+
             editPreview.addEventListener('click', () => { this.onPreviewEditClick() })
+            savePreview.addEventListener('click', () => { this.onPreviewSaveClick() })
         }
 
         Dom.resetChildren(this.details_pane, pane)
@@ -422,12 +428,30 @@ class View {
 
     get preview_text() {
         const textarea = this.details_pane.querySelector('.editor-info .preview textarea')
-        return textarea.textContent
+        return textarea.value
     }
 
     set preview_text(value) {
         const textarea = this.details_pane.querySelector('.editor-info .preview textarea')
-        textarea.textContent = value
+        textarea.value = value
+    }
+
+    preview_edit_mode(text, isEdit) {
+        this.preview_text = text
+
+        const preview_pane = this.details_pane.querySelector('.editor-info .preview')
+        const textarea = preview_pane.querySelector('textarea')
+        const editButton = preview_pane.querySelector('.edit-preview')
+        const saveButton = preview_pane.querySelector('.save-preview')
+
+        editButton.style.display = isEdit ? 'none' : 'inherit'
+        saveButton.style.display = isEdit ? 'inherit' : 'none'
+        textarea.readOnly = !isEdit
+        this.rules_editor.readOnly = isEdit
+
+        if (isEdit) {
+            textarea.focus()
+        }
     }
 
     get rules_editor_error() {
@@ -631,7 +655,7 @@ class Controller {
         }
         else if (this.selected_table_id) {
             if (this._in_edit_mode) {
-                this._editMode(this.selected_table_id)
+                this._editMode(this.selected_table_id, this.rules_text)
             }
             else {
                 this._showTableDetails(this.selected_table_id)
@@ -762,7 +786,7 @@ class Controller {
         }
     }
 
-    _editMode(table_id) {
+    _editMode(table_id, edited_text) {
         const table = this.settings.get_table(table_id) || {}
         table_id = table.id
         this._in_edit_mode = true
@@ -774,13 +798,15 @@ class Controller {
             .sort((a,b) => a.localeCompare(b))
             .forEach((key) => rules[key] = table.rules[key])
 
-        let rules_text
+        this.rules_text = edited_text
 
         try {
-            rules_text = jaaml.stringify(rules)
+            if (edited_text === undefined) {
+                this.rules_text = jaaml.stringify(rules)
+            }
         }
         catch (e) {
-            rules_text = e.toString()
+            this.rules_text = e.toString()
         }
 
         const actions = []
@@ -797,11 +823,9 @@ class Controller {
             handler: () => { this._cancelEdit(table_id) }
         })
 
-        this.view.show_table_editor(table, rules_text, actions)
+        this.view.show_table_editor(table, this.rules_text, actions)
 
-        const trx = new translit.Transliterator(table.rules)
-        const preview = trx.convert(this.settings.preview_text)
-        this.view.preview_text = preview
+        this._checkRulesEditor(this.rules_text)
     }
 
     _saveEdit(table) {
@@ -877,7 +901,8 @@ class Controller {
 
     _checkRulesEditor(rulesText) {
         try {
-            const rules = jaaml.parse(rulesText)
+            this.rules_text = rulesText
+            const rules = jaaml.parse(this.rules_text)
             const trx = new translit.Transliterator(rules)
             const preview = trx.convert(this.settings.preview_text)
             this.view.preview_text = preview
@@ -889,11 +914,11 @@ class Controller {
     }
 
     _editPreviewText() {
-
+        this.view.preview_edit_mode(this.settings.preview_text, true)
     }
 
     _savePreviewText() {
-
+        this.settings.preview_text = this.view.preview_text
     }
 }
 
