@@ -16,6 +16,7 @@ class Settings {
             'kmu_2010',
             'lucuk',
             'melnyk',
+            'nachasi',
             'nova_latynka',
             'iso9_1995',
             'tkpn_combo',
