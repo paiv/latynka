@@ -7,10 +7,16 @@ function app() {
     const loc = window.location
     const baseUrl = `${loc.protocol}//${loc.host}${loc.pathname}`
     const share = new sharer.Sharer(baseUrl)
+    const empty = {rules: {}}
 
-    const table = share.decodeShareLink(document.URL)
+    try {
+        var table = share.decodeShareLink(document.URL)
+    }
+    catch (e) {
+        console.log(e)
+    }
 
-    renderer.render(table)
+    renderer.render(table || empty)
 }
 
 
