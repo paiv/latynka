@@ -2,6 +2,7 @@
 
 const Settings = require('./settings').Settings
     , browserapi = require('./browserapi')
+    , validator = require('./rule_validator')
     , sharer = require('./sharer')
 
 
@@ -44,11 +45,20 @@ class Controller {
         try {
             const table = sharer.decodeShareLink(url)
             table.title = browserapi.i18n.getMessage('options_table_title_import_prefix') + new Date().toLocaleString()
+            table.rules = validator.filter(table.rules)
+
             this.settings.import_table(table)
-            return table.title
+
+            const canonical = sharer.makeShareLink(table)
+            if (canonical !== url) {
+                return {title: table.title, error: 'Imported with errors'}
+            }
+
+            return {title: table.title}
         }
         catch (e) {
             console.log(e)
+            return {error: e.toString()}
         }
     }
 }

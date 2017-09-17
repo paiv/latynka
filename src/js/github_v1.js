@@ -64,8 +64,8 @@ class Controller {
 
     _handle_import() {
         browserapi.runtime.sendMessage(null, {action: 'import_url'}, {}, (result) => {
-            if (!result) {
-                this.view.show_import_error('Import failed')
+            if (result && result.error) {
+                this.view.show_import_error(result.error || 'Import failed')
             }
         })
     }

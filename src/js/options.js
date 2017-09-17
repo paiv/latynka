@@ -7,6 +7,7 @@ const Settings = require('./settings').Settings
     , markdown = require('./markdown')
     , random = require('./random')
     , jaaml = require('./jaaml')
+    , validator = require('./rule_validator')
     , sharer = require('./sharer')
     , translit = require('./translit')
     , urlshortener = require('./urlshortener')
@@ -462,6 +463,13 @@ class View {
     set rules_editor_error(value) {
         const error = this.details_pane.querySelector('.editor-info .status')
         error.textContent = value
+
+        const saveButton = this.details_actions_pane.querySelector('#action-save-edit')
+        saveButton.disabled = !!value
+
+        const preview_pane = this.details_pane.querySelector('.editor-info .preview')
+        const previewEditButton = preview_pane.querySelector('.edit-preview')
+        previewEditButton.style.display = !!value ? 'none' : 'inherit'
     }
 
     _show_sharing(table) {
@@ -753,6 +761,7 @@ class Controller {
 
         this.view.selected_menu_row = _safe_element_id(newtable.id)
         this.selected_table_id = newtable.id
+        this.rules_text = undefined
         this._in_edit_mode = edit_mode
 
         this.settings.import_table(newtable)
@@ -903,6 +912,7 @@ class Controller {
         try {
             this.rules_text = rulesText
             const rules = jaaml.parse(this.rules_text)
+            this._validate_rules(rules || {})
             const trx = new translit.Transliterator(rules)
             const preview = trx.convert(this.settings.preview_text)
             this.view.preview_text = preview
@@ -913,12 +923,23 @@ class Controller {
         }
     }
 
+    _validate_rules(rules) {
+        validator.validate(rules)
+    }
+
     _editPreviewText() {
         this.view.preview_edit_mode(this.settings.preview_text, true)
     }
 
     _savePreviewText() {
-        this.settings.preview_text = this.view.preview_text
+        const previewText = this.view.preview_text
+
+        if (this.settings.preview_text === previewText) {
+            this._reloadView()
+        }
+        else {
+            this.settings.preview_text = previewText
+        }
     }
 }
 

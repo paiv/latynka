@@ -5,6 +5,11 @@ body {
 }
 
 
+textarea {
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
+
 .settings {
     display: flex;
 }
@@ -134,10 +139,17 @@ body {
 
 
 .rules-editor textarea {
-    font-family: "Lucida Console", Monaco, monospace;
     font-size: 150%;
     width: 100%;
     height: 100%;
+}
+
+.rules-editor textarea:read-only {
+    background-color: #f0f0f0;
+}
+
+.rules-editor textarea:-moz-read-only {
+    background-color: #f0f0f0;
 }
 
 
@@ -203,6 +215,7 @@ body {
 }
 
 .preview textarea {
+    font-size: 1em;
     width: 100%;
     height: 100%;
 }
