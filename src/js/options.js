@@ -850,7 +850,7 @@ class Controller {
             return
         }
 
-        const newtable = Object.assign({}, table, {rules: null})
+        const newtable = Object.assign({}, table, {rules: null, share_link: null, short_share_link: null})
         newtable.title = title
         newtable.rules = rules
 
