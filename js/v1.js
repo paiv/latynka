@@ -2154,7 +2154,7 @@ class Transliterator {
             if (typeof rule === 'object') {
 
                 if ('start' in rule) {
-                    const value = rule.start
+                    const value = rule.start || ''
                     word_start_rules[lokey] = value
                     word_start_rules[hikey] = TitleCase(value)
                     if (key.length > 1) {
@@ -2164,12 +2164,12 @@ class Transliterator {
                 }
 
                 if ('cons' in rule) {
-                    const value = rule.cons
+                    const value = rule.cons || ''
                     after_cons_rules[lokey] = value
                     after_cons_rules[hikey] = TitleCase(value)
                 }
 
-                const value = rule.other
+                const value = rule.other || ''
                 default_rules[lokey] = value
                 default_rules[hikey] = TitleCase(value)
                 if (key.length > 1) {
@@ -2180,9 +2180,10 @@ class Transliterator {
             }
             else {
 
-                if (key === '\'') {
-                    apos.forEach((key) => {
-                        default_rules[key] = rule
+                if (key.indexOf('\'') >= 0) {
+                    apos.forEach((char) => {
+                        const newkey = key.replace('\'', char)
+                        default_rules[newkey] = rule
                     })
                 }
                 else {
@@ -2199,7 +2200,6 @@ class Transliterator {
 
 
         const keys1 = Object.keys(default_rules).filter((key) => key.length === 1)
-            .concat('\'' in rules ? apos : [])
         const default_keyset1 = keys1.map((x) => [
             x.toLocaleLowerCase(),
             x.toLocaleUpperCase()
