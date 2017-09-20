@@ -14,6 +14,7 @@ class Settings {
             'abecadlo',
             'jirecek',
             'kmu_2010',
+            'lahoda',
             'lucuk',
             'melnyk',
             'nachasi',

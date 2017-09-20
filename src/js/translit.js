@@ -60,9 +60,10 @@ class Transliterator {
             }
             else {
 
-                if (key === '\'') {
-                    apos.forEach((key) => {
-                        default_rules[key] = rule
+                if (key.indexOf('\'') >= 0) {
+                    apos.forEach((char) => {
+                        const newkey = key.replace('\'', char)
+                        default_rules[newkey] = rule
                     })
                 }
                 else {
@@ -79,7 +80,6 @@ class Transliterator {
 
 
         const keys1 = Object.keys(default_rules).filter((key) => key.length === 1)
-            .concat('\'' in rules ? apos : [])
         const default_keyset1 = keys1.map((x) => [
             x.toLocaleLowerCase(),
             x.toLocaleUpperCase()

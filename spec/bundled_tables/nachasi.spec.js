@@ -2,7 +2,7 @@ const Transliterator = require('../../src/js/translit').Transliterator
     , bundled_table = require('../../src/data/bundled_tables/nachasi.json')
 
 
-fdescribe('Na chasi', function() {
+describe('Na chasi', function() {
 
     beforeEach(function() {
         this.translit = new Transliterator(bundled_table.rules)

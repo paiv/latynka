@@ -297,44 +297,46 @@ describe('Transliterator', function() {
                 this.cons_stub,
                 {
                     '\'': 'g',
+                    'в\'': 'vq',
                 }
             )
         })
 
         it('converts ascii 27', function() {
-            const converted = this.convert('\' к\' \'к к\'к')
-            expect(converted).toBe('g kg gk kgk')
+            const converted = this.convert('\' к\' \'к к\'к в\' кв\' в\'к кв\'к')
+            expect(converted).toBe('g kg gk kgk vq kvq vqk kvqk')
         })
 
         it('converts unicode 2019', function() {
-            const converted = this.convert('\u2019 k\u2019 \u2019k k\u2019k')
-            expect(converted).toBe('g kg gk kgk')
+            const converted = this.convert('\u2019 к\u2019 \u2019к к\u2019к в\u2019 кв\u2019 в\u2019к кв\u2019к')
+            expect(converted).toBe('g kg gk kgk vq kvq vqk kvqk')
         })
 
         it('converts unicode 02BC', function() {
-            const converted = this.convert('\u02BC k\u02BC \u02BCk k\u02BCk')
-            expect(converted).toBe('g kg gk kgk')
+            const converted = this.convert('\u02BC к\u02BC \u02BCк к\u02BCк в\u02BC кв\u02BC в\u02BCк кв\u02BCк')
+            expect(converted).toBe('g kg gk kgk vq kvq vqk kvqk')
         })
     })
+
 
     describe('apos erasure', function() {
 
         it('removes when empty', function() {
             this.rules = {'\'': ''}
-            const converted = this.convert('\'')
-            expect(converted).toBe('')
+            const converted = this.convert('\' \u2019 \u02BC')
+            expect(converted).toBe('  ')
         })
 
         it('removes when null', function() {
             this.rules = {'\'': null}
-            const converted = this.convert('\'')
-            expect(converted).toBe('')
+            const converted = this.convert('\' \u2019 \u02BC')
+            expect(converted).toBe('  ')
         })
 
         it('preserves when absent', function() {
             this.rules = {}
-            const converted = this.convert('\'')
-            expect(converted).toBe('\'')
+            const converted = this.convert('\' \u2019 \u02BC')
+            expect(converted).toBe('\' \u2019 \u02BC')
         })
     })
 })
