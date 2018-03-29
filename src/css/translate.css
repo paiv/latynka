@@ -1,0 +1,56 @@
+
+
+.smallprint {
+    font-size: smaller;
+    margin-top: 4rem;
+}
+
+
+.fxstack {
+    display: flex;
+}
+
+
+.fxitem {
+    width: 100%;
+}
+
+
+.pane {
+    border: 1px solid #cccccf;
+    min-height: 10em;
+    margin: 1rem;
+}
+
+
+button > img, button > span {
+    vertical-align: middle;
+}
+
+button > img {
+    width: 1em;
+}
+
+
+.actions {
+    min-height: 1.5rem;
+    margin: 1rem;
+}
+
+
+@media screen and (min-width: 800px) {
+
+    .fxstack {
+        flex-direction: row;
+        width: 100%;
+    }
+}
+
+
+@media screen and (max-width: 800px) {
+
+    .fxstack {
+        flex-direction: column;
+        width: 100%;
+    }
+}

@@ -68,16 +68,19 @@ tfoot {
 }
 
 
-tfoot td {
-    vertical-align: middle;
+tfoot button {
+    display: inline;
+    margin: auto;
+    width: auto;
 }
 
 
-tfoot button {
-    display: inline;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: auto;
-    margin-bottom: auto;
-    width: auto;
+button img {
+    height: 1em;
+}
+
+
+#open_translate {
+    position: absolute;
+    right: 0;
 }

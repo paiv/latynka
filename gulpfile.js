@@ -16,7 +16,7 @@ const paths = {
         jsroot: 'src/js',
         html: 'src/*.html',
         css: 'src/css/*.css',
-        img: 'src/img/*.png',
+        img: ['src/img/*.png', 'src/img/*.svg'],
         translations: 'src/_locales/**/*.json',
         bundled_tables: 'src/data/bundled_tables/*.json',
         data: ['src/data/*.txt', 'src/data/*.json'],
@@ -131,12 +131,27 @@ gulp.task('scripts:options', (cb) => {
 })
 
 
+gulp.task('scripts:translate', (cb) => {
+    var brwsrf = browserify({
+        entries: paths.src.jsroot + '/translate.js',
+        debug: false,
+    })
+
+    brwsrf.bundle()
+        .pipe(source('./translate.js'))
+        .pipe(streamify(stripjs()))
+        .pipe(gulp.dest(paths.dest.js))
+        .on('end', cb)
+})
+
+
 gulp.task('scripts', gulp.parallel(
     'scripts:content',
     'scripts:github_v1',
     'scripts:popup',
     'scripts:background',
-    'scripts:options'))
+    'scripts:options',
+    'scripts:translate'))
 
 
 gulp.task('pages', (cb) => {

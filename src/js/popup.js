@@ -28,6 +28,9 @@ class View {
 
         this.optionsButton = doc.querySelector('button[id="open_options"]')
         this.optionsButton.addEventListener('click', () => { this._onOptionsButtonClick() })
+
+        this.translateButton = doc.querySelector('button[id="open_translate"]')
+        this.translateButton.addEventListener('click', () => { this._onTranslateButtonClick() })
     }
 
     _changed() {
@@ -83,6 +86,10 @@ class View {
         this.onOptionsClicked()
     }
 
+    _onTranslateButtonClick() {
+        this.onTranslateClicked()
+    }
+
     set options_enabled(value) {
         if (!value && this.optionsButton) {
             this.optionsButton.parentNode.removeChild(this.optionsButton)
@@ -109,6 +116,7 @@ class Controller {
         this.view.onSiteEnabledChange = () => { this._excludeSiteOnActiveTab() }
         this.view.onReloadClicked = () => { this._reloadActiveTab() }
         this.view.onOptionsClicked = () => { this._openOptions() }
+        this.view.onTranslateClicked = () => { this._openTranslate() }
     }
 
     _storeSettings() {
@@ -184,6 +192,23 @@ class Controller {
 
     _openOptions() {
         browserapi.runtime.openOptionsPage()
+    }
+
+    _openTranslate() {
+        let url = browserapi.runtime.getURL('translate.html')
+
+        browserapi.tabs.query({url: url}, (views) => {
+            let tab = views[0]
+            if (tab) {
+                browserapi.tabs.update(tab.id, {active: true})
+                browserapi.windows.update(tab.windowId, {focused: true})
+            }
+            else {
+                browserapi.tabs.create({url: url}, (tab) => {
+                    browserapi.windows.update(tab.windowId, {focused: true})
+                })
+            }
+        })
     }
 }
 

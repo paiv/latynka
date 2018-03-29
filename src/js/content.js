@@ -92,7 +92,7 @@ class DomObserver {
 
         changes.forEach((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-                if (!node.parentElement.isContentEditable &&
+                if (!(node.parentElement && node.parentElement.isContentEditable) &&
                     !has_class_or_ancestor(node, this.excludeClass) &&
                     this.includeMatching.test(node.data)) {
 
