@@ -64,6 +64,12 @@ textarea {
 }
 
 
+.menu .xlist {
+    background: url("/img/burger.png") no-repeat right;
+    background-size: 0.5em 0.5em;
+}
+
+
 .right-pane .details-descr {
     margin-bottom: 0.4em;
 }
