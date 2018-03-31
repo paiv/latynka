@@ -33,7 +33,7 @@ class DomObserver {
     constructor(callback) {
         this.callback = callback || (() => {})
         this._delayed = true
-        this.includeMatching = /[абвгґдеєжзиіїйклмнопрстуфхцчшщьюя]/i
+        this.includeMatching = /[абвгґдеєжзиіїйклмнопрстуфхцчшщюя]/i
         this.excludeTags = new Set(['head', 'link', 'meta', 'script', 'style'])
         this.excludeClass = 'notranslit'
         this.changedNodes = new Set()

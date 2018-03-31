@@ -11,16 +11,12 @@ class Settings {
         this.callback = callback
 
         this.default_active_tables = [
-            'abecadlo',
             'jirecek',
             'kmu_2010',
-            'lahoda',
-            'lucuk',
-            'melnyk',
             'nachasi',
             'nova_latynka',
-            'iso9_1995',
             'tkpn_combo',
+            'paiv',
         ]
 
         this.storage_keys = {
