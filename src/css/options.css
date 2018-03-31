@@ -65,8 +65,10 @@ textarea {
 
 
 .menu .xlist {
-    background: url("/img/burger.png") no-repeat right;
+    background-image: url("/img/burger.png");
+    background-repeat: no-repeat;
     background-size: 0.5em 0.5em;
+    background-position: right;
 }
 
 
