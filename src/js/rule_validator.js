@@ -64,7 +64,7 @@ class Validator {
                         if (subvalue) {
                             if (typeof subvalue !== 'string') {
                                 if (dothrow) {
-                                    throw 'Unsupported vlaue ' + JSON.stringify(subvalue)
+                                    throw 'Unsupported value ' + JSON.stringify(subvalue)
                                 }
                                 else {
                                     delete filtered_rules[key]
