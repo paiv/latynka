@@ -72,6 +72,11 @@ textarea {
 }
 
 
+#menu-about input {
+    visibility: hidden;
+}
+
+
 .right-pane .details-descr {
     margin-bottom: 0.4em;
 }

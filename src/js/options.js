@@ -21,6 +21,7 @@ function _safe_element_id(value) {
 class View {
     constructor(doc) {
         this.onChange = () => {}
+        this.onMenuClickedAbout = () => {}
         this.onMenuClickedBlacklist = () => {}
         this.onMenuClickedWhitelist = () => {}
         this.onMenuClickedTableRow = (table_id) => {}
@@ -31,6 +32,11 @@ class View {
         this.onPreviewSaveClick = () => {}
 
         this.form = doc.querySelector('[id="settings"]')
+
+        const about_pane = this.form.querySelector('[id="menu-about"]')
+        this.about_item = about_pane.querySelector('span')
+        about_pane.addEventListener('click', () => { this._onAboutMenuClicked() })
+
         this.enabled = this.form.querySelector('input[id="ext_enabled"]')
         this.enabled.addEventListener('change', () => { this._onEnabledChange() })
 
@@ -58,6 +64,10 @@ class View {
 
     _changed() {
         this.onChange()
+    }
+
+    _onAboutMenuClicked() {
+        this.onMenuClickedAbout()
     }
 
     _onEnabledChange() {
@@ -568,6 +578,24 @@ class View {
         }
     }
 
+    show_about(empty_state) {
+        this._show_detail_actions([])
+
+        let text = browserapi.i18n.getMessage('options_about_details')
+        if (empty_state) {
+            const sempty = browserapi.i18n.getMessage('options_about_empty_state')
+            text = `${text}\n${sempty}`
+        }
+        const about_page = markdown.render(text)
+
+        const old = this.details_pane.querySelector('div')
+
+        const pane = Dom.el('div')
+        pane.appendChild(about_page)
+
+        this.details_pane.replaceChild(pane, old)
+    }
+
     _show_blackwhitelist_details(title, description, list_rules) {
         this._show_detail_actions([])
 
@@ -622,6 +650,7 @@ class Controller {
         this._localize_html(document)
 
         this.view.onChange = () => { this._storeSettings() }
+        this.view.onMenuClickedAbout = () => { this._showAbout() }
         this.view.onMenuClickedBlacklist = () => { this._showBlacklistDetails() }
         this.view.onMenuClickedWhitelist = () => { this._showWhitelistDetails() }
         this.view.onMenuClickedTableRow = (table_id) => { this._showTableDetails(table_id) }
@@ -654,6 +683,7 @@ class Controller {
         this.view.blacklist_enabled.checked = this.settings.blacklist_enabled
         this.view.whitelist_enabled.checked = this.settings.whitelist_enabled
         this.view.set_table_list(this.settings.all_tables(), new Set(this.settings.active_table_ids))
+        this._has_user_tables = this.settings.user_tables().length > 0
 
         if (this.view.selected_menu_row === 'site-blacklist') {
             this.view.show_blacklist_details(this.settings.site_blacklist)
@@ -670,12 +700,19 @@ class Controller {
             }
         }
         else {
-            this.view.clear_details()
+            this.view.selected_menu_row = 'about'
+            this.view.show_about(!this._has_user_tables)
         }
     }
 
     _localize_html(doc) {
         html_i18n.localize(doc)
+    }
+
+    _showAbout() {
+        this.view.selected_menu_row = 'about'
+        this.selected_table_id = null
+        this.view.show_about(!this._has_user_tables)
     }
 
     _showBlacklistDetails() {

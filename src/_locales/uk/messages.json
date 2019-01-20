@@ -20,6 +20,18 @@
     "popup_open_options": {
         "message": "Параметри"
     },
+    "options_about": {
+        "message": "Довідка",
+        "description": "Optons dialog: label for 'about' menu item"
+    },
+    "options_about_details": {
+        "message": "Автор: Pavel Ivashkov\n[https://github.com/paiv/latynka](https://github.com/paiv/latynka)\n",
+        "description": "Options dialog: about page"
+    },
+    "options_about_empty_state": {
+        "message": "Щоб додати нову таблицю, почніть з редагування однієї зі списку.",
+        "description": "Options dialog: about page, empty state"
+    },
     "options_global_settings_enabled": {
         "message": "Увімкнено"
     },

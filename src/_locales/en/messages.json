@@ -27,6 +27,18 @@
         "message": "Options",
         "description": "Popup dialog: button to open extension options"
     },
+    "options_about": {
+        "message": "About",
+        "description": "Optons dialog: label for 'about' menu item"
+    },
+    "options_about_details": {
+        "message": "Author: Pavel Ivashkov\n[https://github.com/paiv/latynka](https://github.com/paiv/latynka)\n",
+        "description": "Options dialog: about page"
+    },
+    "options_about_empty_state": {
+        "message": "To add new table, start editing one from the list.",
+        "description": "Options dialog: about page, empty state"
+    },
     "options_global_settings_enabled": {
         "message": "Enabled",
         "description": "Optons dialog: label for 'enabled' checkbox in global setting"
