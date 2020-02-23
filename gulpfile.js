@@ -52,9 +52,8 @@ const gulp = require('gulp')
     , source = require('vinyl-source-stream')
     , streamify = require('gulp-streamify')
     , del = require('del')
-    , json5 = require('gulp-json5-to-json')
     , mergejson = require('gulp-merge-json')
-    , editjson = require('gulp-json-modify')
+    , editjson = require('gulp-json-editor')
     , concat = require('gulp-concat')
     , stripjs = require('gulp-strip-comments')
     , zip = require('gulp-vinyl-zip')
@@ -185,7 +184,6 @@ gulp.task('data:translations', (cb) => {
 gulp.task('data:bundled_tables', (cb) => {
     return gulp.src(paths.src.bundled_tables)
         .pipe(mergejson({
-            json5: true,
             fileName: 'bundled_tables.json',
             edit: (obj) => {
                 const res = {}
@@ -193,7 +191,6 @@ gulp.task('data:bundled_tables', (cb) => {
                 return res
             },
         }))
-        .pipe(json5())
         .pipe(gulp.dest(paths.dest.data))
         .on('end', cb)
 })
@@ -212,12 +209,10 @@ gulp.task('data', gulp.parallel('data:translations', 'data:bundled_tables', 'dat
 gulp.task('manifest', (cb) => {
     return gulp.src([paths.src.manifest, paths.platform.manifest])
         .pipe(mergejson({
-            json5: true,
             fileName: 'manifest.json',
         }))
-        .pipe(json5())
         .pipe(gulp.dest(paths.dest.manifest))
-        .pipe(editjson({ key: 'version', value: package_json.version }))
+        .pipe(editjson({'version': package_json.version}))
         .pipe(gulp.dest(paths.dest.manifest))
         .on('end', cb)
 })

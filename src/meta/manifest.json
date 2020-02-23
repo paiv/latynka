@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Ukrajinsjka Latynka | Українська латинка",
+    "name": "Ukraïnśka Latynka | Українська латинка",
     "short_name": "Latynka",
     "author": "Pavel paiv Ivashkov",
     "description": "__MSG_extension_description__",
@@ -43,7 +43,7 @@
     ],
 
     "options_ui": {
-        "page": "options.html",
+        "page": "options.html"
     },
 
     "permissions": [
