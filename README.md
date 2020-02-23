@@ -1,6 +1,6 @@
 
-Ukrajinsjka Latynka / Українська Латинка
-========================================
+Ukraïnśka Latynka / Українська Латинка
+======================================
 
 [![build status](https://travis-ci.org/paiv/latynka.svg?branch=ci)](https://travis-ci.org/paiv/latynka)
 

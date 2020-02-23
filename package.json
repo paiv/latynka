@@ -1,7 +1,7 @@
 {
   "name": "latynka",
-  "version": "0.9.1",
-  "description": "Ukrajinsjka Latynka | Українська Латинка",
+  "version": "0.9.2",
+  "description": "Ukraïnśka Latynka | Українська Латинка",
   "dependencies": {},
   "devDependencies": {
     "browserify": "^16.5",
