@@ -2,7 +2,7 @@
 Ukraïnśka Latynka / Українська Латинка
 ======================================
 
-![](https://github.com/paiv/latynka/workflows/build-and-test/badge.svg)
+![](https://github.com/paiv/latynka/workflows/Publish/badge.svg)
 
 
 Install
