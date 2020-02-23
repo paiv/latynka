@@ -2,8 +2,8 @@
 Ukraïnśka Latynka / Українська Латинка
 ======================================
 
-![](https://github.com/paiv/latynka/workflows/Build/badge.svg)
-![](https://github.com/paiv/latynka/workflows/Publish/badge.svg)
+[![](https://github.com/paiv/latynka/workflows/Build/badge.svg)](https://github.com/paiv/latynka/actions)
+[![](https://github.com/paiv/latynka/workflows/Publish/badge.svg)](https://github.com/paiv/latynka/actions)
 
 
 Install
