@@ -2,8 +2,7 @@ name: Publish
 
 on:
   push:
-    tags:
-      - '*'
+    tags: ['*']
 
 jobs:
   publish:
@@ -22,9 +21,10 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
-    - run: npm install
-    - run: npm run build
-    - run: npm run test
+    - run: |
+        npm install
+        npm run build
+        npm run test
     - name: Publish Firefox Add-on
       run: npm run publish:firefox
       env:

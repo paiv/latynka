@@ -1,9 +1,10 @@
-name: Test
+name: Build
 
 on:
+  push:
+    branches: [master]
   pull_request:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   run-tests:
@@ -22,6 +23,7 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
-    - run: npm install
-    - run: npm run build
-    - run: npm run test
+    - run: |
+        npm install
+        npm run build
+        npm run test
