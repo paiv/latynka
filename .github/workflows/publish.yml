@@ -1,0 +1,40 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Cache Node.js modules
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+          ${{ runner.OS }}-
+    - run: npm install
+    - run: npm run build
+    - run: npm run test
+    - name: Publish Firefox Add-on
+      run: npm run publish:firefox
+      env:
+        WEB_EXT_ID: ${{ secrets.FIREFOX_WEB_EXT_ID }}
+        WEB_EXT_API_KEY: ${{ secrets.FIREFOX_WEB_EXT_API_KEY }}
+        WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_WEB_EXT_API_SECRET }}
+    - name: Publish Chrome Extension
+      run: npm run publish:chrome
+      env:
+        EXTENSION_ID: ${{ secrets.CHROME_WEBSTORE_EXTENSION_ID }}
+        CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
