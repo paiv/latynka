@@ -135,7 +135,7 @@ class Settings {
     }
 
     get selected_table_id() {
-        return this._get_string(this.storage_keys.selected_table_id, 'nova_latynka')
+        return this._get_string(this.storage_keys.selected_table_id, 'paiv')
     }
 
     set selected_table_id(value) {
