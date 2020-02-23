@@ -4,21 +4,20 @@
   "description": "Ukrajinsjka Latynka | Українська Латинка",
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^16.2.3",
+    "browserify": "^16.5",
     "chrome-webstore-upload-cli": "^1.2",
     "del": "^3.0.0",
-    "gulp": "next",
+    "gulp": "^4.0",
     "gulp-concat": "^2.6.1",
-    "gulp-json-modify": "^1.0.2",
-    "gulp-json5-to-json": "^0.2.1",
-    "gulp-merge-json": "^1.2.2",
+    "gulp-json-editor": "^2.5",
+    "gulp-merge-json": "^2.1",
     "gulp-streamify": "^1.0",
     "gulp-strip-comments": "^2.5",
     "gulp-vinyl-zip": "^2.1",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12",
     "jasmine": "^3.0",
     "vinyl-source-stream": "^2.0",
-    "webext": "^1.9.1-with-submit.1"
+    "web-ext-submit": "^4.1"
   },
   "scripts": {
     "test": "jasmine",
@@ -28,7 +27,7 @@
     "dist": "gulp dist",
     "watch": "PLATFORM=chrome gulp watch",
     "publish:chrome": "npm run build:chrome && webstore upload --source dist/build/chrome --auto-publish",
-    "publish:firefox": "npm run build:firefox && cd dist/build/firefox && webext submit"
+    "publish:firefox": "npm run build:firefox && cd dist/build/firefox && web-ext-submit"
   },
   "author": "Pavel paiv Ivashkov",
   "license": "MIT",
