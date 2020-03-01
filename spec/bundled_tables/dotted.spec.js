@@ -1,8 +1,8 @@
 const Transliterator = require('../../src/js/translit').Transliterator
-    , bundled_table = require('../../src/data/bundled_tables/paiv.json')
+    , bundled_table = require('../../src/data/bundled_tables/dotted.json')
 
 
-describe('PAIV', function() {
+describe('Dotted', function() {
 
     beforeEach(function() {
         this.translit = new Transliterator(bundled_table.rules)
@@ -76,42 +76,42 @@ describe('PAIV', function() {
 
         it('converts дь char', function() {
             const converted = this.convert('дь Дь дє дю дя')
-            expect(converted).toBe('d\u0301 D\u0301 d\u0301e d\u0301u d\u0301a')
+            expect(converted).toBe('d\u0307 D\u0307 d\u0307e d\u0307u d\u0307a')
         })
 
         it('converts зь char', function() {
             const converted = this.convert('зь Зь зє зю зя')
-            expect(converted).toBe('z\u0301 Z\u0301 z\u0301e z\u0301u z\u0301a')
+            expect(converted).toBe('z\u0307 Z\u0307 z\u0307e z\u0307u z\u0307a')
         })
 
         it('converts ль char', function() {
             const converted = this.convert('ль ЛЬ лє лю ля')
-            expect(converted).toBe('l\u0301 L\u0301 l\u0301e l\u0301u l\u0301a')
+            expect(converted).toBe('l\u0307 L\u0307 l\u0307e l\u0307u l\u0307a')
         })
 
         it('converts нь char', function() {
             const converted = this.convert('нь Нь нє ню ня')
-            expect(converted).toBe('n\u0301 N\u0301 n\u0301e n\u0301u n\u0301a')
+            expect(converted).toBe('n\u0307 N\u0307 n\u0307e n\u0307u n\u0307a')
         })
 
         it('converts рь char', function() {
             const converted = this.convert('рь Рь рє рю ря')
-            expect(converted).toBe('r\u0301 R\u0301 r\u0301e r\u0301u r\u0301a')
+            expect(converted).toBe('r\u0307 R\u0307 r\u0307e r\u0307u r\u0307a')
         })
 
         it('converts сь char', function() {
             const converted = this.convert('сь Сь сє сю ся')
-            expect(converted).toBe('s\u0301 S\u0301 s\u0301e s\u0301u s\u0301a')
+            expect(converted).toBe('s\u0307 S\u0307 s\u0307e s\u0307u s\u0307a')
         })
 
         it('converts ть char', function() {
             const converted = this.convert('ть Ть тє тю тя')
-            expect(converted).toBe('t\u0301 T\u0301 t\u0301e t\u0301u t\u0301a')
+            expect(converted).toBe('t\u0307 T\u0307 t\u0307e t\u0307u t\u0307a')
         })
 
         it('converts ць char', function() {
             const converted = this.convert('ць Ць цє цю ця')
-            expect(converted).toBe('c\u0301 C\u0301 c\u0301e c\u0301u c\u0301a')
+            expect(converted).toBe('c\u0307 C\u0307 c\u0307e c\u0307u c\u0307a')
         })
     })
 
@@ -119,7 +119,7 @@ describe('PAIV', function() {
 
         it('converts consonant-єюя', function() {
             const converted = this.convert('тє тю тя')
-            expect(converted).toBe('t\u0301e t\u0301u t\u0301a')
+            expect(converted).toBe('t\u0307e t\u0307u t\u0307a')
         })
 
         it('converts word start єюя', function() {
@@ -140,6 +140,6 @@ describe('PAIV', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ščast́am bješ žuk ïx glyću v fon j ǧedź prič.')
+        expect(converted).toBe('Ščasṫam bješ žuk ïx glyċu v fon j ǧedż prič.')
     })
 })

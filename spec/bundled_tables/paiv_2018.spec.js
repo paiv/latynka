@@ -1,8 +1,8 @@
 const Transliterator = require('../../src/js/translit').Transliterator
-    , bundled_table = require('../../src/data/bundled_tables/paiv.json')
+    , bundled_table = require('../../src/data/bundled_tables/paiv_2018.json')
 
 
-describe('PAIV', function() {
+describe('PAIV 2018', function() {
 
     beforeEach(function() {
         this.translit = new Transliterator(bundled_table.rules)
@@ -21,7 +21,7 @@ describe('PAIV', function() {
 
     it('converts шщ chars', function() {
         const converted = this.convert('ш Ш щ Щ')
-        expect(converted).toBe('š Š šč Šč')
+        expect(converted).toBe('š Š ŝ Ŝ')
     })
 
     it('converts иіїй chars', function() {
@@ -140,6 +140,6 @@ describe('PAIV', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ščast́am bješ žuk ïx glyću v fon j ǧedź prič.')
+        expect(converted).toBe('Ŝast́am bješ žuk ïx glyću v fon j ǧedź prič.')
     })
 })
