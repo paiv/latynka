@@ -156,6 +156,13 @@ describe('Sharer', function() {
                     this.decode('some')
                 }).toThrow()
             })
+
+            it('ignores unhandled query parameter', function() {
+                const obj = new sharer.Sharer('http://url/')
+                const a1w1 = encodeURIComponent(punycode.encode('1а1w'))
+                const table = obj.decodeShareLink('http://url?r=' + a1w1 + '&some=something')
+                expect(table.rules).toEqual({'а':'w'})
+            })
         })
     })
 

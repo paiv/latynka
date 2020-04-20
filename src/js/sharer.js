@@ -85,8 +85,14 @@ class Sharer {
             throw new SharerDecoderError('Unknown URI ' + JSON.stringify(link))
         }
 
-        const search = (parsedUrl.search || '').substr(3)
-        const fragment = punycode.decode(decodeURIComponent(search))
+        const search = (parsedUrl.search || '').substr(1)
+        const encoded = search.split('&')
+            .filter(p => p.substring(0, 2) === 'r=')
+            .map(p => p.substring(2))
+        if (!encoded.length) {
+            return table
+        }
+        const fragment = punycode.decode(decodeURIComponent(encoded[0]))
 
         const rules = {}
 
