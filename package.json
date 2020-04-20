@@ -1,10 +1,10 @@
 {
   "name": "latynka",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Ukraïnśka Latynka | Українська Латинка",
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^16.5",
+    "browserify": "^16.5.1",
     "chrome-webstore-upload-cli": "^1.2",
     "del": "^3.0.0",
     "gulp": "^4.0",
