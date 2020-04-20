@@ -118,6 +118,11 @@ describe('Pseudo-Jirecek', function() {
             const converted = this.convert('ць Ць')
             expect(converted).toBe('ć Ć')
         })
+
+        it('converts cons-ьо chars', function() {
+            const converted = this.convert('дьо зьо льо ньо рьо сьо тьо цьо')
+            expect(converted).toBe('dio zio lio nio rio sio tio cio')
+        })
     })
 
     describe('єюя', function() {
