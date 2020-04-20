@@ -89,7 +89,7 @@ class Sharer {
         const encoded = search.split('&')
             .filter(p => p.substring(0, 2) === 'r=')
             .map(p => p.substring(2))
-        if (!encoded) {
+        if (!encoded.length) {
             return table
         }
         const fragment = punycode.decode(decodeURIComponent(encoded[0]))
