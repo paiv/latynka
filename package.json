@@ -22,6 +22,7 @@
     "test": "jasmine",
     "build:chrome": "PLATFORM=chrome gulp clean && PLATFORM=chrome gulp build",
     "build:firefox": "PLATFORM=firefox gulp clean && PLATFORM=firefox gulp build",
+    "build:safari": "PLATFORM=safari gulp clean && PLATFORM=safari gulp build",
     "build": "npm run build:chrome && npm run build:firefox",
     "dist": "gulp dist",
     "watch": "PLATFORM=chrome gulp watch",

@@ -23,12 +23,8 @@ const paths = {
         manifest: 'src/meta/manifest.json',
     },
 
-    chrome: {
-        manifest: 'platform/chrome/manifest.json',
-    },
-
-    firefox: {
-        manifest: 'platform/firefox/manifest.json',
+    platform: {
+        manifest: `platform/${platform}/manifest.json`,
     },
 
     dest: {
@@ -43,8 +39,6 @@ const paths = {
         dist_archive: build.root + '/' + platform + '.zip',
     }
 }
-
-paths.platform = paths[platform]
 
 
 const gulp = require('gulp')
