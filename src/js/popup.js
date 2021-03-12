@@ -196,19 +196,7 @@ class Controller {
 
     _openTranslate() {
         let url = browserapi.runtime.getURL('translate.html')
-
-        browserapi.tabs.query({url: url}, (views) => {
-            let tab = views[0]
-            if (tab) {
-                browserapi.tabs.update(tab.id, {active: true})
-                browserapi.windows.update(tab.windowId, {focused: true})
-            }
-            else {
-                browserapi.tabs.create({url: url}, (tab) => {
-                    browserapi.windows.update(tab.windowId, {focused: true})
-                })
-            }
-        })
+        browserapi.tabs.create({url: url})
     }
 }
 

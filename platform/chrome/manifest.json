@@ -5,6 +5,8 @@
         "persistent": false
     },
 
+    "incognito": "split",
+
     "options_page": "options.html",
     "options_ui": {
         "chrome_style": true

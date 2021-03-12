@@ -48,7 +48,7 @@
 
     "permissions": [
         "storage",
-        "tabs",
+        "activeTab",
         "https://git.io/"
     ]
 }
