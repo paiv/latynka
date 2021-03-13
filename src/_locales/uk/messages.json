@@ -25,7 +25,7 @@
         "description": "Optons dialog: label for 'about' menu item"
     },
     "options_about_details": {
-        "message": "Автор: Pavel Ivashkov\n[https://github.com/paiv/latynka](https://github.com/paiv/latynka)\n",
+        "message": "Автор: Pavel Ivashkov\n[https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
         "description": "Options dialog: about page"
     },
     "options_about_empty_state": {
@@ -36,16 +36,16 @@
         "message": "Увімкнено"
     },
     "options_site_blacklist": {
-        "message": "Чорний список сайтів"
+        "message": "Виключені сайти"
     },
     "options_site_whitelist": {
-        "message": "Білий список сайтів"
+        "message": "Пріоритетні сайти"
     },
     "options_blacklist_details_title": {
-        "message": "Чорний список сайтів"
+        "message": "Виключені сайти"
     },
     "options_whitelist_details_title": {
-        "message": "Білий список сайтів"
+        "message": "Пріоритетні сайти"
     },
     "options_blacklist_details_description": {
         "message": "Не чіпати такі сайти. Один рядок – один сайт. Формат: `hostname[:port]`"

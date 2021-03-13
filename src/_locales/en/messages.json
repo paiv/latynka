@@ -1,122 +1,122 @@
 {
     "extension_description": {
-        "message": "Convert between Cyrillic and Latin script of Ukrainian language",
+        "message": "Convert Ukrainian Cyrillic to Latin script",
         "description": "Describes the extension, max 132 characters"
     },
     "extension_button_tooltip": {
         "message": "Latynka",
-        "description": "Browser button: tooltip text when hovered"
+        "description": "Browser button: the tooltip on button hover"
     },
     "popup_global_settings_enabled": {
         "message": "Enabled",
-        "description": "Popup dialog: label for 'enabled' checkbox in global setting"
+        "description": "Popup dialog: the label for 'enabled' checkbox in global setting"
     },
     "popup_site_enabled": {
-        "message": "Enabled for this site",
-        "description": "Popup dialog: label for 'this site enabled for processing' checkbox"
+        "message": "Enabled on this site",
+        "description": "Popup dialog: the label for 'this site is enabled for processing' checkbox"
     },
     "popup_tables_header": {
         "message": "translit table",
-        "description": "Popup dialog: header text for transliteration table list"
+        "description": "Popup dialog: the header for transliteration table list"
     },
     "popup_reload_page": {
         "message": "Reload page",
-        "description": "Popup dialog: button to reload page on active tab"
+        "description": "Popup dialog: the button to reload active browser tab"
     },
     "popup_open_options": {
         "message": "Options",
-        "description": "Popup dialog: button to open extension options"
+        "description": "Popup dialog: the button to open extension options"
     },
     "options_about": {
         "message": "About",
-        "description": "Optons dialog: label for 'about' menu item"
+        "description": "Optons dialog: the label for 'about' menu item"
     },
     "options_about_details": {
-        "message": "Author: Pavel Ivashkov\n[https://github.com/paiv/latynka](https://github.com/paiv/latynka)\n",
-        "description": "Options dialog: about page"
+        "message": "Author: Pavel Ivashkov\n[https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
+        "description": "Options dialog: 'about' page"
     },
     "options_about_empty_state": {
         "message": "To add new table, start editing one from the list.",
-        "description": "Options dialog: about page, empty state"
+        "description": "Options dialog: 'about' page, empty state"
     },
     "options_global_settings_enabled": {
         "message": "Enabled",
-        "description": "Optons dialog: label for 'enabled' checkbox in global setting"
+        "description": "Optons dialog: the label for 'enabled' checkbox in global setting"
     },
     "options_site_blacklist": {
-        "message": "Site blacklist",
-        "description": "Optons dialog: label for 'site blacklist' menu item"
+        "message": "Excluded sites",
+        "description": "Optons dialog: label for 'excluded sites' menu item"
     },
     "options_site_whitelist": {
-        "message": "Site whitelist",
-        "description": "Optons dialog: label for 'site whitelist' menu item"
+        "message": "Priority sites",
+        "description": "Optons dialog: label for 'priority sites' menu item"
     },
     "options_blacklist_details_title": {
-        "message": "Site blacklist",
-        "description": "Blacklist editor: title label"
+        "message": "Excluded sites",
+        "description": "Excluded sites editor: title label"
     },
     "options_whitelist_details_title": {
-        "message": "Site whitelist",
-        "description": "Whitelist editor: title label"
+        "message": "Priority sites",
+        "description": "Priority sites editor: title label"
     },
     "options_blacklist_details_description": {
         "message": "Never process these sites. One site per line. Format is: `hostname[:port]`",
-        "description": "Blacklist editor: description text"
+        "description": "Excluded sites editor: description text"
     },
     "options_whitelist_details_description": {
         "message": "Always process these sites (even if Enabled option is off). One site per line. Format is: `hostname[:port]`",
-        "description": "Whitelist editor: description text"
+        "description": "Priority sites editor: description text"
     },
     "options_table_title_copy_prefix": {
         "message": "Copy of ",
-        "description": "Options dialog: title prefix to prepend on copy"
+        "description": "Options dialog: the prefix to add to table title on copy"
     },
     "options_table_title_import_prefix": {
         "message": "Imported ",
-        "description": "Options dialog: title prefix to prepend on import"
+        "description": "Options dialog: the prefix to add to table title on import"
     },
     "options_table_action_edit": {
         "message": "edit",
-        "description": "Options dialogs, table details: title for edit action"
+        "description": "Options dialogs, table details: the edit action"
     },
     "options_table_action_copy": {
         "message": "copy",
-        "description": "Options dialogs, table details: title for copy action"
+        "description": "Options dialogs, table details: the copy action"
     },
     "options_table_action_delete": {
         "message": "delete",
-        "description": "Options dialogs, table details: title for delete action"
+        "description": "Options dialogs, table details: the delete action"
     },
     "options_table_confirm_delete": {
         "message": "Confirm Delete",
-        "description": "Options dialogs, table details: label asking to confirm delete action"
+        "description": "Options dialogs, table details: the confirmation to delete"
     },
     "options_table_action_share": {
         "message": "share",
-        "description": "Options dialogs, table details: title for share action"
+        "description": "Options dialogs, table details: the share action"
     },
     "options_rules_editor_save": {
         "message": "save",
-        "description": "Options dialogs, rules editor: title for save action"
+        "description": "Options dialogs, rules editor: the save action"
     },
     "options_rules_editor_cancel": {
         "message": "cancel",
-        "description": "Options dialogs, rules editor: title for editor cancel action"
+        "description": "Options dialogs, rules editor: the cancel action"
     },
     "rules_label_apostrophe": {
         "message": "apostrophe",
-        "description": "Rules editor: label for 'apostrophe' rule"
+        "description": "Rules editor: the label for 'apostrophe' rule"
     },
     "rules_label_at_word_start": {
         "message": "at the beginning of a word",
-        "description": "Rules editor: label for 'at the beginning of a word' rule"
+        "description": "Rules editor: the label for 'at the beginning of a word' rule"
     },
     "rules_label_after_consonants": {
         "message": "after consonants",
-        "description": "Rules editor: label for 'after consonants' rule"
+        "description": "Rules editor: the label for 'after consonants' rule"
     },
     "share_dialog_close": {
         "message": "close",
-        "description": "Share dialog: label for 'close' action"
+        "description": "Share dialog: the close action"
     }
 }
