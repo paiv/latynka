@@ -8,12 +8,7 @@ const Settings = require('./settings').Settings
 
 class Controller {
     constructor() {
-        this.disabledIcon = {
-            16: 'img/icon-disabled16.png',
-            32: 'img/icon-disabled32.png',
-        }
-
-        this.settings = new Settings(browserapi.storage, () => { this._check_enabled() })
+        this.settings = new Settings(browserapi.storage, () => {})
 
         browserapi.runtime.onMessage.addListener((message, sender, callback) => this._handleMessage(message, sender, callback))
 
@@ -22,16 +17,6 @@ class Controller {
 
     _handleInstalled(details) {
         this.settings.set_defaults()
-    }
-
-    _check_enabled() {
-        this._set_browser_icon(this.settings.enabled)
-    }
-
-    _set_browser_icon(enabled) {
-        const manifest = browserapi.runtime.getManifest()
-        const icons = enabled ? manifest.browser_action.default_icon : this.disabledIcon
-        browserapi.browserAction.setIcon({ path: icons })
     }
 
     _handleMessage(message, sender, callback) {
