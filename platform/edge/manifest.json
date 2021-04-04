@@ -1,0 +1,14 @@
+{
+    "background": {
+        "persistent": false
+    },
+
+    "incognito": "split",
+
+    "options_ui": {
+        "browser_style": true
+    },
+
+    "permissions": [
+    ]
+}
