@@ -1,7 +1,5 @@
 
 body {
-    display: flex;
-    justify-content: center;
     margin: 0;
     padding: 0;
 }
@@ -34,7 +32,6 @@ textarea {
 .menu {
     white-space: nowrap;
     border-right: 1px solid #ccc;
-    max-width: 20em;
     max-height: 40em;
     overflow-x: scroll;
 }
