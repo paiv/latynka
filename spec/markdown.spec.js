@@ -93,24 +93,28 @@ describe('Markdown', function() {
         it('renders a link', function() {
             const link = S.el('a', [S.text('some text')])
             link.href = 'some link'
+            link.target = '_blank'
             expect(this.render('[some text](some link)')).toEqual(S.div(link))
         })
 
         it('renders text + link', function() {
             const link = S.el('a', [S.text('some title')])
             link.href = 'some link'
+            link.target = '_blank'
             expect(this.render('prefix [some title](some link)')).toEqual(S.el('div', [S.text('prefix '), link]))
         })
 
         it('renders link + text', function() {
             const link = S.el('a', [S.text('some title')])
             link.href = 'some link'
+            link.target = '_blank'
             expect(this.render('[some title](some link) suffix')).toEqual(S.el('div', [link, S.text(' suffix')]))
         })
 
         it('renders link inside text', function() {
             const link = S.el('a', [S.text('some title')])
             link.href = 'some link'
+            link.target = '_blank'
             expect(this.render('prefix [some title](some link) suffix')).toEqual(
                 S.el('div', [S.text('prefix '), link, S.text(' suffix')]))
         })
