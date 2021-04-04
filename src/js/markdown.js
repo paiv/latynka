@@ -98,6 +98,7 @@ class Markdown {
                         const url = so.slice(href_start + 1).join('')
                         const link = this.dom.el('a')
                         link.href = url
+                        link.target = '_blank'
                         link.appendChild(this.dom.text(link_title))
                         nodes.push(link)
 
