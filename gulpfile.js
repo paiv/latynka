@@ -16,10 +16,10 @@ const paths = {
         jsroot: 'src/js',
         html: 'src/*.html',
         css: 'src/css/*.css',
-        img: ['src/img/*.png', 'src/img/*.svg'],
+        img: 'src/img/*.{png,svg}',
         translations: 'src/_locales/**/*.json',
         bundled_tables: 'src/data/bundled_tables/*.json',
-        data: ['src/data/*.txt', 'src/data/*.json'],
+        data: 'src/data/*.{txt,json}',
         manifest: 'src/meta/manifest.json',
     },
 
@@ -43,14 +43,12 @@ const paths = {
 
 const gulp = require('gulp')
     , browserify = require('browserify')
-    , source = require('vinyl-source-stream')
-    , streamify = require('gulp-streamify')
-    , del = require('del')
-    , mergejson = require('gulp-merge-json')
-    , editjson = require('gulp-json-editor')
-    , concat = require('gulp-concat')
-    , stripjs = require('gulp-strip-comments')
-    , zip = require('gulp-vinyl-zip')
+    , fs = require('fs')
+    , mergejson = gulp.mergejson
+    , source = gulp.source
+    , streamify = gulp.streamify
+    , stripjs = gulp.stripComments
+    , zip = gulp.zip
     , package_json = require('./package.json')
 
 
@@ -144,7 +142,8 @@ gulp.task('scripts', gulp.parallel(
     'scripts:popup',
     'scripts:background',
     'scripts:options',
-    'scripts:translate'))
+    'scripts:translate',
+))
 
 
 gulp.task('pages', (cb) => {
@@ -204,9 +203,11 @@ gulp.task('manifest', (cb) => {
     return gulp.src([paths.src.manifest, paths.platform.manifest])
         .pipe(mergejson({
             fileName: 'manifest.json',
+            transform: (merged) => {
+                merged['version'] = package_json.version
+                return merged
+            },
         }))
-        .pipe(gulp.dest(paths.dest.manifest))
-        .pipe(editjson({'version': package_json.version}))
         .pipe(gulp.dest(paths.dest.manifest))
         .on('end', cb)
 })
@@ -216,20 +217,7 @@ gulp.task('build', gulp.parallel('scripts', 'pages', 'styles', 'images', 'data',
 
 
 gulp.task('clean', (cb) => {
-    del(build.platform)
-    cb()
-})
-
-
-gulp.task('watch', () => {
-    gulp.watch(paths.src.js, gulp.parallel('scripts'))
-    gulp.watch(paths.src.html, gulp.parallel('pages'))
-    gulp.watch(paths.src.css, gulp.parallel('styles'))
-    gulp.watch(paths.src.img, gulp.parallel('images'))
-    gulp.watch(paths.src.translations, gulp.parallel('data'))
-    gulp.watch(paths.src.bundled_tables, gulp.parallel('data'))
-    gulp.watch(paths.src.data, gulp.parallel('data'))
-    gulp.watch([paths.src.manifest, paths.platform.manifest], gulp.parallel('manifest'))
+    fs.rm(build.platform, {recursive:true, force:true}, cb)
 })
 
 

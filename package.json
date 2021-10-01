@@ -6,17 +6,13 @@
   "devDependencies": {
     "browserify": "^17.0",
     "chrome-webstore-upload-cli": "^2.0",
-    "del": "^6.0.0",
-    "gulp": "^4.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-json-editor": "^2.5.6",
-    "gulp-merge-json": "^2.1",
-    "gulp-streamify": "^1.0",
-    "gulp-strip-comments": "^2.5",
-    "gulp-vinyl-zip": "^2.5.0",
+    "decomment": "^0.9",
+    "glob": "^7.0",
+    "gulp": "file:./tools/sip",
     "jasmine": "^3.9.0",
-    "vinyl-source-stream": "^2.0",
-    "web-ext-submit": "^6.4"
+    "lodash.merge": "^4.0",
+    "web-ext-submit": "^6.4",
+    "yazl": "^2.0"
   },
   "scripts": {
     "test": "jasmine",
@@ -26,7 +22,6 @@
     "build:edge": "PLATFORM=edge gulp clean && PLATFORM=edge gulp build",
     "build": "npm run build:chrome && npm run build:firefox && npm run build:edge",
     "dist": "gulp dist",
-    "watch": "PLATFORM=chrome gulp watch",
     "publish:chrome": "npm run build:chrome && webstore upload --source dist/build/chrome --auto-publish",
     "publish:firefox": "npm run build:firefox && cd dist/build/firefox && web-ext-submit"
   },

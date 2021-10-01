@@ -1,0 +1,11 @@
+{
+  "name": "sip",
+  "version": "1.0.0",
+  "description": "Not gulp",
+  "main": "gulp.js",
+  "author": "paiv",
+  "license": "MIT",
+  "bin": {
+    "gulp": "./cli.js"
+  }
+}
