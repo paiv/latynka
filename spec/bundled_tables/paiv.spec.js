@@ -136,6 +136,14 @@ describe('PAIV', function() {
             const converted = this.convert("'є 'ю 'я")
             expect(converted).toBe('je ju ja')
         })
+
+        describe('borrowed', function() {
+
+            it('converts й-єюя', function() {
+                const converted = this.convert('йє йю йя')
+                expect(converted).toBe('jje jju jja')
+            })
+        })
     })
 
     it('converts pangram', function() {

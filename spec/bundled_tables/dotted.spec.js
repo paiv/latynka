@@ -16,12 +16,12 @@ describe('Dotted', function() {
 
     it('converts гґх chars', function() {
         const converted = this.convert('г Г ґ Ґ х Х')
-        expect(converted).toBe('g G ǧ Ǧ x X')
+        expect(converted).toBe('h H g G x X')
     })
 
     it('converts шщ chars', function() {
         const converted = this.convert('ш Ш щ Щ')
-        expect(converted).toBe('š Š šč Šč')
+        expect(converted).toBe('ṡ Ṡ ṡċ Ṡċ')
     })
 
     it('converts иіїй chars', function() {
@@ -38,7 +38,7 @@ describe('Dotted', function() {
 
         it('converts жз chars', function() {
             const converted = this.convert('ж Ж з')
-            expect(converted).toBe('ž Ž z')
+            expect(converted).toBe('ż Ż z')
         })
 
         it('converts л char', function() {
@@ -68,7 +68,7 @@ describe('Dotted', function() {
 
         it('converts цч chars', function() {
             const converted = this.convert('ц Ц ч Ч')
-            expect(converted).toBe('c C č Č')
+            expect(converted).toBe('c C ċ Ċ')
         })
     })
 
@@ -76,42 +76,75 @@ describe('Dotted', function() {
 
         it('converts дь char', function() {
             const converted = this.convert('дь Дь дє дю дя')
-            expect(converted).toBe('d\u0307 D\u0307 d\u0307e d\u0307u d\u0307a')
+            expect(converted).toBe('ḍ Ḍ ḍe ḍu ḍa')
         })
 
         it('converts зь char', function() {
             const converted = this.convert('зь Зь зє зю зя')
-            expect(converted).toBe('z\u0307 Z\u0307 z\u0307e z\u0307u z\u0307a')
+            expect(converted).toBe('ẓ Ẓ ẓe ẓu ẓa')
         })
 
         it('converts ль char', function() {
             const converted = this.convert('ль ЛЬ лє лю ля')
-            expect(converted).toBe('l\u0307 L\u0307 l\u0307e l\u0307u l\u0307a')
+            expect(converted).toBe('ḷ Ḷ ḷe ḷu ḷa')
         })
 
         it('converts нь char', function() {
             const converted = this.convert('нь Нь нє ню ня')
-            expect(converted).toBe('n\u0307 N\u0307 n\u0307e n\u0307u n\u0307a')
+            expect(converted).toBe('ṇ Ṇ ṇe ṇu ṇa')
         })
 
         it('converts рь char', function() {
             const converted = this.convert('рь Рь рє рю ря')
-            expect(converted).toBe('r\u0307 R\u0307 r\u0307e r\u0307u r\u0307a')
+            expect(converted).toBe('ṛ Ṛ ṛe ṛu ṛa')
         })
 
         it('converts сь char', function() {
             const converted = this.convert('сь Сь сє сю ся')
-            expect(converted).toBe('s\u0307 S\u0307 s\u0307e s\u0307u s\u0307a')
+            expect(converted).toBe('ṣ Ṣ ṣe ṣu ṣa')
         })
 
         it('converts ть char', function() {
             const converted = this.convert('ть Ть тє тю тя')
-            expect(converted).toBe('t\u0307 T\u0307 t\u0307e t\u0307u t\u0307a')
+            expect(converted).toBe('ṭ Ṭ ṭe ṭu ṭa')
         })
 
         it('converts ць char', function() {
             const converted = this.convert('ць Ць цє цю ця')
-            expect(converted).toBe('c\u0307 C\u0307 c\u0307e c\u0307u c\u0307a')
+            expect(converted).toBe('c\u0323 C\u0323 c\u0323e c\u0323u c\u0323a')
+        })
+
+        describe('borrowed', function() {
+
+            it('converts бь char', function() {
+                const converted = this.convert('бь Бь бє бю бя')
+                expect(converted).toBe('ḅ Ḅ ḅe ḅu ḅa')
+            })
+
+            it('converts вь char', function() {
+                const converted = this.convert('вь Вь вє вю вя')
+                expect(converted).toBe('ṿ Ṿ ṿe ṿu ṿa')
+            })
+
+            it('converts гь char', function() {
+                const converted = this.convert('гь Гь гє гю гя')
+                expect(converted).toBe('ḥ Ḥ ḥe ḥu ḥa')
+            })
+
+            it('converts ґь char', function() {
+                const converted = this.convert('ґь Ґь ґє ґю ґя')
+                expect(converted).toBe('g\u0323 G\u0323 g\u0323e g\u0323u g\u0323a')
+            })
+
+            it('converts кь char', function() {
+                const converted = this.convert('кь Кь кє кю кя')
+                expect(converted).toBe('ḳ Ḳ ḳe ḳu ḳa')
+            })
+
+            it('converts мь char', function() {
+                const converted = this.convert('мь Мь мє мю мя')
+                expect(converted).toBe('ṃ Ṃ ṃe ṃu ṃa')
+            })
         })
     })
 
@@ -119,7 +152,7 @@ describe('Dotted', function() {
 
         it('converts consonant-єюя', function() {
             const converted = this.convert('тє тю тя')
-            expect(converted).toBe('t\u0307e t\u0307u t\u0307a')
+            expect(converted).toBe('ṭe ṭu ṭa')
         })
 
         it('converts word start єюя', function() {
@@ -136,10 +169,18 @@ describe('Dotted', function() {
             const converted = this.convert("'є 'ю 'я")
             expect(converted).toBe('je ju ja')
         })
+
+        describe('borrowed', function() {
+
+            it('converts й-єюя', function() {
+                const converted = this.convert('йє йю йя')
+                expect(converted).toBe('jje jju jja')
+            })
+        })
     })
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Ščasṫam bješ žuk ïx glyċu v fon j ǧedż prič.')
+        expect(converted).toBe('Ṡċasṭam bjeṡ żuk ïx hlyc\u0323u v fon j gedẓ priċ.')
     })
 })
