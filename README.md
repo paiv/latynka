@@ -2,7 +2,7 @@
 Ukraïnśka Latynka / Українська Латинка
 ======================================
 
-[![standwithukraine](https://user-images.githubusercontent.com/196601/157239128-793471de-f636-48eb-9361-518e984c63d6.svg)](https://ukrainewar.carrd.co/)
+[![standwithukraine](https://user-images.githubusercontent.com/196601/157244482-73d3c54c-3e3f-4fac-8eb0-cc32cd5d746e.svg)](https://ukrainewar.carrd.co/)
 [![](https://github.com/paiv/latynka/workflows/Build/badge.svg)](https://github.com/paiv/latynka/actions)
 [![](https://github.com/paiv/latynka/workflows/Publish/badge.svg)](https://github.com/paiv/latynka/actions)
 
