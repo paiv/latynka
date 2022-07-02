@@ -5,14 +5,14 @@
   "dependencies": {},
   "devDependencies": {
     "browserify": "^17.0",
-    "chrome-webstore-upload-cli": "^2.0",
+    "chrome-webstore-upload-cli": "^2.1",
     "decomment": "^0.9.5",
-    "glob": "^7.0",
+    "glob": "^8.0",
     "gulp": "file:./tools/sip",
-    "jasmine": "^3.10.0",
-    "lodash.merge": "^4.0",
-    "web-ext-submit": "^6.5.0",
-    "yazl": "^2.0"
+    "jasmine": "^4.2",
+    "lodash.merge": "^4.6",
+    "web-ext-submit": "^7.1",
+    "yazl": "^2.5"
   },
   "scripts": {
     "test": "jasmine",
