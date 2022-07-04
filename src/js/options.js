@@ -10,7 +10,6 @@ const Settings = require('./settings').Settings
     , validator = require('./rule_validator')
     , sharer = require('./sharer')
     , translit = require('./translit')
-    , urlshortener = require('./urlshortener')
 
 
 function _safe_element_id(value) {
@@ -518,11 +517,13 @@ class View {
         full_pane.classList.add('full-link')
         pane.appendChild(full_pane)
 
+        if (table.short_share_link) {
         const placeholder = 'loading...'
 
         let short_pane = link_row(table.short_share_link || placeholder, 'Short URL:')
         short_pane.classList.add('short-link')
         pane.appendChild(short_pane)
+        }
 
         details.replaceChild(pane, rules_pane)
     }
@@ -918,16 +919,6 @@ class Controller {
         })
 
         this.view.show_share_pane(table, actions)
-
-        if (!table.short_share_link) {
-            urlshortener.shorten(table.share_link, (short_url) => {
-                table.short_share_link = short_url
-
-                if (this.selected_table_id == table_id) {
-                    this.view.show_share_pane(table, actions)
-                }
-            })
-        }
     }
 
     _checkRulesEditorInput(text) {
