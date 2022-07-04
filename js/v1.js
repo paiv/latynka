@@ -1,5 +1,5 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){
+(function (global){(function (){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
 
@@ -534,7 +534,7 @@
 
 }(this));
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1727,6 +1727,7 @@ class Renderer {
         const rule_cell = (pane, rules, ch) => {
             const lokey = ch.toLocaleLowerCase()
             const hikey = ch.toLocaleUpperCase()
+            const aposkey = '\'' + lokey
 
             let cell = pane.querySelector('#' + rule_tag(lokey))
             if (!cell) {
@@ -1799,7 +1800,7 @@ class Renderer {
             }
 
 
-            const extra = Object.keys(rules).filter((key) => key.startsWith(lokey) && key !== lokey)
+            const extra = Object.keys(rules).filter((key) => (key.startsWith(lokey) && key !== lokey) || key.startsWith(aposkey))
 
             extra.forEach((key) => {
                 const extra_row = Dom.el('div', ['rule-extra'])
@@ -2250,7 +2251,7 @@ class Transliterator {
             // or word inner
             rxb.or(
                 rxb.orgroup(  // 3
-                    ...(default_keyset2.length > 0 ? default_keyset2 : ['xx'])
+                    ...(default_keyset2.length > 0 ? default_keyset2 : ['\uFFFC\uFFFC'])
                 ),
                 rxb.group(  // 4
                     rxb.chars(consonants_keyset),
