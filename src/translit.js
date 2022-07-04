@@ -124,7 +124,7 @@ class Transliterator {
             // or word inner
             rxb.or(
                 rxb.orgroup(  // 3
-                    ...(default_keyset2.length > 0 ? default_keyset2 : ['xx'])
+                    ...(default_keyset2.length > 0 ? default_keyset2 : ['\uFFFC\uFFFC'])
                 ),
                 rxb.group(  // 4
                     rxb.chars(consonants_keyset),
