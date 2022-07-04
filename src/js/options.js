@@ -234,6 +234,7 @@ class View {
         const rule_cell = (pane, rules, ch) => {
             const lokey = ch.toLocaleLowerCase()
             const hikey = ch.toLocaleUpperCase()
+            const aposkey = '\'' + lokey
 
             let cell = pane.querySelector('#' + rule_tag(lokey))
             if (!cell) {
@@ -306,7 +307,7 @@ class View {
             }
 
 
-            const extra = Object.keys(rules).filter((key) => key.startsWith(lokey) && key !== lokey)
+            const extra = Object.keys(rules).filter((key) => (key.startsWith(lokey) && key !== lokey) || key.startsWith(aposkey))
 
             extra.forEach((key) => {
                 const extra_row = Dom.el('div', ['rule-extra'])
