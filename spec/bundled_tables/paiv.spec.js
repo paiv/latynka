@@ -115,33 +115,33 @@ describe('PAIV', function() {
         })
     })
 
-    describe('єюя', function() {
+    describe('єюяї', function() {
 
         it('converts consonant-єюя', function() {
-            const converted = this.convert('тє тю тя')
-            expect(converted).toBe('t\u0301e t\u0301u t\u0301a')
+            const converted = this.convert('тє тю тя тї')
+            expect(converted).toBe('t\u0301e t\u0301u t\u0301a tji')
         })
 
-        it('converts word start єюя', function() {
-            const converted = this.convert('є ю я')
-            expect(converted).toBe('je ju ja')
+        it('converts word start єюяї', function() {
+            const converted = this.convert('є ю я ї')
+            expect(converted).toBe('je ju ja ï')
         })
 
-        it('converts vowel-єюя', function() {
-            const converted = this.convert('ає аю ая')
-            expect(converted).toBe('aje aju aja')
+        it('converts vowel-єюяї', function() {
+            const converted = this.convert('ає аю ая аї')
+            expect(converted).toBe('aje aju aja aï')
         })
 
-        it('converts apos-єюя', function() {
-            const converted = this.convert("'є 'ю 'я")
-            expect(converted).toBe('je ju ja')
+        it('converts apos-єюяї', function() {
+            const converted = this.convert("'є 'ю 'я 'ї")
+            expect(converted).toBe('je ju ja ji')
         })
 
         describe('borrowed', function() {
 
-            it('converts й-єюя', function() {
-                const converted = this.convert('йє йю йя')
-                expect(converted).toBe('jje jju jja')
+            it('converts й-єюяї', function() {
+                const converted = this.convert('йє йю йя йї')
+                expect(converted).toBe('jje jju jja jji')
             })
         })
     })

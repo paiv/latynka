@@ -1,6 +1,6 @@
 {
     "id": "paiv",
-    "title": "Avtorśka 2020",
+    "title": "Avtorśka 2022",
     "description": "",
     "rules": {
         "а": "a",
@@ -18,7 +18,11 @@
         "з": "z",
         "и": "y",
         "і": "i",
-        "ї": "ï",
+        "ї": {
+            "cons": "ji",
+            "other": "ï"
+        },
+        "'ї": "ji",
         "й": "j",
         "йє": "jje",
         "йю": "jju",
