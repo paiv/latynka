@@ -885,7 +885,7 @@ class Controller {
             rules = jaaml.parse(text)
         }
         catch (e) {
-            console.log(e.toString())
+            console.error(e)
             return
         }
 

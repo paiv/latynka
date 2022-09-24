@@ -33,7 +33,7 @@ class HtmlLocalizer {
                         textContent = textContent.replace(this.replaceMatching, value)
                     }
                     else {
-                        console.log('missing localization for ', key)
+                        console.error('missing localization for ', key)
                     }
                 }
 

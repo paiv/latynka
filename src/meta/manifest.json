@@ -15,17 +15,7 @@
         "128": "img/icon128.png"
     },
 
-    "browser_action": {
-        "default_icon": {
-            "16": "img/icon16.png",
-            "32": "img/icon32.png"
-        },
-        "default_popup": "popup.html",
-        "default_title": "__MSG_extension_button_tooltip__"
-    },
-
     "background": {
-        "scripts": ["js/background.js"]
     },
 
     "content_scripts": [
@@ -48,7 +38,6 @@
 
     "permissions": [
         "storage",
-        "activeTab",
-        "https://git.io/"
+        "activeTab"
     ]
 }

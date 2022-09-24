@@ -1,16 +1,21 @@
 {
-    "minimum_chrome_version": "22",
+    "manifest_version": 3,
+    "minimum_chrome_version": "88",
+
+    "action": {
+        "default_icon": {
+            "16": "img/icon16.png",
+            "32": "img/icon32.png"
+        },
+        "default_popup": "popup.html",
+        "default_title": "__MSG_extension_button_tooltip__"
+    },
 
     "background": {
-        "persistent": false
+        "service_worker": "js/background.js"
     },
 
     "incognito": "split",
-
-    "options_page": "options.html",
-    "options_ui": {
-        "chrome_style": true
-    },
 
     "permissions": [
     ]

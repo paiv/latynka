@@ -42,7 +42,7 @@ class Controller {
             return {title: table.title}
         }
         catch (e) {
-            console.log(e)
+            console.error(e)
             return {error: e.toString()}
         }
     }

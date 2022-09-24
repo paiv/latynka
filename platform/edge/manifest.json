@@ -1,6 +1,16 @@
 {
     "background": {
+        "scripts": ["js/background.js"],
         "persistent": false
+    },
+
+    "browser_action": {
+        "default_icon": {
+            "16": "img/icon16.png",
+            "32": "img/icon32.png"
+        },
+        "default_popup": "popup.html",
+        "default_title": "__MSG_extension_button_tooltip__"
     },
 
     "incognito": "split",
