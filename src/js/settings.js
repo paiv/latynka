@@ -12,10 +12,10 @@ class Settings {
 
         this.default_active_tables = [
             'jirecek',
-            'kmu_2010',
             'nachasi',
             'nova_latynka',
-            'tkpn_combo',
+            'dstu_diac',
+            'iso9_1968',
             'paiv',
         ]
 
