@@ -137,6 +137,11 @@ describe('PAIV', function() {
             expect(converted).toBe('je ju ja ji')
         })
 
+        it('converts ьї', function() {
+            const converted = this.convert("тьї")
+            expect(converted).toBe('t\u0301ji')
+        })
+
         describe('borrowed', function() {
 
             it('converts й-єюяї', function() {
