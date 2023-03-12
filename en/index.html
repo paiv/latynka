@@ -24,9 +24,14 @@
 <meta property="fb:app_id" content="1983141625288795">
 
 <style>
-body {
-    display: flex;
-    justify-content: center;
+@media screen and (min-width:50rem) {
+    body {
+        display: flex;
+        justify-content: center;
+    }
+}
+@supports (font: -apple-system-body) {
+    :root { font: -apple-system-body; }
 }
 div.t {
     background-color: #f4f4fc;
