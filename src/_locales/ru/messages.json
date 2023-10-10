@@ -20,20 +20,21 @@
     "popup_open_options": {
         "message": "Параметры"
     },
+    "popup_open_converter": {
+        "message": "Транслит"
+    },
     "options_about": {
         "message": "О Программе",
         "description": "Optons dialog: label for 'about' menu item"
     },
     "options_about_details": {
-        "message": "Автор: Pavel Ivashkov\n[https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
-        "description": "Options dialog: about page"
-    },
-    "options_about_empty_state": {
-        "message": "Для добавления новой таблицы, начните с редактирования одной из списка.",
-        "description": "Options dialog: about page, empty state"
+        "message": "Автор: Pavel Ivashkov [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n"
     },
     "options_global_settings_enabled": {
         "message": "Включено"
+    },
+    "options_preview_title": {
+        "message": "Пример"
     },
     "options_site_blacklist": {
         "message": "Игнорируемые сайты"
@@ -53,11 +54,20 @@
     "options_whitelist_details_description": {
         "message": "Всегда обрабатывать сайты из этого списка (при любом состоянии Включено). Указывайте один сайт в строке, формат: `hostname[:port]`"
     },
+    "options_table_list_guide": {
+        "message": "Для добавления новой таблицы, начните с редактирования одной из списка."
+    },
+    "options_table_list_header": {
+        "message": "Таблицы транслитерации"
+    },
     "options_table_title_copy_prefix": {
         "message": "Копия "
     },
     "options_table_title_import_prefix": {
         "message": "Импорт "
+    },
+    "options_table_action_close": {
+        "message": "закрыть"
     },
     "options_table_action_edit": {
         "message": "изменить"
@@ -91,5 +101,8 @@
     },
     "share_dialog_close": {
         "message": "закрыть"
+    },
+    "translate_subtitle": {
+        "message": "Транслитерация кириллицы в латиницу."
     }
 }

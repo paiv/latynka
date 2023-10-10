@@ -1,50 +1,53 @@
+:root {
+    color-scheme: light dark;
+}
+
+
+@supports (font: -apple-system-body) {
+    :root { font: -apple-system-body; }
+    button { font: -apple-system-body; }
+}
+
 
 body {
     margin: 0;
     padding: 0;
-}
-
-
-textarea {
-    font-family: "Lucida Console", Monaco, monospace;
-}
-
-
-.settings {
     display: flex;
-    margin-left: 0 auto;
-    margin-right: 0 auto;
+    justify-content: left;
+    flex-flow: row-reverse wrap;
 }
 
 
-.pane {
-    margin: 0;
-    padding: 0.5em;
+#wily {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    min-width: 15em;
 }
 
 
-.right-pane {
-    width: 40em;
-    overflow-x: scroll;
+#settings {
+    flex: 1;
+    margin-right: 2em;
+    min-width: 20em;
 }
 
 
-.menu {
-    white-space: nowrap;
-    border-right: 1px solid #ccc;
-    max-height: 40em;
-    overflow-x: scroll;
+textarea, input[type="text"] {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: inherit;
+    display: block;
+    width: 92%;
 }
 
 
 .menu input[type="checkbox"] {
-    margin-right: 0.4em;
+    margin-right: 0.3rem;
 }
 
 .menu span {
-    vertical-align: middle;
+    vertical-align: baseline;
 }
-
 
 .menu .menu-row {
     display: block;
@@ -52,39 +55,53 @@ textarea {
     padding-bottom: 0.2em;
 }
 
-
 .menu .menu-row-selected {
     background-color: #eee;
 }
 
+.menu-row > button {
+    margin-left: 1rem;
+}
 
-.menu-general {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    border-bottom: 1px solid #ccc;
+.xlist {
+    margin: 1em 0;
+}
+
+.xlist .site-list {
+    height: 8em;
+}
+
+.site-list textarea {
+    height: 92%;
+    margin: 0.8em 0;
 }
 
 
-.menu .xlist {
-    background-image: url("/img/burger.png");
-    background-repeat: no-repeat;
-    background-size: 0.5em 0.5em;
-    background-position: right;
+.details-title {
+    font-size: 1.65em;
 }
 
-
-#menu-about input {
-    visibility: hidden;
+.details-descr {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
 }
 
-
-.right-pane .details-descr {
-    margin-bottom: 0.4em;
+.details-actions {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
+.details-actions button {
+    margin: 0 0.2rem;
+}
 
-.right-pane .rules {
-    max-height: 40em;
+.details-actions .confirm-delete {
+    color: red;
+    margin: 0.2rem 0;
+}
+
+.rules {
+    max-height: 16em;
     overflow-y: scroll;
 }
 
@@ -94,8 +111,7 @@ textarea {
 }
 
 .rule-cell .rule-main {
-    padding-top: 1em;
-    padding-bottom: 0.2em;
+    padding: 0.1em 0;
     display: flex;
     flex-flow: row nowrap;
 }
@@ -106,88 +122,22 @@ textarea {
     margin-top: 0.17em;
 }
 
-.rule-main .rule-thumb {
+.rule-thumb {
     background-color: #f0f0f0;
-    font-size: 4em;
+}
+
+.rule-main .rule-thumb {
+    font-size: 2em;
     margin-right: 0.2em;
     padding-left: 0.2em;
     padding-right: 0.2em;
 }
 
 .rule-extra .rule-thumb {
-    background-color: #f0f0f0;
     font-size: 2em;
     margin-right: 0.17em;
     padding-left: 0.1em;
     padding-right: 0.1em;
-}
-
-
-.right-pane .site-list {
-    height: 40em;
-    overflow-y: scroll;
-}
-
-
-.site-list textarea {
-    width: 100%;
-    height: 100%;
-}
-
-
-.right-pane .title-editor {
-    margin-bottom: 1em;
-}
-
-
-.title-editor input {
-    display: block;
-    width: 80%;
-}
-
-
-.right-pane .rules-editor {
-    height: 40em;
-    overflow-y: scroll;
-}
-
-
-.rules-editor textarea {
-    font-size: 150%;
-    width: 100%;
-    height: 100%;
-}
-
-.rules-editor textarea:read-only {
-    background-color: #f0f0f0;
-}
-
-.rules-editor textarea:-moz-read-only {
-    background-color: #f0f0f0;
-}
-
-
-#details-actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: auto;
-    padding: 1em;
-}
-
-#details-actions button {
-    display: block;
-    margin-bottom: 1em;
-    margin-left: auto;
-}
-
-#details-actions .confirm-delete {
-    color: red;
-    margin-bottom: 1em;
-}
-
-
-.right-pane .share {
 }
 
 
@@ -199,49 +149,73 @@ textarea {
     margin-right: 1em;
 }
 
-
 .share .share-descr {
     width: 100%;
 }
-
 
 .share input[type="text"] {
     flex-grow: 1;
 }
 
 
-#details .editor-info {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    width: 30%;
-    height: 70%;
-    bottom: 1em;
-    right: 1em;
+.preview {
+    margin-top: 1em;
 }
 
-.editor-info .preview {
-    width: 100%;
-    flex: 1;
-    height: auto;
-    margin-bottom: 2em;
-    position: relative;
+.preview label {
+    font-size: 1rem;
+    margin-right: 1rem;
 }
 
-.preview textarea {
-    font-size: 1em;
-    width: 100%;
-    height: 100%;
+.preview-actions {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
-.preview button {
-    position: absolute;
-    top: -2em;
-    right: 0.1em;
-    margin-left: auto;
+.preview-actions button {
+    margin: 0 0.2rem;
 }
+
+
+.title-editor {
+    margin-bottom: 1em;
+}
+
+.title-editor input {
+    display: block;
+    font-size: 1.65em;
+    width: 80%;
+}
+
+
+.rules-editor {
+}
+
+.rules-editor textarea {
+    font-size: 1.5em;
+    width: 92%;
+    height: 14em;
+}
+
 
 .editor-info .status {
     color: red;
-    margin-bottom: 1em;
+    margin: 1em 0;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    html { background-color: #202124; color: #9aa0a6; }
+    a { color: #8ab4f8; }
+    button { color: #8ab4f8; background-color: rgba(0,0,0,0); border: 1px solid #5f6368; border-radius: 0.3rem; }
+    button > img {
+        background-color: rgba(255, 255, 255, 0.45);
+        padding: 0.1rem;
+        border-radius: 0.2rem;
+    }
+    body, table, textarea { color: inherit; }
+    textarea { background-color: inherit; }
+    .details-actions .confirm-delete, .editor-info .status { color: #f88a8a; }
+    .rule-thumb { background-color: #151618; }
+    .menu .menu-row-selected { background-color: rgba(0,0,0,0.5); }
 }

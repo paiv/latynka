@@ -45,10 +45,10 @@ class Controller {
         this.settings = new Settings(browserapi.storage, () => { this._onSettingsChange() })
 
         this.view = new View(document)
+        this._localize_html(document)
+        
         this.view.onChange = () => { this._translateInput() }
         this.view.onClipButtonTouched = () => { this._copyTextToClipboard(this.view.preview_pane) }
-
-        this._localize_html(document)
     }
 
     _localize_html(doc) {

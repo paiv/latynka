@@ -8,27 +8,44 @@
 </head>
 <body>
 
-<div id="settings" class="settings">
+<div id="wily">
+    <div id="details">
+    </div>
+    <div id="preview" class="preview">
+    </div>
+</div>
 
-    <div class="pane menu">
-        <div class="menu-general">
-            <div id="menu-about" class="menu-row"><input type="checkbox"><span>__MSG_options_about__</span></div>
-            <label><input type="checkbox" id="ext_enabled">__MSG_options_global_settings_enabled__</label>
-            <div id="menu-site-blacklist" class="xlist"><input type="checkbox"><span>__MSG_options_site_blacklist__</span></div>
-            <div id="menu-site-whitelist" class="xlist"><input type="checkbox"><span>__MSG_options_site_whitelist__</span></div>
-        </div>
-        <div id="translit_tables">
-            <div></div>
+<div id="settings" class="settings menu">
+    <div class="menu-general">
+        <div id="menu-about">
+            <div>__MSG_options_about__</div>
         </div>
     </div>
-
-    <div class="pane right-pane">
-        <div id="details">
-            <div></div>
+    <h2></h2>
+    <div>
+        <label><input type="checkbox" id="ext_enabled">__MSG_options_global_settings_enabled__</label>
+    </div>
+    <h2>__MSG_options_site_blacklist__</h2>
+    <details>
+    <div id="menu-site-blacklist" class="xlist">
+        <label><input type="checkbox"><span>__MSG_options_site_blacklist__</span></label>
+        <div>__MSG_options_blacklist_details_description__</div>
+        <div class="site-list">
+            <textarea></textarea>
         </div>
-        <div id="details-actions">
-            <div></div>
+    </div>
+    <div id="menu-site-whitelist" class="xlist">
+        <label><input type="checkbox"><span>__MSG_options_site_whitelist__</span></label>
+        <div>__MSG_options_whitelist_details_description__</div>
+        <div class="site-list">
+            <textarea></textarea>
         </div>
+    </div>
+    </details>
+    <div id="translit_tables">
+        <h2>__MSG_options_table_list_header__</h2>
+        <p>__MSG_options_table_list_guide__</p>
+        <div></div>
     </div>
 </div>
 

@@ -27,21 +27,25 @@
         "message": "Options",
         "description": "Popup dialog: the button to open extension options"
     },
+    "popup_open_converter": {
+        "message": "Convert",
+        "description": "Popup dialog: the button to open text converter tool"
+    },
     "options_about": {
         "message": "About",
         "description": "Optons dialog: the label for 'about' menu item"
     },
     "options_about_details": {
-        "message": "Author: Pavel Ivashkov\n[https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
+        "message": "Author: Pavel Ivashkov [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
         "description": "Options dialog: 'about' page"
-    },
-    "options_about_empty_state": {
-        "message": "To add new table, start editing one from the list.",
-        "description": "Options dialog: 'about' page, empty state"
     },
     "options_global_settings_enabled": {
         "message": "Enabled",
         "description": "Optons dialog: the label for 'enabled' checkbox in global setting"
+    },
+    "options_preview_title": {
+        "message": "Preview",
+        "description": "Options dialog: title for the preview text"
     },
     "options_site_blacklist": {
         "message": "Excluded sites",
@@ -67,6 +71,14 @@
         "message": "Always process these sites (even if Enabled option is off). One site per line. Format is: `hostname[:port]`",
         "description": "Priority sites editor: description text"
     },
+    "options_table_list_guide": {
+        "message": "To add new table, start editing one from the list.",
+        "description": "Options dialog: hints for managing rule tables"
+    },
+    "options_table_list_header": {
+        "message": "Transliteration tables",
+        "description": "Options dialog: title for translit table list"
+    },
     "options_table_title_copy_prefix": {
         "message": "Copy of ",
         "description": "Options dialog: the prefix to add to table title on copy"
@@ -74,6 +86,10 @@
     "options_table_title_import_prefix": {
         "message": "Imported ",
         "description": "Options dialog: the prefix to add to table title on import"
+    },
+    "options_table_action_close": {
+        "message": "close",
+        "description": "Options dialogs, table details: the close action"
     },
     "options_table_action_edit": {
         "message": "edit",
@@ -118,5 +134,9 @@
     "share_dialog_close": {
         "message": "close",
         "description": "Share dialog: the close action"
+    },
+    "translate_subtitle": {
+        "message": "Convert Cyrillic to Latin",
+        "description": "Converter dialog: subtitle text"
     }
 }

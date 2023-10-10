@@ -1,3 +1,12 @@
+:root {
+    color-scheme: light dark;
+}
+
+
+@supports (font: -apple-system-body) {
+    :root { font: -apple-system-body; }
+    button { font: -apple-system-body; }
+}
 
 
 .smallprint {
@@ -39,7 +48,6 @@ button > img {
 
 
 @media screen and (min-width: 800px) {
-
     .fxstack {
         flex-direction: row;
         width: 100%;
@@ -48,9 +56,20 @@ button > img {
 
 
 @media screen and (max-width: 800px) {
-
     .fxstack {
         flex-direction: column;
         width: 100%;
     }
+}
+
+
+@media (prefers-color-scheme: dark) {
+    html { background-color: #202124; color: #9aa0a6; }
+    button { color: #8ab4f8; background-color: rgba(0,0,0,0); border: 1px solid #5f6368; border-radius: 0.3rem; }
+    button > img {
+        background-color: rgba(255, 255, 255, 0.45);
+        padding: 0.1rem;
+        border-radius: 0.2rem;
+    }
+    .pane { color: #fff; }
 }

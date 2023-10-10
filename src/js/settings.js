@@ -11,12 +11,9 @@ class Settings {
         this.callback = callback
 
         this.default_active_tables = [
-            'jirecek',
-            'nachasi',
-            'nova_latynka',
             'dstu_diac',
+            'dstu_intl',
             'iso9_1968',
-            'paiv',
         ]
 
         this.storage_keys = {
@@ -82,7 +79,7 @@ class Settings {
     _store(key, value) {
         const obj = {}
         obj[key] = value
-        this.db.set(obj)
+        return this.db.set(obj)
     }
 
     save(items) {
@@ -90,7 +87,7 @@ class Settings {
         for (let key in items) {
             obj[this.storage_keys[key]] = items[key]
         }
-        this.db.set(obj)
+        return this.db.set(obj)
     }
 
     _get_bool(key, default_value) {
@@ -158,7 +155,7 @@ class Settings {
         const all_tables = Object.keys(value).map((key) => value[key])
             .sort((a,b) => (a.title || '').localeCompare(b.title))
 
-        this.save({
+        return this.save({
             bundled_tables: all_tables,
         })
     }
@@ -321,7 +318,7 @@ class Settings {
     }
 
     _store_whiteblacklist() {
-        this.save({
+        return this.save({
             site_whitelist: [...this.whitelist],
             site_blacklist: [...this.blacklist],
         })
@@ -340,7 +337,7 @@ class Settings {
         const active = this.active_table_ids
         active.push(table.id)
 
-        this.save({
+        return this.save({
             user_tables: user_tables,
             active_table_ids: active,
         })
@@ -362,7 +359,7 @@ class Settings {
         const active = new Set(this.active_table_ids)
         active.delete(table_id)
 
-        this.save({
+        return this.save({
             user_tables: user_tables,
             active_table_ids: [...active],
         })
@@ -376,7 +373,7 @@ class Settings {
 
         user_tables.push(table)
 
-        this.save({
+        return this.save({
             user_tables: user_tables,
         })
     }

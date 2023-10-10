@@ -1,3 +1,12 @@
+:root {
+    color-scheme: light dark;
+}
+
+
+@supports (font: -apple-system-body) {
+    :root { font: -apple-system-body; }
+    button { font: -apple-system-body; }
+}
 
 
 body {
@@ -58,16 +67,6 @@ td button {
 }
 
 
-thead {
-    background-color: #ddd;
-}
-
-
-tfoot {
-    background-color: #eee;
-}
-
-
 tfoot button {
     display: inline;
     margin: auto;
@@ -76,11 +75,30 @@ tfoot button {
 
 
 button img {
-    height: 1em;
+    height: 0.8rem;
 }
 
 
 #open_translate {
     position: absolute;
     right: 0;
+}
+
+
+thead { background-color: #ddd; }
+tfoot { background-color: #eee; }
+
+
+@media (prefers-color-scheme: dark) {
+    html { background-color: #202124; color: #9aa0a6; }
+    button { color: #8ab4f8; background-color: rgba(0,0,0,0); border: 1px solid #5f6368; border-radius: 0.3rem; }
+    button > img {
+        background-color: rgba(255, 255, 255, 0.45);
+        padding: 0.1rem;
+        border-radius: 0.2rem;
+        height: 0.6rem;
+    }
+    body, table{ color: inherit; }
+    th { color: #e8eaed; text-align: center; }
+    thead, tfoot { background-color: #151618; }
 }
