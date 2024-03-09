@@ -8,45 +8,36 @@
 </head>
 <body>
 
-<div id="wily">
-    <div id="details">
-    </div>
-    <div id="preview" class="preview">
-    </div>
+<div id="nav-path">
+    <span id="nav-root">__MSG_options_nav_title__&nbsp;&rang;&nbsp;</span><span id="nav-last"></span>
 </div>
 
-<div id="settings" class="settings menu">
-    <div class="menu-general">
-        <div id="menu-about">
-            <div>__MSG_options_about__</div>
-        </div>
-    </div>
-    <h2></h2>
+<div class="panes">
+
+<div class="left-pane">
+<div id="settings" class="menu">
     <div>
-        <label><input type="checkbox" id="ext_enabled">__MSG_options_global_settings_enabled__</label>
-    </div>
-    <h2>__MSG_options_site_blacklist__</h2>
-    <details>
-    <div id="menu-site-blacklist" class="xlist">
-        <label><input type="checkbox"><span>__MSG_options_site_blacklist__</span></label>
-        <div>__MSG_options_blacklist_details_description__</div>
-        <div class="site-list">
-            <textarea></textarea>
+        <div id="menu-about">
         </div>
+        <h3></h3>
+        <div class="menu-row"><label><input type="checkbox" id="ext_enabled"><span>__MSG_options_global_settings_enabled__</span></label></div>
+        <div id="menu-site-blacklist" class="menu-row xlist"><input type="checkbox"><span>__MSG_options_site_blacklist__</span></div>
+        <div id="menu-site-whitelist" class="menu-row xlist"><input type="checkbox"><span>__MSG_options_site_whitelist__</span></div>
     </div>
-    <div id="menu-site-whitelist" class="xlist">
-        <label><input type="checkbox"><span>__MSG_options_site_whitelist__</span></label>
-        <div>__MSG_options_whitelist_details_description__</div>
-        <div class="site-list">
-            <textarea></textarea>
-        </div>
-    </div>
-    </details>
     <div id="translit_tables">
-        <h2>__MSG_options_table_list_header__</h2>
+        <h3>__MSG_options_table_list_header__</h3>
         <p>__MSG_options_table_list_guide__</p>
         <div></div>
     </div>
+</div>
+</div>
+
+<div class="right-pane fc-hid">
+<div id="details">
+    <div></div>
+</div>
+</div>
+
 </div>
 
 <script type="text/javascript" src="js/options.js"></script>

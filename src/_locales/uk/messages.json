@@ -6,7 +6,7 @@
         "message": "Латинка"
     },
     "popup_global_settings_enabled": {
-        "message": "Увімкнено"
+        "message": "Увімкнено на всіх сайтах"
     },
     "popup_site_enabled": {
         "message": "Увімкнено на цьому сайті"
@@ -20,26 +20,26 @@
     "popup_open_options": {
         "message": "Параметри"
     },
-    "popup_open_options": {
+    "popup_open_converter": {
         "message": "Трансліт"
     },
     "options_about": {
-        "message": "Довідка",
-        "description": "Optons dialog: label for 'about' menu item"
+        "message": "Довідка"
     },
     "options_about_details": {
-        "message": "Автор: Pavel Ivashkov [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
-        "description": "Options dialog: about page"
-    },
-    "options_about_empty_state": {
-        "message": "Щоб додати нову таблицю, почніть з редагування однієї зі списку.",
-        "description": "Options dialog: about page, empty state"
+        "message": "Автор: Pavel Ivashkov\nДовідник: [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n"
     },
     "options_global_settings_enabled": {
-        "message": "Увімкнено"
+        "message": "Увімкнено на всіх сайтах"
+    },
+    "options_nav_title": {
+        "message": "Параметри"
     },
     "options_preview_title": {
         "message": "Зразок"
+    },
+    "options_site_filter": {
+        "message": "Фільтр сайтів"
     },
     "options_site_blacklist": {
         "message": "Виключені сайти"
@@ -59,6 +59,15 @@
     "options_whitelist_details_description": {
         "message": "Завжди опрацьовувати такі сайти (не зважаючи на параметр Увімкнено). Один рядок – один сайт. Формат: `hostname[:port]`"
     },
+    "options_blacklist_enable_label": {
+        "message": "Уживати правила виключень"
+    },
+    "options_whitelist_enable_label": {
+        "message": "Уживати наступні правила"
+    },
+    "options_table_list_guide": {
+        "message": "Щоб додати нову таблицю, почніть з редагування однієї зі списку."
+    },
     "options_table_list_header": {
         "message": "Таблиці транслітерації"
     },
@@ -74,6 +83,9 @@
     "options_table_action_edit": {
         "message": "редагувати"
     },
+    "options_table_action_edit_preview": {
+        "message": "правити зразок"
+    },
     "options_table_action_copy": {
         "message": "копія"
     },
@@ -85,6 +97,9 @@
     },
     "options_table_action_share": {
         "message": "поширити"
+    },
+    "options_table_popup_toggle": {
+        "message": "У списку в спливаючому вікні"
     },
     "options_rules_editor_save": {
         "message": "зберегти"

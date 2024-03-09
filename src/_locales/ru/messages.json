@@ -6,7 +6,7 @@
         "message": "Латинка"
     },
     "popup_global_settings_enabled": {
-        "message": "Включено"
+        "message": "Включено на всех сайтах"
     },
     "popup_site_enabled": {
         "message": "Включено на этом сайте"
@@ -28,13 +28,19 @@
         "description": "Optons dialog: label for 'about' menu item"
     },
     "options_about_details": {
-        "message": "Автор: Pavel Ivashkov [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n"
+        "message": "Автор: Pavel Ivashkov\nИнструкции: [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n"
     },
     "options_global_settings_enabled": {
-        "message": "Включено"
+        "message": "Включено на всех сайтах"
+    },
+    "options_nav_title": {
+        "message": "Параметры"
     },
     "options_preview_title": {
         "message": "Пример"
+    },
+    "options_site_filter": {
+        "message": "Фильтр сайтов"
     },
     "options_site_blacklist": {
         "message": "Игнорируемые сайты"
@@ -54,6 +60,12 @@
     "options_whitelist_details_description": {
         "message": "Всегда обрабатывать сайты из этого списка (при любом состоянии Включено). Указывайте один сайт в строке, формат: `hostname[:port]`"
     },
+    "options_blacklist_enable_label": {
+        "message": "Включить игнорируемые сайты"
+    },
+    "options_whitelist_enable_label": {
+        "message": "Включить приоритетные сайты"
+    },
     "options_table_list_guide": {
         "message": "Для добавления новой таблицы, начните с редактирования одной из списка."
     },
@@ -72,6 +84,9 @@
     "options_table_action_edit": {
         "message": "изменить"
     },
+    "options_table_action_edit_preview": {
+        "message": "ред.пример"
+    },
     "options_table_action_copy": {
         "message": "копировать"
     },
@@ -83,6 +98,9 @@
     },
     "options_table_action_share": {
         "message": "поделиться"
+    },
+    "options_table_popup_toggle": {
+        "message": "Показывать в сплывающем окне"
     },
     "options_rules_editor_save": {
         "message": "сохранить"

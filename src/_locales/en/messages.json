@@ -8,7 +8,7 @@
         "description": "Browser button: the tooltip on button hover"
     },
     "popup_global_settings_enabled": {
-        "message": "Enabled",
+        "message": "Enabled on all sites",
         "description": "Popup dialog: the label for 'enabled' checkbox in global setting"
     },
     "popup_site_enabled": {
@@ -36,16 +36,24 @@
         "description": "Optons dialog: the label for 'about' menu item"
     },
     "options_about_details": {
-        "message": "Author: Pavel Ivashkov [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
+        "message": "Author: Pavel Ivashkov\nQuick guide: [https://paiv.github.io/latynka/](https://paiv.github.io/latynka/)\n",
         "description": "Options dialog: 'about' page"
     },
     "options_global_settings_enabled": {
-        "message": "Enabled",
+        "message": "Enabled on all sites",
         "description": "Optons dialog: the label for 'enabled' checkbox in global setting"
+    },
+    "options_nav_title": {
+        "message": "Options",
+        "description": "Options dialog: navigation title"
     },
     "options_preview_title": {
         "message": "Preview",
         "description": "Options dialog: title for the preview text"
+    },
+    "options_site_filter": {
+        "message": "Site filter",
+        "description": "Optons dialog: label for 'sites filter' menu section"
     },
     "options_site_blacklist": {
         "message": "Excluded sites",
@@ -64,12 +72,20 @@
         "description": "Priority sites editor: title label"
     },
     "options_blacklist_details_description": {
-        "message": "Never process these sites. One site per line. Format is: `hostname[:port]`",
+        "message": "Never process these sites. One site per line, the format is: `hostname[:port]`",
         "description": "Excluded sites editor: description text"
     },
     "options_whitelist_details_description": {
-        "message": "Always process these sites (even if Enabled option is off). One site per line. Format is: `hostname[:port]`",
+        "message": "Always process these sites (even if Enabled option is off). One site per line, the format is: `hostname[:port]`",
         "description": "Priority sites editor: description text"
+    },
+    "options_blacklist_enable_label": {
+        "message": "Use exclusion rules",
+        "description": "Excluded sites editor: label for the enable toggle"
+    },
+    "options_whitelist_enable_label": {
+        "message": "Use priority rules",
+        "description": "Priority sites editor: label for the enable toggle"
     },
     "options_table_list_guide": {
         "message": "To add new table, start editing one from the list.",
@@ -89,35 +105,43 @@
     },
     "options_table_action_close": {
         "message": "close",
-        "description": "Options dialogs, table details: the close action"
+        "description": "Options dialog, table details: the close action"
     },
     "options_table_action_edit": {
         "message": "edit",
-        "description": "Options dialogs, table details: the edit action"
+        "description": "Options dialog, table details: the edit action"
+    },
+    "options_table_action_edit_preview": {
+        "message": "edit preview",
+        "description": "Options dialog, table details: the action to edit preview text"
     },
     "options_table_action_copy": {
         "message": "copy",
-        "description": "Options dialogs, table details: the copy action"
+        "description": "Options dialog, table details: the copy action"
     },
     "options_table_action_delete": {
         "message": "delete",
-        "description": "Options dialogs, table details: the delete action"
+        "description": "Options dialog, table details: the delete action"
     },
     "options_table_confirm_delete": {
         "message": "Confirm Delete",
-        "description": "Options dialogs, table details: the confirmation to delete"
+        "description": "Options dialog, table details: the confirmation to delete"
     },
     "options_table_action_share": {
         "message": "share",
-        "description": "Options dialogs, table details: the share action"
+        "description": "Options dialog, table details: the share action"
+    },
+    "options_table_popup_toggle": {
+        "message": "Show in the popup dialog",
+        "description": "Options dialog, table details: the toggle to show the table in the popup dialog"
     },
     "options_rules_editor_save": {
         "message": "save",
-        "description": "Options dialogs, rules editor: the save action"
+        "description": "Options dialog, rules editor: the save action"
     },
     "options_rules_editor_cancel": {
         "message": "cancel",
-        "description": "Options dialogs, rules editor: the cancel action"
+        "description": "Options dialog, rules editor: the cancel action"
     },
     "rules_label_apostrophe": {
         "message": "apostrophe",

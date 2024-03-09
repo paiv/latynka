@@ -20,43 +20,47 @@ function _safe_element_id(value) {
 class View {
     constructor(doc) {
         this.onChange = () => {}
-        this.onMenuClickedTableRow = (table_id) => {}
+        this.onNavPopToRoot= () => {}
+        this.onMenuClickedBlacklist = () => {}
+        this.onMenuClickedWhitelist = () => {}
+        this.onMenuClickedTableRow = (table_kid) => {}
         this.onBlacklistChange = (text) => {}
         this.onWhitelistChange = (text) => {}
+        this.onBlacklistEnabledChange = (is_enabled) => {}
+        this.onWhitelistEnabledChange = (is_enabled) => {}
         this.onRulesEditorInput = (text) => {}
         this.onPreviewEditClick = () => {}
         this.onPreviewSaveClick = () => {}
 
-        this.form = doc.querySelector('[id="settings"]')
+        this.left_pane = doc.querySelector('.left-pane')
+        this.right_pane = doc.querySelector('.right-pane')
+        this.menu_pane = doc.querySelector('[id="settings"]')
+        this.details_pane = doc.querySelector('[id="details"]')
 
-        this.about_pane = this.form.querySelector('[id="menu-about"]')
-        this.expand_about()
+        this.nav_item = doc.querySelector('[id="nav-last"]')
+        const nav_root = doc.querySelector('[id="nav-root"]')
+        nav_root.addEventListener('click', () => { this.onNavPopToRoot() })
+
+        this.about_menu = this.menu_pane.querySelector('[id="menu-about"]')
+        this.expand_about_menu()
         
-        this.enabled = this.form.querySelector('input[id="ext_enabled"]')
+        this.enabled = this.menu_pane.querySelector('input[id="ext_enabled"]')
         this.enabled.addEventListener('change', () => { this._onEnabledChange() })
 
         this.tables_pane = doc.querySelector('[id="translit_tables"]')
         this.active_tables = new Set()
 
-        this.details_pane = doc.querySelector('[id="details"]')
-        this.preview_pane = doc.querySelector('[id="preview"]')
-
-        const blacklist_pane = this.form.querySelector('[id="menu-site-blacklist"]')
-        this.blacklist_enabled = blacklist_pane.querySelector('input')
+        const blacklist_menu = this.menu_pane.querySelector('[id="menu-site-blacklist"]')
+        this.blacklist_enabled = blacklist_menu.querySelector('input')
         this.blacklist_enabled.addEventListener('click', (event) => { event.stopPropagation() }, false)
-        this.blacklist_enabled.addEventListener('change', () => { this._onBlacklistEnabledChange() })
-        {
-            const textarea = blacklist_pane.querySelector('textarea')
-            textarea.addEventListener('change', () => { this.onBlacklistChange(textarea.value) })
-        }
-        const whitelist_pane = this.form.querySelector('[id="menu-site-whitelist"]')
-        this.whitelist_enabled = whitelist_pane.querySelector('input')
+        this.blacklist_enabled.addEventListener('change', () => { this.onBlacklistEnabledChange(this.blacklist_enabled.checked) })
+        blacklist_menu.addEventListener('click', () => { this._onBlacklistMenuClicked() })
+
+        const whitelist_menu = this.menu_pane.querySelector('[id="menu-site-whitelist"]')
+        this.whitelist_enabled = whitelist_menu.querySelector('input')
         this.whitelist_enabled.addEventListener('click', (event) => { event.stopPropagation() }, false)
-        this.whitelist_enabled.addEventListener('change', () => { this._onWhitelistEnabledChange() })
-        {
-            const textarea = whitelist_pane.querySelector('textarea')
-            textarea.addEventListener('change', () => { this.onWhitelistChange(textarea.value) })
-        }
+        this.whitelist_enabled.addEventListener('change', () => { this.onWhitelistEnabledChange(this.whitelist_enabled.checked) })
+        whitelist_menu.addEventListener('click', () => { this._onWhitelistMenuClicked() })
     }
 
     _changed() {
@@ -67,12 +71,12 @@ class View {
         this._changed()
     }
 
-    _onBlacklistEnabledChange() {
-        this._changed()
+    _onBlacklistMenuClicked() {
+        this.onMenuClickedBlacklist()
     }
 
-    _onWhitelistEnabledChange() {
-        this._changed()
+    _onWhitelistMenuClicked() {
+        this.onMenuClickedWhitelist()
     }
 
     set_table_list(value, active) {
@@ -98,20 +102,13 @@ class View {
             const text = Dom.el('span')
             text.textContent = table.title || table.id
 
-            const more = Dom.el('button')
-            more.appendChild(Dom.text('…'))
-
-            const label = Dom.el('label')
-            label.appendChild(chk)
-            label.appendChild(text)
-            
             const row = Dom.el('div', ['menu-row'])
             row.id = 'menu-' + element_id
 
-            row.appendChild(label)
-            row.appendChild(more)
+            row.appendChild(chk)
+            row.appendChild(text)
 
-            more.addEventListener('click', () => { this._onTableRowClicked(table_id) })
+            row.addEventListener('click', () => { this._onTableRowClicked(table_id) })
 
             pane.appendChild(row)
         })
@@ -135,23 +132,40 @@ class View {
         this.onMenuClickedTableRow(table_id)
     }
 
+    get nav_title() {
+        return this.nav_item.textContent
+    }
+
+    set nav_title(value) {
+        this.nav_item.textContent = value
+    }
+
     get selected_menu_row() {
         return this._selected_menu_item
     }
 
     set selected_menu_row(item_id) {
         if (this._selected_menu_item) {
-            const el = this.form.querySelector('#menu-' + this._selected_menu_item)
+            const el = this.menu_pane.querySelector('#menu-' + this._selected_menu_item)
             if (el) {
                 el.classList.remove('menu-row-selected')
             }
         }
-
-        const el = this.form.querySelector('#menu-' + item_id)
-        if (el) {
-            el.classList.add('menu-row-selected')
+        if (item_id) {
+            const el = this.menu_pane.querySelector('#menu-' + item_id)
+            if (el) {
+                el.classList.add('menu-row-selected')
+                this.left_pane.classList.add('fc-hid')
+            }
+            else {
+                this.left_pane.classList.remove('fc-hid')
+            }
+            this.right_pane.classList.remove('fc-hid')
         }
-
+        else {
+            this.left_pane.classList.remove('fc-hid')
+            this.right_pane.classList.add('fc-hid')
+        }
         this._selected_menu_item = item_id
     }
 
@@ -189,22 +203,54 @@ class View {
         })
         return pane
     }
+
+    _render_extra_actions(table, pane) {
+        const chk = Dom.el('input')
+        const table_id = table.id
+        const element_id = _safe_element_id(table_id)
+        chk.type = 'checkbox'
+        chk.name = 'chk-' + element_id
+
+        if (this.active_tables.has(table_id)) {
+            chk.checked = true
+        }
+
+        chk.addEventListener('click', (event) => { event.stopPropagation() }, false)
+        chk.addEventListener('change', () => { this._onTableChkChange(chk, table_id) })
+
+        const text = browserapi.i18n.getMessage('options_table_popup_toggle')
+        const span = Dom.el('span')
+        span.textContent = text
+
+        const lbl = Dom.el('label')
+        lbl.appendChild(chk)
+        lbl.appendChild(span)
+
+        const row = Dom.el('div')
+        row.appendChild(lbl)
+        Dom.resetChildren(pane, row)
+    }
     
     _show_table_rules(table, actions) {
         let pane = this.details_pane
 
         let title = pane.querySelector('.details-title')
         let description = pane.querySelector('.details-descr')
+        let extra_pane = pane.querySelector('.extra-actions')
         let rules_pane = pane.querySelector('.rules')
         let actions_pane = pane.querySelector('.details-actions')
+        let preview_pane = pane.querySelector('.preview')
 
         if (!rules_pane) {
             title = Dom.el('div', ['details-title'])
             description = Dom.el('div', ['details-descr'])
+            extra_pane = Dom.el('div', ['extra-actions'])
             rules_pane = Dom.el('div', ['rules'])
             actions_pane = Dom.el('div', ['details-actions'])
+            preview_pane = Dom.el('div', ['preview'])
         }
-        Dom.resetChildren(pane, title, description, actions_pane, rules_pane)
+        Dom.resetChildren(pane, title, description, extra_pane, preview_pane, actions_pane, rules_pane)
+        this.preview_pane = preview_pane
 
         title.textContent = table.title
 
@@ -212,9 +258,11 @@ class View {
         Dom.resetChildren(description, desc)
 
         this._render_actions(actions, actions_pane)
+        this._render_extra_actions(table, extra_pane)
 
         const loabc = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя'
         const nbsp = '\u00A0'
+        const dotc = '\u25CC'
 
         function codePoint(s) {
             if (s.codePointAt) {
@@ -228,7 +276,7 @@ class View {
         const print_char = (ch) => {
             const code = codePoint(ch)
             if ((code >= 0x02B0 && code < 0x0370)) {
-                return [nbsp, ch].join('')
+                return [dotc, ch].join('')
             }
             return ch
         }
@@ -387,49 +435,32 @@ class View {
     }
 
     _show_rules_editor(table, text, actions) {
-        const pane = Dom.el('div')
+        const title_pane = Dom.el('input', ['title-editor'])
+        title_pane.value = table.title
 
-        {
-            const title_pane = Dom.el('div', ['title-editor'])
-            pane.appendChild(title_pane)
+        const preview_pane = Dom.el('div', ['preview'])
+        this.preview_pane = preview_pane
 
-            var title = Dom.el('input')
-            title.value = table.title
-            title_pane.appendChild(title)
+        const actions_pane = this._render_actions(actions)
 
-            let actions_pane = this._render_actions(actions)
-            pane.appendChild(actions_pane)
+        const editor_pane = Dom.el('textarea', ['rules-editor'])
+        editor_pane.value = text
+        editor_pane.addEventListener('input', () => { this.onRulesEditorInput(editor_pane.value) })
 
-            const rules_pane = Dom.el('div', ['rules-editor'])
-            pane.appendChild(rules_pane)
+        const info_pane = Dom.el('div', ['editor-info'])
+        const status = Dom.el('div', ['status'])
+        info_pane.appendChild(status)
 
-            const textarea = Dom.el('textarea')
-            rules_pane.appendChild(textarea)
+        Dom.resetChildren(this.details_pane, title_pane, preview_pane, actions_pane, editor_pane, info_pane)
 
-            textarea.value = text
-
-            textarea.addEventListener('input', () => { this.onRulesEditorInput(textarea.value) })
-        }
-
-        {
-            const info_pane = Dom.el('div', ['editor-info'])
-            pane.appendChild(info_pane)
-            const status = Dom.el('div', ['status'])
-            info_pane.appendChild(status)
-        }
-
-        Dom.resetChildren(this.details_pane, ...pane.children)
-
-        title.focus()
-    }
-
-    close_preview() {
-        let pane = Dom.el('div')
-        Dom.resetChildren(this.preview_pane, pane)
+        title_pane.focus()
     }
 
     show_preview(text, edit_mode) {
         const pane = this.preview_pane
+        if (!pane) {
+            pane = Dom.el('div', ['.preview'])
+        }
         let textarea = pane.querySelector('textarea')
         if (!textarea) {
             const actions = Dom.el('div', ['preview-actions'])
@@ -437,33 +468,25 @@ class View {
             label.htmlFor = 'pta'
             label.textContent = browserapi.i18n.getMessage('options_preview_title')
             actions.appendChild(label)
-            
-            const editPreview = Dom.el('button', ['edit-preview'])
-            editPreview.textContent = 'edit'
-            editPreview.style.display = edit_mode ? 'none' : null
-            actions.appendChild(editPreview)
 
             const savePreview = Dom.el('button', ['save-preview'])
             savePreview.textContent = 'save'
             savePreview.style.display = edit_mode ? null : 'none'
             actions.appendChild(savePreview)
 
-            editPreview.addEventListener('click', () => { this.onPreviewEditClick() })
             savePreview.addEventListener('click', () => { this.onPreviewSaveClick() })
-            
+
             textarea = Dom.el('textarea')
             textarea.id = 'pta'
             Dom.resetChildren(pane, actions, textarea)
         }
         else {
-            const editPreview = pane.querySelector('.edit-preview')
             const savePreview = pane.querySelector('.save-preview')
-            editPreview.style.display = edit_mode ? 'none' : null
             savePreview.style.display = edit_mode ? null : 'none'
         }
         textarea.value = text
         textarea.readOnly = !edit_mode
-        return preview
+        return pane
     }
 
     get preview_text() {
@@ -481,10 +504,8 @@ class View {
 
         const pane = this.preview_pane
         const textarea = pane.querySelector('textarea')
-        const editButton = pane.querySelector('.edit-preview')
         const saveButton = pane.querySelector('.save-preview')
 
-        editButton.style.display = isEdit ? 'none' : null
         saveButton.style.display = isEdit ? null : 'none'
         textarea.readOnly = !isEdit
 
@@ -562,11 +583,11 @@ class View {
     }
 
     get rules_editor() {
-        return this.details_pane.querySelector('.rules-editor > textarea')
+        return this.details_pane.querySelector('.rules-editor')
     }
 
     get title_editor() {
-        return this.details_pane.querySelector('.title-editor > input')
+        return this.details_pane.querySelector('.title-editor')
     }
 
     get confirm_delete_visible() {
@@ -598,24 +619,98 @@ class View {
         }
     }
 
-    expand_about() {
-        const title = Dom.el('h2')
-        title.appendChild(Dom.text(browserapi.i18n.getMessage('options_about')))
-        
+    expand_about_menu() {
+        const title = Dom.el('h3')
         let details = browserapi.i18n.getMessage('options_about_details')
         details = markdown.render(details)
-        
-        Dom.resetChildren(this.about_pane, title, details)
+
+        Dom.resetChildren(this.about_menu, title, details)
     }
 
-    show_blacklist_details(blacklist) {
-        const textarea = this.form.querySelector('#menu-site-blacklist textarea')
-        textarea.value = blacklist.join('\n')
+    show_about_details() {
+        const old = this.details_pane.querySelector('div')
+        const pane = Dom.el('div')
+
+        const title = Dom.el('h3')
+        title.textContent = browserapi.i18n.getMessage('options_about')
+        pane.appendChild(title)
+
+        const desc = browserapi.i18n.getMessage('options_about_details')
+        const details = markdown.render(desc)
+        pane.appendChild(details)
+
+        pane.appendChild(Dom.el('h3'))
+        const guide = Dom.el('div')
+        guide.textContent = browserapi.i18n.getMessage('options_table_list_guide')
+        pane.appendChild(guide)
+
+        this.details_pane.replaceChild(pane, old)
     }
 
-    show_whitelist_details(whitelist) {
-        const textarea = this.form.querySelector('#menu-site-whitelist textarea')
-        textarea.value = whitelist.join('\n')
+    show_blacklist_details(list_rules, is_enabled) {
+        const title = browserapi.i18n.getMessage('options_blacklist_details_title')
+        const description = browserapi.i18n.getMessage('options_blacklist_details_description')
+
+        const title_pane = Dom.el('div', ['details-title'])
+        title_pane.appendChild(Dom.text(title))
+
+        const opts_pane = Dom.el('div', ['details-actions'])
+        const chk_enabled = Dom.el('input')
+        chk_enabled.type = 'checkbox'
+        chk_enabled.name = 'chk-enable'
+        chk_enabled.checked = is_enabled
+        const chk_label = Dom.el('label')
+        const enable_descr = browserapi.i18n.getMessage('options_blacklist_enable_label')
+        const span = Dom.el('span')
+        span.textContent = enable_descr
+        chk_label.appendChild(chk_enabled)
+        chk_label.appendChild(span)
+        opts_pane.appendChild(chk_label)
+
+        chk_enabled.addEventListener('click', (event) => { event.stopPropagation() }, false)
+        chk_enabled.addEventListener('change', () => { this.onBlacklistEnabledChange(chk_enabled.checked) })
+
+        const descr_pane = Dom.el('div', ['details-descr'])
+        descr_pane.appendChild(Dom.text(description))
+
+        const rules = Dom.el('textarea', ['site-list'])
+        rules.value = list_rules.join('\n')
+        rules.addEventListener('change', () => { this.onBlacklistChange(rules.value) })
+
+        Dom.resetChildren(this.details_pane, title_pane, opts_pane, descr_pane, rules)
+    }
+
+    show_whitelist_details(list_rules, is_enabled) {
+        const title = browserapi.i18n.getMessage('options_whitelist_details_title')
+        const description = browserapi.i18n.getMessage('options_whitelist_details_description')
+
+        const title_pane = Dom.el('div', ['details-title'])
+        title_pane.appendChild(Dom.text(title))
+
+        const opts_pane = Dom.el('div', ['details-actions'])
+        const chk_enabled = Dom.el('input')
+        chk_enabled.type = 'checkbox'
+        chk_enabled.name = 'chk-enable'
+        chk_enabled.checked = is_enabled
+        const chk_label = Dom.el('label')
+        const enable_descr = browserapi.i18n.getMessage('options_whitelist_enable_label')
+        const span = Dom.el('span')
+        span.textContent = enable_descr
+        chk_label.appendChild(chk_enabled)
+        chk_label.appendChild(span)
+        opts_pane.appendChild(chk_label)
+
+        chk_enabled.addEventListener('click', (event) => { event.stopPropagation() }, false)
+        chk_enabled.addEventListener('change', () => { this.onWhitelistEnabledChange(chk_enabled.checked) })
+
+        const descr_pane = Dom.el('div', ['details-descr'])
+        descr_pane.appendChild(Dom.text(description))
+
+        const rules = Dom.el('textarea', ['site-list'])
+        rules.value = list_rules.join('\n')
+        rules.addEventListener('change', () => { this.onWhitelistChange(rules.value) })
+
+        Dom.resetChildren(this.details_pane, title_pane, opts_pane, descr_pane, rules)
     }
 }
 
@@ -628,7 +723,12 @@ class Controller {
         this._localize_html(document)
 
         this.view.onChange = () => { this._storeSettings() }
+        this.view.onNavPopToRoot = () => { this._closeDetails() }
+        this.view.onMenuClickedBlacklist = () => { this._showBlacklistDetails() }
+        this.view.onMenuClickedWhitelist = () => { this._showWhitelistDetails() }
         this.view.onMenuClickedTableRow = (table_id) => { this._showTableDetails(table_id) }
+        this.view.onBlacklistEnabledChange = (is_enabled) => { this._storeBlacklistEnabled(is_enabled) }
+        this.view.onWhitelistEnabledChange = (is_enabled) => { this._storeWhitelistEnabled(is_enabled) }
         this.view.onBlacklistChange = (text) => { this._storeBlacklist(text) }
         this.view.onWhitelistChange = (text) => { this._storeWhitelist(text) }
         this.view.onRulesEditorInput = (text) => { this._checkRulesEditorInput(text) }
@@ -643,6 +743,14 @@ class Controller {
             whitelist_enabled: this.view.whitelist_enabled.checked,
             active_table_ids: [...this.view.active_tables],
         })
+    }
+
+    _storeBlacklistEnabled(is_enabled) {
+        this.settings.blacklist_enabled = is_enabled
+    }
+
+    _storeWhitelistEnabled(is_enabled) {
+        this.settings.whitelist_enabled = is_enabled
     }
 
     _storeBlacklist(text) {
@@ -660,10 +768,13 @@ class Controller {
         this.view.set_table_list(this.settings.all_tables(), new Set(this.settings.active_table_ids))
         this._has_user_tables = this.settings.user_tables().length > 0
 
-        this.view.show_blacklist_details(this.settings.site_blacklist)
-        this.view.show_whitelist_details(this.settings.site_whitelist)
-
-        if (this.selected_table_id) {
+        if (this.view.selected_menu_row === 'site-blacklist') {
+            this._showBlacklistDetails()
+        }
+        else if (this.view.selected_menu_row === 'site-whitelist') {
+            this._showWhitelistDetails()
+        }
+        else if (this.selected_table_id && this.settings.get_table(this.selected_table_id)) {
             if (this._in_edit_mode) {
                 this._editMode(this.selected_table_id, this.rules_text)
             }
@@ -701,8 +812,25 @@ class Controller {
         this._in_preview_edit_mode = false
         this.selected_table_id = null
         this.view.selected_menu_row = null
+        this.view.nav_title = null
         this.view.clear_details()
-        this.view.close_preview()
+        this.view.show_about_details()
+    }
+
+    _showBlacklistDetails() {
+        this.view.selected_menu_row = 'site-blacklist'
+        this.selected_table_id = null
+        this.view.nav_title = browserapi.i18n.getMessage('options_blacklist_details_title')
+        this.view.clear_details()
+        this.view.show_blacklist_details(this.settings.site_blacklist, this.settings.blacklist_enabled)
+    }
+
+    _showWhitelistDetails() {
+        this.view.selected_menu_row = 'site-whitelist'
+        this.selected_table_id = null
+        this.view.nav_title = browserapi.i18n.getMessage('options_whitelist_details_title')
+        this.view.clear_details()
+        this.view.show_whitelist_details(this.settings.site_whitelist, this.settings.whitelist_enabled)
     }
 
     _showTableDetails(table_id) {
@@ -720,14 +848,10 @@ class Controller {
         const is_bundled = table_id && !(/\./.test(table_id))
 
         this.view.selected_menu_row = element_id
+        this.view.nav_title = table.title
 
         const actions = []
 
-        actions.push({
-            id: 'action-close',
-            title: browserapi.i18n.getMessage('options_table_action_close'),
-            handler: () => { this._closeDetails() }
-        })
         actions.push({
             id: 'action-share',
             title: browserapi.i18n.getMessage('options_table_action_share'),
@@ -739,6 +863,12 @@ class Controller {
                 id: 'action-copy',
                 title: browserapi.i18n.getMessage('options_table_action_copy'),
                 handler: () => { this._createEditableCopy(table_id, false) }
+            })
+
+            actions.push({
+                id: 'action-edit-preview',
+                title: browserapi.i18n.getMessage('options_table_action_edit_preview'),
+                handler: () => { this._editPreviewText() }
             })
         }
         else {
@@ -752,6 +882,12 @@ class Controller {
                 id: 'action-copy',
                 title: browserapi.i18n.getMessage('options_table_action_copy'),
                 handler: () => { this._createEditableCopy(table_id) }
+            })
+
+            actions.push({
+                id: 'action-edit-preview',
+                title: browserapi.i18n.getMessage('options_table_action_edit_preview'),
+                handler: () => { this._editPreviewText() }
             })
 
             actions.push({
