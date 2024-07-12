@@ -7,6 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A53A5DFD29B4D7B10029360F /* css in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF329B4D7B10029360F /* css */; };
+		A53A5DFE29B4D7B10029360F /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF429B4D7B10029360F /* _locales */; };
+		A53A5DFF29B4D7B10029360F /* translate.html in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF529B4D7B10029360F /* translate.html */; };
+		A53A5E0029B4D7B10029360F /* options.html in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF629B4D7B10029360F /* options.html */; };
+		A53A5E0129B4D7B10029360F /* data in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF729B4D7B10029360F /* data */; };
+		A53A5E0229B4D7B10029360F /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF829B4D7B10029360F /* popup.html */; };
+		A53A5E0329B4D7B10029360F /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DF929B4D7B10029360F /* about.html */; };
+		A53A5E0429B4D7B10029360F /* img in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DFA29B4D7B10029360F /* img */; };
+		A53A5E0529B4D7B10029360F /* js in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DFB29B4D7B10029360F /* js */; };
+		A53A5E0629B4D7B10029360F /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = A53A5DFC29B4D7B10029360F /* manifest.json */; };
+		A54EDDB829BE8A5A00404901 /* ExtensionGuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A1905F29BE225F006730AD /* ExtensionGuideViewController.m */; };
+		A54EDDBA29BE8A5A00404901 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A57AB2D529B3A3FC008B6770 /* main.m */; };
+		A54EDDBD29BE8A5A00404901 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A57AB2D829B3A43D008B6770 /* AppDelegate.m */; };
+		A54EDDBE29BE8A5A00404901 /* ExtensionGuideTopicController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A1906229BE5DA0006730AD /* ExtensionGuideTopicController.m */; };
+		A54EDDC129BE8A5A00404901 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5A1904429BDA6CC006730AD /* Media.xcassets */; };
+		A54EDDC229BE8A5A00404901 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5A1904B29BDC66C006730AD /* Main.storyboard */; };
+		A54EDDC329BE8A5A00404901 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5EBC04025FC197900F10FD7 /* Assets.xcassets */; };
+		A54EDDC529BE8A5A00404901 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A598E3EA29B4B7470080B028 /* LaunchScreen.storyboard */; };
+		A54EDDC829BE8A5A00404901 /* Latynka Extension iOS.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A598E43F29B4B90D0080B028 /* Latynka Extension iOS.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A598E44329B4B90D0080B028 /* SafariWebExtensionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = A598E44229B4B90D0080B028 /* SafariWebExtensionHandler.m */; };
 		A5EBC03925FC197900F10FD7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EBC03825FC197900F10FD7 /* AppDelegate.m */; };
 		A5EBC03C25FC197900F10FD7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5EBC03A25FC197900F10FD7 /* Main.storyboard */; };
 		A5EBC03F25FC197900F10FD7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EBC03E25FC197900F10FD7 /* ViewController.m */; };
@@ -28,6 +48,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A54EDDB529BE8A5A00404901 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5EBC02B25FC197900F10FD7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A598E43E29B4B90D0080B028;
+			remoteInfo = "Latynka Extension iOS";
+		};
 		A5EBC04B25FC197A00F10FD7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A5EBC02B25FC197900F10FD7 /* Project object */;
@@ -38,6 +65,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		A54EDDC629BE8A5A00404901 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A54EDDC829BE8A5A00404901 /* Latynka Extension iOS.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5EBC05B25FC197A00F10FD7 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -52,7 +90,34 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A53A5DF329B4D7B10029360F /* css */ = {isa = PBXFileReference; lastKnownFileType = folder; name = css; path = Resources/css; sourceTree = "<group>"; };
+		A53A5DF429B4D7B10029360F /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = _locales; path = Resources/_locales; sourceTree = "<group>"; };
+		A53A5DF529B4D7B10029360F /* translate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = translate.html; path = Resources/translate.html; sourceTree = "<group>"; };
+		A53A5DF629B4D7B10029360F /* options.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = options.html; path = Resources/options.html; sourceTree = "<group>"; };
+		A53A5DF729B4D7B10029360F /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = Resources/data; sourceTree = "<group>"; };
+		A53A5DF829B4D7B10029360F /* popup.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = popup.html; path = Resources/popup.html; sourceTree = "<group>"; };
+		A53A5DF929B4D7B10029360F /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Resources/about.html; sourceTree = "<group>"; };
+		A53A5DFA29B4D7B10029360F /* img */ = {isa = PBXFileReference; lastKnownFileType = folder; name = img; path = Resources/img; sourceTree = "<group>"; };
+		A53A5DFB29B4D7B10029360F /* js */ = {isa = PBXFileReference; lastKnownFileType = folder; name = js; path = Resources/js; sourceTree = "<group>"; };
+		A53A5DFC29B4D7B10029360F /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
+		A54EDDCC29BE8A5A00404901 /* Latynka iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Latynka iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A54EDDCD29BE8A5A00404901 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
+		A57AB2D529B3A3FC008B6770 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A57AB2D729B3A43D008B6770 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A57AB2D829B3A43D008B6770 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A598E3EA29B4B7470080B028 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A598E43F29B4B90D0080B028 /* Latynka Extension iOS.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Latynka Extension iOS.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A598E44129B4B90D0080B028 /* SafariWebExtensionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SafariWebExtensionHandler.h; sourceTree = "<group>"; };
+		A598E44229B4B90D0080B028 /* SafariWebExtensionHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SafariWebExtensionHandler.m; sourceTree = "<group>"; };
+		A598E45529B4B90D0080B028 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5A1904429BDA6CC006730AD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		A5A1904A29BDC66C006730AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A5A1905C29BDD07A006730AD /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
+		A5A1905E29BE225F006730AD /* ExtensionGuideViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExtensionGuideViewController.h; sourceTree = "<group>"; };
+		A5A1905F29BE225F006730AD /* ExtensionGuideViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExtensionGuideViewController.m; sourceTree = "<group>"; };
+		A5A1906129BE5DA0006730AD /* ExtensionGuideTopicController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExtensionGuideTopicController.h; sourceTree = "<group>"; };
+		A5A1906229BE5DA0006730AD /* ExtensionGuideTopicController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExtensionGuideTopicController.m; sourceTree = "<group>"; };
+		A5A1906529BE6DEE006730AD /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Main.strings; sourceTree = "<group>"; };
 		A5EBC03325FC197900F10FD7 /* Latynka.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Latynka.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5EBC03625FC197900F10FD7 /* Latynka.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Latynka.entitlements; sourceTree = "<group>"; };
 		A5EBC03725FC197900F10FD7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -82,6 +147,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A54EDDBF29BE8A5A00404901 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A598E43C29B4B90D0080B028 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5EBC03025FC197900F10FD7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -114,11 +193,75 @@
 			path = macOS;
 			sourceTree = "<group>";
 		};
+		A57AB2D429B3A38B008B6770 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A57AB2D729B3A43D008B6770 /* AppDelegate.h */,
+				A57AB2D829B3A43D008B6770 /* AppDelegate.m */,
+				A54EDDCD29BE8A5A00404901 /* Info-iOS.plist */,
+				A598E3EA29B4B7470080B028 /* LaunchScreen.storyboard */,
+				A57AB2D529B3A3FC008B6770 /* main.m */,
+				A5A1904B29BDC66C006730AD /* Main.storyboard */,
+				A5A1904429BDA6CC006730AD /* Media.xcassets */,
+				A5A1903E29BDA1CA006730AD /* Sections */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		A593D60429B4D71B001ED5D7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A53A5DF429B4D7B10029360F /* _locales */,
+				A53A5DF929B4D7B10029360F /* about.html */,
+				A53A5DF329B4D7B10029360F /* css */,
+				A53A5DF729B4D7B10029360F /* data */,
+				A53A5DFA29B4D7B10029360F /* img */,
+				A53A5DFB29B4D7B10029360F /* js */,
+				A53A5DFC29B4D7B10029360F /* manifest.json */,
+				A53A5DF629B4D7B10029360F /* options.html */,
+				A53A5DF829B4D7B10029360F /* popup.html */,
+				A53A5DF529B4D7B10029360F /* translate.html */,
+			);
+			name = Resources;
+			path = "Latynka Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+		A598E44029B4B90D0080B028 /* Latynka Extension iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A593D60429B4D71B001ED5D7 /* Resources */,
+				A598E45529B4B90D0080B028 /* Info.plist */,
+				A598E44129B4B90D0080B028 /* SafariWebExtensionHandler.h */,
+				A598E44229B4B90D0080B028 /* SafariWebExtensionHandler.m */,
+			);
+			path = "Latynka Extension iOS";
+			sourceTree = "<group>";
+		};
+		A5A1903E29BDA1CA006730AD /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+				A5A1904629BDC591006730AD /* Extension Guide */,
+			);
+			path = Sections;
+			sourceTree = "<group>";
+		};
+		A5A1904629BDC591006730AD /* Extension Guide */ = {
+			isa = PBXGroup;
+			children = (
+				A5A1906129BE5DA0006730AD /* ExtensionGuideTopicController.h */,
+				A5A1906229BE5DA0006730AD /* ExtensionGuideTopicController.m */,
+				A5A1905E29BE225F006730AD /* ExtensionGuideViewController.h */,
+				A5A1905F29BE225F006730AD /* ExtensionGuideViewController.m */,
+			);
+			path = "Extension Guide";
+			sourceTree = "<group>";
+		};
 		A5EBC02A25FC197900F10FD7 = {
 			isa = PBXGroup;
 			children = (
 				A5EBC03525FC197900F10FD7 /* Latynka */,
 				A5EBC05025FC197A00F10FD7 /* Latynka Extension */,
+				A598E44029B4B90D0080B028 /* Latynka Extension iOS */,
 				A5EBC04D25FC197A00F10FD7 /* Frameworks */,
 				A5EBC03425FC197900F10FD7 /* Products */,
 			);
@@ -129,6 +272,8 @@
 			children = (
 				A5EBC03325FC197900F10FD7 /* Latynka.app */,
 				A5EBC04925FC197A00F10FD7 /* Latynka Extension.appex */,
+				A598E43F29B4B90D0080B028 /* Latynka Extension iOS.appex */,
+				A54EDDCC29BE8A5A00404901 /* Latynka iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,6 +281,7 @@
 		A5EBC03525FC197900F10FD7 /* Latynka */ = {
 			isa = PBXGroup;
 			children = (
+				A57AB2D429B3A38B008B6770 /* iOS */,
 				A57AB2D329B3A376008B6770 /* macOS */,
 				A5EBC04025FC197900F10FD7 /* Assets.xcassets */,
 				A5EBC03625FC197900F10FD7 /* Latynka.entitlements */,
@@ -185,6 +331,42 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A54EDDB129BE8A5A00404901 /* Latynka iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A54EDDC929BE8A5A00404901 /* Build configuration list for PBXNativeTarget "Latynka iOS" */;
+			buildPhases = (
+				A54EDDB629BE8A5A00404901 /* Sources */,
+				A54EDDBF29BE8A5A00404901 /* Frameworks */,
+				A54EDDC029BE8A5A00404901 /* Resources */,
+				A54EDDC629BE8A5A00404901 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A54EDDB429BE8A5A00404901 /* PBXTargetDependency */,
+			);
+			name = "Latynka iOS";
+			productName = Latynka;
+			productReference = A54EDDCC29BE8A5A00404901 /* Latynka iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A598E43E29B4B90D0080B028 /* Latynka Extension iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A598E45929B4B90D0080B028 /* Build configuration list for PBXNativeTarget "Latynka Extension iOS" */;
+			buildPhases = (
+				A598E43B29B4B90D0080B028 /* Sources */,
+				A598E43C29B4B90D0080B028 /* Frameworks */,
+				A598E43D29B4B90D0080B028 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Latynka Extension iOS";
+			productName = "Latynka Extension iOS";
+			productReference = A598E43F29B4B90D0080B028 /* Latynka Extension iOS.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		A5EBC03225FC197900F10FD7 /* Latynka */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5EBC05C25FC197A00F10FD7 /* Build configuration list for PBXNativeTarget "Latynka" */;
@@ -230,6 +412,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
+					A598E43E29B4B90D0080B028 = {
+						CreatedOnToolsVersion = 14.2;
+					};
 					A5EBC03225FC197900F10FD7 = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -254,11 +439,41 @@
 			targets = (
 				A5EBC03225FC197900F10FD7 /* Latynka */,
 				A5EBC04825FC197A00F10FD7 /* Latynka Extension */,
+				A54EDDB129BE8A5A00404901 /* Latynka iOS */,
+				A598E43E29B4B90D0080B028 /* Latynka Extension iOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A54EDDC029BE8A5A00404901 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A54EDDC129BE8A5A00404901 /* Media.xcassets in Resources */,
+				A54EDDC229BE8A5A00404901 /* Main.storyboard in Resources */,
+				A54EDDC329BE8A5A00404901 /* Assets.xcassets in Resources */,
+				A54EDDC529BE8A5A00404901 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A598E43D29B4B90D0080B028 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A53A5E0429B4D7B10029360F /* img in Resources */,
+				A53A5E0529B4D7B10029360F /* js in Resources */,
+				A53A5E0629B4D7B10029360F /* manifest.json in Resources */,
+				A53A5DFF29B4D7B10029360F /* translate.html in Resources */,
+				A53A5E0229B4D7B10029360F /* popup.html in Resources */,
+				A53A5DFE29B4D7B10029360F /* _locales in Resources */,
+				A53A5DFD29B4D7B10029360F /* css in Resources */,
+				A53A5E0329B4D7B10029360F /* about.html in Resources */,
+				A53A5E0029B4D7B10029360F /* options.html in Resources */,
+				A53A5E0129B4D7B10029360F /* data in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5EBC03125FC197900F10FD7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,6 +503,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A54EDDB629BE8A5A00404901 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A54EDDB829BE8A5A00404901 /* ExtensionGuideViewController.m in Sources */,
+				A54EDDBA29BE8A5A00404901 /* main.m in Sources */,
+				A54EDDBD29BE8A5A00404901 /* AppDelegate.m in Sources */,
+				A54EDDBE29BE8A5A00404901 /* ExtensionGuideTopicController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A598E43B29B4B90D0080B028 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A598E44329B4B90D0080B028 /* SafariWebExtensionHandler.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5EBC02F25FC197900F10FD7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -309,6 +543,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A54EDDB429BE8A5A00404901 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = A598E43E29B4B90D0080B028 /* Latynka Extension iOS */;
+			targetProxy = A54EDDB529BE8A5A00404901 /* PBXContainerItemProxy */;
+		};
 		A5EBC04C25FC197A00F10FD7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilters = (
@@ -320,6 +560,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		A5A1904B29BDC66C006730AD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A5A1904A29BDC66C006730AD /* Base */,
+				A5A1906529BE6DEE006730AD /* uk */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		A5EBC03A25FC197900F10FD7 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -331,6 +580,131 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		A54EDDCA29BE8A5A00404901 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Latynka/Latynka.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 10;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Latynka/iOS/Info-iOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.6.1;
+				PRODUCT_BUNDLE_IDENTIFIER = paiv.latynka.Latynka;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A54EDDCB29BE8A5A00404901 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Latynka/Latynka.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 10;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Latynka/iOS/Info-iOS.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.6.1;
+				PRODUCT_BUNDLE_IDENTIFIER = paiv.latynka.Latynka;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A598E45A29B4B90D0080B028 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 10;
+				DEVELOPMENT_TEAM = R6D5S4N2Y9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Latynka Extension iOS/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Latynka Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.6.1;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = paiv.latynka.Latynka.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		A598E45B29B4B90D0080B028 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 10;
+				DEVELOPMENT_TEAM = R6D5S4N2Y9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Latynka Extension iOS/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Latynka Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.6.1;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = paiv.latynka.Latynka.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		A5EBC05625FC197A00F10FD7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -386,6 +760,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -443,6 +818,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -547,6 +923,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A54EDDC929BE8A5A00404901 /* Build configuration list for PBXNativeTarget "Latynka iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A54EDDCA29BE8A5A00404901 /* Debug */,
+				A54EDDCB29BE8A5A00404901 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A598E45929B4B90D0080B028 /* Build configuration list for PBXNativeTarget "Latynka Extension iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A598E45A29B4B90D0080B028 /* Debug */,
+				A598E45B29B4B90D0080B028 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A5EBC02E25FC197900F10FD7 /* Build configuration list for PBXProject "Latynka" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

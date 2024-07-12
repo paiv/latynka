@@ -1,0 +1,114 @@
+
+/* Class = "UILabel"; text = "Narod mij je! V joğo ğarjačyx žylax \nKozacjka krov puljsuje i ğude!\n- Vasylj Symonenko"; ObjectID = "02I-nE-dD5"; */
+"02I-nE-dD5.text" = "Narod mij je! V joğo ğarjačyx žylax \nKozacjka krov puljsuje i ğude!\n- Vasylj Symonenko";
+
+/* Class = "UINavigationItem"; title = "Enable extension"; ObjectID = "21n-sz-3BW"; */
+"21n-sz-3BW.title" = "Увімкнути розширення";
+
+/* Class = "UILabel"; text = "Here you can change the transliteration table:"; ObjectID = "28M-GG-PBk"; */
+"28M-GG-PBk.text" = "Обрати систему транслітерації:";
+
+/* Class = "UILabel"; text = "The Enabled option is handled internally by the extension."; ObjectID = "2Fw-ed-0D9"; */
+"2Fw-ed-0D9.text" = "Параметр Увімкнено призупиняє це розширення.";
+
+/* Class = "UILabel"; text = "Latest standard"; ObjectID = "3Kl-DQ-KJk"; */
+"3Kl-DQ-KJk.text" = "Стандарт";
+
+/* Class = "UILabel"; text = "The Ukrainian national standard for representing Ukrainian language in Latin script is DSTU 9112:2021"; ObjectID = "5y9-vS-Y1L"; */
+"5y9-vS-Y1L.text" = "Національний стандарт України до запису української мови латиницею ДСТУ 9112:2021";
+
+/* Class = "UIButton"; configuration.title = "Ukrainian Latin alphabet"; ObjectID = "6O9-1n-HbN"; */
+"6O9-1n-HbN.configuration.title" = "Українська латинка";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "6O9-1n-HbN"; */
+"6O9-1n-HbN.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Tap the extension button:"; ObjectID = "7Wy-8e-Duy"; */
+"7Wy-8e-Duy.text" = "Натисніть кнопку розширення:";
+
+/* Class = "UILabel"; text = "Example"; ObjectID = "98j-oH-WTE"; */
+"98j-oH-WTE.text" = "Зразок";
+
+/* Class = "UILabel"; text = "You can turn on Latynka Safari extension in Safari Settings."; ObjectID = "Ak7-xP-O2k"; */
+"Ak7-xP-O2k.text" = "Latynka розширення доступне в параметрах Safari.";
+
+/* Class = "UIButton"; configuration.title = "Ukraïnsjka latynka"; ObjectID = "Czw-uh-1cd"; */
+"Czw-uh-1cd.configuration.title" = "Ukraïnsjka latynka";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Czw-uh-1cd"; */
+"Czw-uh-1cd.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Despite wide adoption of Cyrillic, the history of Ukrainian Latin is rich. Read more:"; ObjectID = "DHg-9q-Y3E"; */
+"DHg-9q-Y3E.text" = "Попри широкий вжиток кирилиці, українська латинка має багату історію, читайте:";
+
+/* Class = "UILabel"; text = "Read on more options provided by the extension:"; ObjectID = "G27-fh-ukN"; */
+"G27-fh-ukN.text" = "Довідник із додаткових параметрів цього розширення:";
+
+/* Class = "UINavigationItem"; title = "Extension Guide"; ObjectID = "JPf-6e-xwA"; */
+"JPf-6e-xwA.title" = "Довідник";
+
+/* Class = "UILabel"; text = "Safari asks you to allow access:"; ObjectID = "KvC-JG-Trx"; */
+"KvC-JG-Trx.text" = "Safari просить дозволити доступ:";
+
+/* Class = "UIButton"; configuration.title = "Latynka web guide"; ObjectID = "Lej-OV-n7i"; */
+"Lej-OV-n7i.configuration.title" = "Довідник веб-розширення";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Lej-OV-n7i"; */
+"Lej-OV-n7i.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Enable extension"; ObjectID = "NAh-Y4-s1n"; */
+"NAh-Y4-s1n.text" = "Увімкнути розширення";
+
+/* Class = "UILabel"; text = "Option 2: open Settings app, tap through Safari, Extensions:"; ObjectID = "OWl-YC-Ub9"; */
+"OWl-YC-Ub9.text" = "Варіант 2: Відкрити Параметри, обрати Safari, Розширення:";
+
+/* Class = "UILabel"; text = "When a site is opened, the extension needs explicit permissions to process it. Latynka does not collect, transmit, distribute or sell your data."; ObjectID = "Ob6-8P-4eV"; */
+"Ob6-8P-4eV.text" = "Розширення потребує дозволу на обробку сайтів. Latynka не збирає, не передає, не поширює та не продає ваші дані.";
+
+/* Class = "UILabel"; text = "History"; ObjectID = "Qob-0v-bNj"; */
+"Qob-0v-bNj.text" = "Історія";
+
+/* Class = "UILabel"; text = "Configure extension"; ObjectID = "X43-5g-g8m"; */
+"X43-5g-g8m.text" = "Налаштування";
+
+/* Class = "UILabel"; text = "Site access"; ObjectID = "amn-UT-kbe"; */
+"amn-UT-kbe.text" = "Права доступу";
+
+/* Class = "UILabel"; text = "Enable extension"; ObjectID = "dIJ-LB-b8Q"; */
+"dIJ-LB-b8Q.text" = "Увімкнути розширення";
+
+/* Class = "UINavigationItem"; title = "Latynka Info"; ObjectID = "fMw-S8-Pt8"; */
+"fMw-S8-Pt8.title" = "Довідка про латинку";
+
+/* Class = "UILabel"; text = "To open extension options, tap the extension button:"; ObjectID = "fOr-Ss-FxO"; */
+"fOr-Ss-FxO.text" = "Натисніть кнопку розширення, щоб відкрити параметри:";
+
+/* Class = "UIButton"; configuration.title = "Extension Guide"; ObjectID = "lkn-br-uXJ"; */
+"lkn-br-uXJ.configuration.title" = "Довідник";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "lkn-br-uXJ"; */
+"lkn-br-uXJ.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "You can do this for each site you visit, or allow them all."; ObjectID = "lz6-20-UJy"; */
+"lz6-20-UJy.text" = "Цього потребує кожен сайт, але є можливість дозволити обробку всіх сайтів.";
+
+/* Class = "UILabel"; text = "Advanced"; ObjectID = "mgG-dv-TJr"; */
+"mgG-dv-TJr.text" = "Додатково";
+
+/* Class = "UINavigationItem"; title = "Enable extension"; ObjectID = "nX4-eE-qJh"; */
+"nX4-eE-qJh.title" = "Увімкнути розширення";
+
+/* Class = "UINavigationItem"; title = "Ukraïnsjka latynka"; ObjectID = "pvz-tq-Tff"; */
+"pvz-tq-Tff.title" = "Ukraïnsjka latynka";
+
+/* Class = "UIButton"; configuration.title = "DSTU 9112:2021"; ObjectID = "rRK-cV-IJd"; */
+"rRK-cV-IJd.configuration.title" = "ДСТУ 9112:2021";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "rRK-cV-IJd"; */
+"rRK-cV-IJd.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Option 1: in the Safari app, open the extensions menu on the search field, and tap Manage Extensions:"; ObjectID = "sXr-zq-hgc"; */
+"sXr-zq-hgc.text" = "Варіант 1: у Safari, відкрийте меню розширень у полі пошуку, натисніть Керувати розширеннями:";
+
+/* Class = "UIBarButtonItem"; title = "Menu"; ObjectID = "z0V-Ig-El9"; */
+"z0V-Ig-El9.title" = "Меню";
