@@ -11,5 +11,8 @@
     "punycode": "^2.1.1",
     "uglify-js": "^3.0.0",
     "uglifyify": "^5.0.0"
+  },
+  "scripts": {
+    "build": "make -C src clean all"
   }
 }

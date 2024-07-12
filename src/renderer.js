@@ -40,6 +40,7 @@ class Renderer {
 
         const loabc = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя'
         const nbsp = '\u00A0'
+        const dotc = '\u25CC'
 
         function codePoint(s) {
             if (s.codePointAt) {
@@ -53,7 +54,7 @@ class Renderer {
         const print_char = (ch) => {
             const code = codePoint(ch)
             if ((code >= 0x02B0 && code < 0x0370)) {
-                return [nbsp, ch].join('')
+                return [dotc, ch].join('')
             }
             return ch
         }
