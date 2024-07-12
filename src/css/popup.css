@@ -11,66 +11,71 @@
 
 body {
     margin: 0;
+    min-width: 20em;
 }
 
 
-table {
-    border-collapse: collapse;
-    width: 20em;
+.table {
+    width: -webkit-fill-available;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
 }
 
 
-td, th {
-    padding: 0;
+.table .th {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    font-weight: bolder;
+    padding: 0.4em 0 0.4em 0;
 }
 
 
-th {
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
+.table .tf {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bolder;
+    padding: 0.4em 0 0.4em 0;
 }
 
 
-td {
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
+.table .tr {
+    padding: 0.2em 0 0.2em 0;
 }
 
 
-td label {
-    display: block;
-    width: 100%;
+#translit_tables > div {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+}
+
+#translit_tables label {
+    margin: 0.1em 0 0.1em 0;
 }
 
 
-label.indent-1 {
-    margin-left: 1em;
+.table .ca {
+    display: flex;
+    justify-content: center;
+    margin: 1em 0 1em 0;
 }
 
 
-td input[type="checkbox"] {
+label > * {
+    vertical-align: middle;
+}
+
+
+label > input[type="checkbox"] {
     margin-right: 0.5em;
 }
 
 
-td input[type="radio"] {
-    margin-right: 1em;
-}
-
-
-td button {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-
-tfoot button {
-    display: inline;
-    margin: auto;
-    width: auto;
+label > input[type="radio"] {
+    margin-right: 0.5em;
 }
 
 
@@ -79,14 +84,8 @@ button img {
 }
 
 
-#open_translate {
-    position: absolute;
-    right: 0;
-}
-
-
-thead { background-color: #ddd; }
-tfoot { background-color: #eee; }
+.table > .th { background-color: #ddd; }
+.table > .tf { background-color: #eee; }
 
 
 @media (prefers-color-scheme: dark) {
@@ -98,7 +97,8 @@ tfoot { background-color: #eee; }
         border-radius: 0.2rem;
         height: 0.6rem;
     }
-    body, table{ color: inherit; }
-    th { color: #e8eaed; text-align: center; }
-    thead, tfoot { background-color: #151618; }
+    body, .table { color: inherit; }
+    .table > .th { color: #e8eaed; }
+    .table > .th { background-color: #151618; }
+    .table > .tf { background-color: #151618; }
 }

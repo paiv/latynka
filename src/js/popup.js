@@ -66,7 +66,8 @@ class View {
             }
 
             const lab = Dom.el('label')
-            const text = Dom.text(table.title)
+            const text = Dom.el('span')
+            text.textContent = table.title
             lab.appendChild(rad)
             lab.appendChild(text)
 

@@ -8,42 +8,30 @@
 </head>
 <body>
 
-<table id="settings">
-<thead>
-    <tr>
-        <th>__MSG_extension_button_tooltip__ __MSG_manifest_json_version__</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>
-            <label><input id="ext_enabled" type="checkbox">__MSG_popup_global_settings_enabled__</label>
-            <label id="site_enabled"><input type="checkbox">__MSG_popup_site_enabled__</label>
-        </td>
-    </tr>
-    <tr>
-        <th>__MSG_popup_tables_header__</th>
-    </tr>
-    <tr>
-        <td id="translit_tables">
-            <div></div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <button type="button" id="page_reload">__MSG_popup_reload_page__</button>
-        </td>
-    </tr>
-</tbody>
-<tfoot>
-    <tr>
-        <td>
-            <button type="button" id="open_options">__MSG_popup_open_options__</button>
-            <button type="button" id="open_translate"><img src="img/translate.png"></button>
-        </td>
-    </tr>
-</tfoot>
-</table>
+<div id="settings" class="table">
+<div class="th">
+    <span>__MSG_extension_button_tooltip__ __MSG_manifest_json_version__</span>
+</div>
+<div class="tb">
+    <div class="tr">
+        <div><label><input id="ext_enabled" type="checkbox"/><span>__MSG_popup_global_settings_enabled__</span></label></div>
+        <div><label id="site_enabled"><input type="checkbox"/><span>__MSG_popup_site_enabled__</span></label></div>
+    </div>
+    <div class="th">
+        <div class="tr"><span>__MSG_popup_tables_header__</span></div>
+    </div>
+    <div id="translit_tables" class="tr">
+        <div></div>
+    </div>
+    <div class="tr">
+        <div class="ca"><button type="button" id="page_reload">__MSG_popup_reload_page__</button></div>
+    </div>
+</div>
+<div class="tf">
+    <button type="button" id="open_options">__MSG_popup_open_options__</button>
+    <button type="button" id="open_translate"><img src="img/translate.png"></button>
+</div>
+</div>
 
 <script type="text/javascript" src="js/popup.js"></script>
 
