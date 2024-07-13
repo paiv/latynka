@@ -1,20 +1,11 @@
 {
-    "manifest_version": 3,
-    
-    "action": {
-        "default_icon": {
-            "16": "img/icon16-mono.png",
-            "32": "img/icon32-mono.png"
-        },
-        "default_popup": "popup.html",
-        "default_title": "__MSG_extension_button_tooltip__"
+    "background": {
+        "service_worker": "js/background.js"
     },
 
-    "background": {
-        "scripts": ["js/background.js"],
-        "persistent": false
-    },
-    
-    "permissions": [
-    ]
+    "browser_specific_settings": {
+        "safari": {
+            "strict_min_version": "15.4"
+        }
+    }
 }
