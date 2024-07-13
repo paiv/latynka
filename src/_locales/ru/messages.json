@@ -5,6 +5,9 @@
     "extension_button_tooltip": {
         "message": "Латинка"
     },
+    "clipboard_action_copy": {
+        "message": "Скопировать в буфер"
+    },
     "popup_global_settings_enabled": {
         "message": "Включено на всех сайтах"
     },
@@ -119,6 +122,9 @@
     },
     "share_dialog_close": {
         "message": "закрыть"
+    },
+    "translate_title": {
+        "message": "Транслит"
     },
     "translate_subtitle": {
         "message": "Транслитерация кириллицы в латиницу."

@@ -22,11 +22,11 @@ class View {
     }
 
     get inputText() {
-        return this.input_pane.innerText
+        return this.input_pane.value
     }
 
     set previewText(value) {
-        this.preview_pane.innerText = value
+        this.preview_pane.value = value
     }
 
     _onInputChange() {
@@ -69,11 +69,10 @@ class Controller {
         if (window.getSelection) {
             let sel = window.getSelection()
             sel.empty()
-            let range = document.createRange()
-            range.selectNode(node)
-            sel.addRange(range)
-            document.execCommand('copy')
         }
+        node.focus()
+        node.select()
+        document.execCommand('copy')
     }
 }
 

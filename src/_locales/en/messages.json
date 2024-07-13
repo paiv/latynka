@@ -7,6 +7,10 @@
         "message": "Latynka",
         "description": "Browser button: the tooltip on button hover"
     },
+    "clipboard_action_copy": {
+        "message": "Copy",
+        "description": "The action to copy text to clipboard"
+    },
     "popup_global_settings_enabled": {
         "message": "Enabled on all sites",
         "description": "Popup dialog: the label for 'enabled' checkbox in global setting"
@@ -158,6 +162,10 @@
     "share_dialog_close": {
         "message": "close",
         "description": "Share dialog: the close action"
+    },
+    "translate_title": {
+        "message": "Converter",
+        "description": "Converter dialog: title text"
     },
     "translate_subtitle": {
         "message": "Convert Cyrillic to Latin",

@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8">
-<title>Транслітерація з кирилиці в латиницю</title>
+<title>__MSG_translate_title__</title>
 <link rel="stylesheet" href="css/translate.css" type="text/css">
 
 </head>
@@ -12,17 +12,12 @@
 <div>__MSG_translate_subtitle__</div>
 
 <div class="fxstack">
-    <div class="fxitem">
-        <div id="translit_input" class="pane notranslit" contenteditable=true lang="uk">
-        </div>
-    </div>
-    <div class="fxitem">
-        <div id="translit_preview" class="pane">
-        </div>
-        <div class="actions">
-            <button id="btn_clip" type="button"><img src="img/clippy.png"> <span>Copy</span></button>
-        </div>
-    </div>
+    <textarea id="translit_input" class="pane txt notranslit" lang="uk"></textarea>
+    <textarea id="translit_preview" class="pane txt" readonly="readonly"></textarea>
+</div>
+
+<div class="actions">
+    <button id="btn_clip" type="button"><img src="img/clippy.png"> <span>__MSG_clipboard_action_copy__</span></button>
 </div>
 
 <script type="text/javascript" src="js/translate.js"></script>
