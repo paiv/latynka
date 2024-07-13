@@ -20,7 +20,7 @@
 
     "content_scripts": [
         {
-            "matches": ["http://*/*", "https://*/*"],
+            "matches": ["https://*/*", "http://*/*", "file:///*"],
             "run_at": "document_start",
             "all_frames": true,
             "js": ["js/content.js"]

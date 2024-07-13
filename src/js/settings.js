@@ -259,7 +259,7 @@ class Settings {
         const host = this._host(url)
 
         if (!host) {
-            return false
+            return this.enabled
         }
 
         if (this.blacklist_enabled) {
