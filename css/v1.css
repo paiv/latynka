@@ -1,6 +1,6 @@
 .app {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: row-reverse wrap;
 }
 
 .app .app-rules {
@@ -8,10 +8,11 @@
 
 .app .right-pane {
     flex: 1;
-    min-width: 8em;
+    min-width: 8rem;
 }
 
 .right-pane .app-preview {
+    min-width: 20rem;
     margin-right: 2em;
 }
 
