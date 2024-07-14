@@ -5,13 +5,13 @@
   "dependencies": {},
   "devDependencies": {
     "browserify": "^17.0",
-    "chrome-webstore-upload-cli": "^3.1",
+    "chrome-webstore-upload-cli": "^3.3",
     "decomment": "^0.9.5",
     "glob": "^8.0",
     "gulp": "file:./tools/sip",
-    "jasmine": "^4.2",
+    "jasmine": "^5.1",
     "lodash.merge": "^4.6",
-    "web-ext": "^7.11",
+    "web-ext": "^8.2",
     "yazl": "^2.5"
   },
   "scripts": {
