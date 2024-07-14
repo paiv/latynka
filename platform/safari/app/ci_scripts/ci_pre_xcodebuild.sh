@@ -1,5 +1,4 @@
 #!/bin/sh
--e
-
+set -e
 npm run --prefix "$CI_PRIMARY_REPOSITORY_PATH" 'build:safari'
-"$CI_PROJECT_FILE_PATH"/../../build.sh
+(cd "$CI_PROJECT_FILE_PATH"/../../ && ./build.sh)
