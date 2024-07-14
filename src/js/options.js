@@ -31,6 +31,7 @@ class View {
         this.onRulesEditorInput = (text) => {}
         this.onPreviewEditClick = () => {}
         this.onPreviewSaveClick = () => {}
+        this.onShareCopyLink = (btn, txt) => {}
 
         this.left_pane = doc.querySelector('.left-pane')
         this.right_pane = doc.querySelector('.right-pane')
@@ -533,7 +534,7 @@ class View {
         const rules_pane = details.querySelector('.rules')
         let share_pane = details.querySelector('.share')
 
-        function link_row(url, description) {
+        function link_row(url, description, copy_link_cb) {
             let row = Dom.el('div', ['share-row'])
 
             if (description) {
@@ -542,9 +543,13 @@ class View {
                 row.appendChild(desc)
             }
 
-            let copy = Dom.el('button')
+            let copy = Dom.el('button', ['btnok'])
             copy.appendChild(Dom.text('Copy URL'))
             row.appendChild(copy)
+
+            const mark = Dom.el('span', ['okmark'])
+            mark.textContent = '✓'
+            copy.appendChild(mark)
 
             let link = Dom.el('input')
             link.type = "text"
@@ -553,8 +558,7 @@ class View {
             row.appendChild(link)
 
             copy.addEventListener('click', () => {
-                link.select()
-                document.execCommand('copy')
+                copy_link_cb(copy, link)
             })
 
             return row
@@ -562,14 +566,16 @@ class View {
 
         let pane = Dom.el('div', ['share'])
 
-        let full_pane = link_row(table.share_link)
+        let full_pane = link_row(table.share_link, '',
+            (btn, txt) => this.onShareCopyLink(btn, txt))
         full_pane.classList.add('full-link')
         pane.appendChild(full_pane)
 
         if (table.short_share_link) {
         const placeholder = 'loading...'
 
-        let short_pane = link_row(table.short_share_link || placeholder, 'Short URL:')
+        let short_pane = link_row(table.short_share_link || placeholder, 'Short URL:',
+            (btn, txt) => this.onShareCopyLink(btn, txt) )
         short_pane.classList.add('short-link')
         pane.appendChild(short_pane)
         }
@@ -580,6 +586,31 @@ class View {
         else {
             details.insertBefore(pane, rules_pane)
         }
+    }
+
+    selectShareLink(el) {
+        if (el) {
+            el.focus()
+            el.select()
+        }
+    }
+
+    flashShareCopyOK(btn) {
+        if (btn) {
+            this._btnok_setok(btn)
+        }
+    }
+
+    _btnok_setok(btn) {
+        if (btn._btnoktok) {
+            window.clearTimeout(btn._btnoktok)
+        }
+        const overlay = btn.querySelector('.okmark')
+        const animations = `
+        animation: 0.15s ease-out 0s forwards btnok-on,
+           0.1s ease-in 0.5s forwards btnok-off;`
+        overlay.style = animations
+        btn._btnoktok = window.setTimeout(() => { overlay.style = undefined; }, 650)
     }
 
     get rules_editor() {
@@ -734,6 +765,7 @@ class Controller {
         this.view.onRulesEditorInput = (text) => { this._checkRulesEditorInput(text) }
         this.view.onPreviewEditClick = () => { this._editPreviewText() }
         this.view.onPreviewSaveClick = () => { this._savePreviewText() }
+        this.view.onShareCopyLink = (btn, txt) => { this._shareCopyLink(btn, txt) }
     }
 
     _storeSettings() {
@@ -1092,6 +1124,27 @@ class Controller {
         }
         else {
             this.settings.preview_text = previewText
+        }
+    }
+
+    _shareCopyLink(btn, txt) {
+        if (window.getSelection) {
+            let sel = window.getSelection()
+            sel.empty()
+        }
+        this.view.selectShareLink(txt)
+        this._copyShareLinkToClipboard(txt.value, () => { this.view.flashShareCopyOK(btn) })
+    }
+
+    _copyShareLinkToClipboard(text, callback) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text)
+            .then(callback, (e) => console.error(e) )
+        }
+        else if (document.execCommand) {
+            if (document.execCommand('copy')) {
+                callback()
+            }
         }
     }
 }

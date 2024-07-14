@@ -202,6 +202,27 @@ label input[type="checkbox"] {
 }
 
 
+.btnok {
+    position: relative;
+}
+
+.btnok > .okmark {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #fff;
+    opacity: 0;
+}
+
+@keyframes btnok-on { from { opacity: 0; } to { opacity: 1; } }
+@keyframes btnok-off { from { opacity: 1; } to { opacity: 0; } }
+
+
 .preview {
     display: flex;
     flex-flow: column nowrap;
@@ -273,4 +294,5 @@ label input[type="checkbox"] {
     .details-actions .confirm-delete, .editor-info .status { color: #f88a8a; }
     .rule-thumb { background-color: #151618; }
     .menu .menu-row-selected { background-color: rgba(0,0,0,0.5); }
+    .btnok > .okmark { background-color: #202124; }
 }

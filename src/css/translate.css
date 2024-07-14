@@ -59,6 +59,27 @@ button > img {
 }
 
 
+.btnok {
+    position: relative;
+}
+
+.btnok > .okmark {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #fff;
+    opacity: 0;
+}
+
+@keyframes btnok-on { from { opacity: 0; } to { opacity: 1; } }
+@keyframes btnok-off { from { opacity: 1; } to { opacity: 0; } }
+
+
 @media screen and (width > 40em) {
     .fxstack { flex-flow: row nowrap; }
 }
@@ -73,4 +94,5 @@ button > img {
         border-radius: 0.2rem;
     }
     .pane { color: #fff; }
+    .btnok > .okmark { background-color: #202124; }
 }

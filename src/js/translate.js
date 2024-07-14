@@ -36,6 +36,22 @@ class View {
     _onClipboardButton() {
         this.onClipButtonTouched()
     }
+
+    flashCopyOK() {
+        this._btnok_setok(this.clipboard_button)
+    }
+
+    _btnok_setok(btn) {
+        if (btn._btnoktok) {
+            window.clearTimeout(btn._btnoktok)
+        }
+        const overlay = btn.querySelector('.okmark')
+        const animations = `
+        animation: 0.15s ease-out 0s forwards btnok-on,
+           0.1s ease-in 0.5s forwards btnok-off;`
+        overlay.style = animations
+        btn._btnoktok = window.setTimeout(() => { overlay.style = undefined; }, 650)
+    }
 }
 
 
@@ -48,7 +64,11 @@ class Controller {
         this._localize_html(document)
         
         this.view.onChange = () => { this._translateInput() }
-        this.view.onClipButtonTouched = () => { this._copyTextToClipboard(this.view.preview_pane) }
+        this.view.onClipButtonTouched = () => {
+            this._copyTextToClipboard(
+              this.view.preview_pane,
+              () => { this.view.flashCopyOK() }
+            )}
     }
 
     _localize_html(doc) {
@@ -65,14 +85,22 @@ class Controller {
         this.view.previewText = this.translit.convert(this.view.inputText)
     }
 
-    _copyTextToClipboard(node) {
+    _copyTextToClipboard(node, callback) {
         if (window.getSelection) {
             let sel = window.getSelection()
             sel.empty()
         }
         node.focus()
         node.select()
-        document.execCommand('copy')
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(node.value)
+            .then(callback, (e) => console.error(e) )
+        }
+        else if (document.execCommand) {
+            if (document.execCommand('copy')) {
+                callback()
+            }
+        }
     }
 }
 
