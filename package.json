@@ -23,7 +23,7 @@
     "build": "npm run build:chrome && npm run build:firefox && npm run build:edge",
     "dist": "gulp dist",
     "publish:chrome": "npm run build:chrome && chrome-webstore-upload upload --source dist/build/chrome --auto-publish",
-    "publish:firefox": "npm run build:firefox && cd dist/build/firefox && web-ext sign --use-submission-api --channel listed"
+    "publish:firefox": "npm run build:firefox && cd dist/build/firefox && web-ext sign --channel listed"
   },
   "author": "Pavel paiv Ivashkov",
   "license": "MIT",
