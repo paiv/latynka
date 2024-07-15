@@ -1,6 +1,5 @@
 
 const punycode = require('punycode')
-    , url = require('url')
 
 
 class SharerDecoderError {
@@ -78,7 +77,7 @@ class Sharer {
     decodeShareLink(link) {
         const table = {rules: {}}
 
-        const parsedUrl = new url.parse(link)
+        const parsedUrl = new URL(link)
         const match = `${parsedUrl.protocol}//${parsedUrl.host}${parsedUrl.pathname}`
 
         if (match.toLowerCase() !== this.baseUrl) {
