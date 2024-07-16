@@ -1,5 +1,5 @@
 
-const punycode = require('punycode')
+const punycode = require('./punycode')
 
 
 class SharerDecoderError {
