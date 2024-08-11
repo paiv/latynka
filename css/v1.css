@@ -1,3 +1,9 @@
+:root { color-scheme: light dark; --bghi: #f0f0f0; }
+
+@media (prefers-color-scheme: dark) {
+:root { --bghi: #303030; }
+}
+
 .app {
     display: flex;
     flex-flow: row-reverse wrap;
@@ -46,7 +52,7 @@
 }
 
 .rule-main .rule-thumb {
-    background-color: #f0f0f0;
+    background-color: var(--bghi);
     font-size: 3em;
     margin-right: 0.2em;
     padding-left: 0.2em;
@@ -54,7 +60,7 @@
 }
 
 .rule-extra .rule-thumb {
-    background-color: #f0f0f0;
+    background-color: var(--bghi);
     font-size: 1.5em;
     margin-right: 0.17em;
     padding-left: 0.1em;
@@ -63,7 +69,7 @@
 
 
 .app-actions .link {
-    background-color: #f0f0f0;
+    background-color: var(--bghi);
     cursor: pointer;
     padding-left: 0.2em;
     padding-right: 0.2em;
