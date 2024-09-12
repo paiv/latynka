@@ -54,8 +54,22 @@ div.i img {
     margin-bottom: 1em;
     border: 1px solid #eeeeee;
 }
+nav.s {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+nav.s ul {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+}
 ul {
   list-style: none;
+}
+li img {
+    vertical-align: middle;
+    margin: 0.2rem;
 }
 @media (prefers-color-scheme: dark) {
 div.t { background-color: #34343c; }
@@ -70,7 +84,13 @@ div.t { background-color: #34343c; }
     Ukraïnsjka Latynka | Українська Латинка
 </h1>
 
-<a href="https://ukrainewar.carrd.co/" rel="nofollow"><img src="https://user-images.githubusercontent.com/196601/157244482-73d3c54c-3e3f-4fac-8eb0-cc32cd5d746e.svg" alt="standwithukraine" style="max-width: 100%;"></a>
+<nav class="s">
+    <a href="https://ukrainewar.carrd.co/" rel="nofollow"><img src="img/ua.svg" alt="standwithukraine" style="max-width: 100%;"></a>
+    <ul>
+    <li>[<a href="en/">English</a>]</li>
+    <li>[<a href="https://paiv.github.io/latynka-keyboard/" target="_blank">Клавіатури</a>]</li>
+    </ul>
+</nav>
 
 <h2>додаток до браузерів для української латиниці</h2>
 
@@ -79,13 +99,8 @@ div.t { background-color: #34343c; }
   <li><img src="img/firefox.png" width="16"> <a href="https://addons.mozilla.org/firefox/addon/uk-latynka/">Firefox розширення на сайті Mozilla</a></li>
   <li><img src="img/safari.png" width="16"> <a href="https://apps.apple.com/app/ukra%C3%AFnsjka-latynka/id1561476172?platform=iphone">Safari розширення на сайті Apple</a></li>
   <li><img src="img/edge.png" width="16"> <a href="https://microsoftedge.microsoft.com/addons/detail/ablhpakieoekffjmmpdpfjefbfmkaopl">Edge розширення на сайті Microsoft</a></li>
-  <li><img src="img/github.png" width="16"> <a href="https://github.com/paiv/latynka">Переглянути відкритий код</a></li>
+  <li><img src="img/github.svg" width="16"> <a href="https://github.com/paiv/latynka">Переглянути відкритий код</a></li>
 </ul>
-
-<div>
-    [<a href="en/">English</a>]
-    [<a href="https://paiv.github.io/latynka-keyboard/" target="_blank">Keyboard layouts</a>]
-</div>
 
 <div class="t">
 Автоматична транслітерація кириличного тексту в латиницю на веб-сторінках.
