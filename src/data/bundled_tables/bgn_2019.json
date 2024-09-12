@@ -1,0 +1,57 @@
+{
+    "id": "bgn_2019",
+    "title": "BGN/PCGN 2019",
+    "description": "[wikipedia.org](https://en.wikipedia.org/wiki/BGN/PCGN_romanization)",
+    "rules": {
+        "а": "a",
+        "б": "b",
+        "в": "v",
+        "г": "h",
+        "ґ": "g",
+        "д": "d",
+        "е": "e",
+        "є": {
+            "start": "ye",
+            "other": "ie"
+        },
+        "ж": "zh",
+        "з": "z",
+        "и": "y",
+        "і": "i",
+        "ї": {
+            "start": "yi",
+            "other": "i"
+        },
+        "й": {
+            "start": "y",
+            "other": "i"
+        },
+        "к": "k",
+        "л": "l",
+        "м": "m",
+        "н": "n",
+        "о": "o",
+        "п": "p",
+        "р": "r",
+        "с": "s",
+        "т": "t",
+        "у": "u",
+        "ф": "f",
+        "х": "kh",
+        "ц": "ts",
+        "ч": "ch",
+        "ш": "sh",
+        "щ": "shch",
+        "ь": "",
+        "ю": {
+            "start": "yu",
+            "other": "iu"
+        },
+        "я": {
+            "start": "ya",
+            "other": "ia"
+        },
+        "'": "",
+        "зг": "zgh"
+    }
+}
