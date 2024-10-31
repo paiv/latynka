@@ -17,3 +17,9 @@ Build
 npm install
 npm run build
 ```
+
+Notes
+--
+The preferred transliteration system going forward is the latest national standard [DSTU 9112:2021](https://uk.wikipedia.org/wiki/ДСТУ_9112:2021), unless you are forced to use a legacy system by a lagging law.
+
+If you want to propose an alternative system, provide an argument of improvements it gives over the national standard.
