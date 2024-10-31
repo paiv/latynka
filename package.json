@@ -1,11 +1,11 @@
 {
   "name": "latynka",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Ukraïnsjka Latynka | Українська Латинка",
-  "dependencies": {},
   "devDependencies": {
     "browserify": "^17.0",
     "chrome-webstore-upload-cli": "^3.3",
+    "cross-env": "^7.0.3",
     "decomment": "^0.9.5",
     "glob": "^8.0",
     "gulp": "file:./tools/sip",
@@ -16,10 +16,10 @@
   },
   "scripts": {
     "test": "jasmine",
-    "build:chrome": "PLATFORM=chrome gulp clean && PLATFORM=chrome gulp build",
-    "build:firefox": "PLATFORM=firefox gulp clean && PLATFORM=firefox gulp build",
-    "build:safari": "PLATFORM=safari gulp clean && PLATFORM=safari gulp build",
-    "build:edge": "PLATFORM=edge gulp clean && PLATFORM=edge gulp build",
+    "build:chrome": "cross-env PLATFORM=chrome gulp clean && cross-env PLATFORM=chrome gulp build",
+    "build:firefox": "cross-env PLATFORM=firefox gulp clean && cross-env PLATFORM=firefox gulp build",
+    "build:safari": "cross-env PLATFORM=safari gulp clean && cross-env PLATFORM=safari gulp build",
+    "build:edge": "cross-env PLATFORM=edge gulp clean && cross-env PLATFORM=edge gulp build",
     "build": "npm run build:chrome && npm run build:firefox && npm run build:edge",
     "dist": "gulp dist",
     "publish:chrome": "npm run build:chrome && chrome-webstore-upload upload --source dist/build/chrome --auto-publish",
