@@ -72,6 +72,7 @@ textarea {
     <li>[<a href="en/convert.html">English</a>]</li>
     <li>[<a href="index.html">До браузерів</a>]</li>
     <li>[<a href="https://paiv.github.io/latynka-keyboard/" target="_blank">Клавіатури</a>]</li>
+    <li>[<a href="https://github.com/paiv/uklatn" target="_blank">Софт</a>]</li>
     </ul>
 </nav>
 
@@ -95,7 +96,9 @@ textarea {
 
 </div>
 
-<script>
+<script src="js/uklatn.js" type="module"></script>
+<script type="module">
+import * as uklatn from "./js/uklatn.js";
 class DomBuilder {
     static el(name, classes) {
         const x = document.createElement(name)
@@ -498,7 +501,19 @@ function onTableChange(select, info) {
     const table = BundledTables[select.value];
     const fo = new Markdown(DomBuilder).render(table.description || '');
     info.replaceChildren(fo);
-    _AppState.tr = new Transliterator(table.rules);
+    switch (table.id) {
+        case 'dstu_diac':
+            _AppState.tr = {convert: (s) => uklatn.encode(s, 'DSTU_9112_A')};
+            break;
+        case 'dstu_intl':
+            _AppState.tr = {convert: (s) => uklatn.encode(s, 'DSTU_9112_B')};
+            break;
+        case 'kmu_2010':
+            _AppState.tr = {convert: (s) => uklatn.encode(s, 'KMU_55')};
+            break;
+        default:
+            _AppState.tr = new Transliterator(table.rules);
+    }
 }
 function onInputChange(txt1, txt2) {
     txt2.value = _AppState.tr.convert(txt1.value);
