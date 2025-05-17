@@ -1,6 +1,6 @@
 
 const sharer = require('../src/js/sharer')
-    , punycode = require('punycode')
+    , punycode = require('../src/js/punycode')
 
 
 describe('Sharer', function() {
