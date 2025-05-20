@@ -50,13 +50,13 @@ describe('ДСТУ 9112:2021, Система А', function() {
     })
 
     it('converts йа йе йу', function() {
-        const converted = this.convert('йа йе йу')
-        expect(converted).toBe('j\'a j\'e j\'u')
+        const converted = this.convert('йа йе йу лйа лйе лйу')
+        expect(converted).toBe("j'a j'e j'u lj'a lj'e lj'u")
     })
 
     it('converts ьа ье ьу', function() {
-        const converted = this.convert('ьа ье ьу')
-        expect(converted).toBe('j\'a j\'e j\'u')
+        const converted = this.convert('ьа ье ьу льа лье льу')
+        expect(converted).toBe("j'a j'e j'u lj'a lj'e lj'u")
     })
 
     it('converts apos', function() {

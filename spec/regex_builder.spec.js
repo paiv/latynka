@@ -17,24 +17,36 @@ describe('RegexBuilder', function() {
         expect(this.source()).toBe('(?:)')
     })
 
-    it('handles char class of one char', function() {
-        this.rxb = this.rxb.chars('x')
-        expect(this.source()).toBe('[x]')
-    })
+    describe('char class', function() {
+        it('handles one char', function() {
+            this.rxb = this.rxb.chars('x')
+            expect(this.source()).toBe('[x]')
+        })
 
-    it('handles char class from string list', function() {
-        this.rxb = this.rxb.chars('xyz', 'abc')
-        expect(this.source()).toBe('[xyzabc]')
-    })
+        it('handles string list', function() {
+            this.rxb = this.rxb.chars('xz', 'ca')
+            expect(this.source()).toBe('[acxz]')
+        })
 
-    it('handles negated char class of one char', function() {
-        this.rxb = this.rxb.xchars('x')
-        expect(this.source()).toBe('[^x]')
-    })
+        it('handles negated one char', function() {
+            this.rxb = this.rxb.xchars('x')
+            expect(this.source()).toBe('[^x]')
+        })
 
-    it('handles negated char class from string list', function() {
-        this.rxb = this.rxb.xchars('xyz', 'abc')
-        expect(this.source()).toBe('[^xyzabc]')
+        it('handles negated string list', function() {
+            this.rxb = this.rxb.xchars('xz', 'ca')
+            expect(this.source()).toBe('[^acxz]')
+        })
+
+        it('collapses ranges', function() {
+            this.rxb = this.rxb.chars('uvwxyz', 'abc')
+            expect(this.source()).toBe('[a-cu-z]')
+        })
+
+        it('collapses negated ranges', function() {
+            this.rxb = this.rxb.xchars('uvwxyz', 'abc')
+            expect(this.source()).toBe('[^a-cu-z]')
+        })
     })
 
     it('ands', function() {
@@ -62,14 +74,56 @@ describe('RegexBuilder', function() {
         expect(this.source()).toBe('(?:[x]abc)')
     })
 
+    describe('optional', function() {
+        it('marks single', function() {
+            this.rxb = this.rxb.optional('x')
+            expect(this.source()).toBe('x?')
+        })
+
+        it('collapses empty', function() {
+            this.rxb = this.rxb.optional()
+            expect(this.source()).toBe('(?:)')
+        })
+
+        it('collapses empty string', function() {
+            this.rxb = this.rxb.optional('')
+            expect(this.source()).toBe('(?:)')
+        })
+
+        it('marks sequence', function() {
+            this.rxb = this.rxb.optional('x', 'y')
+            expect(this.source()).toBe('(?:xy)?')
+        })
+
+        it('marks string', function() {
+            this.rxb = this.rxb.optional('xy')
+            expect(this.source()).toBe('(?:xy)?')
+        })
+
+        it('marks chars', function() {
+            this.rxb = this.rxb.optional(this.rxb.chars('xz'))
+            expect(this.source()).toBe('[xz]?')
+        })
+
+        it('marks xchars', function() {
+            this.rxb = this.rxb.optional(this.rxb.xchars('xz'))
+            expect(this.source()).toBe('[^xz]?')
+        })
+
+        it('marks a group', function() {
+            this.rxb = this.rxb.optional(this.rxb.group('x', 'y'))
+            expect(this.source()).toBe('(xy)?')
+        })
+    })
+
     it('is recursive', function() {
         this.rxb = this.rxb.group(
             this.rxb.ngroup(
-                this.rxb.and('abc', this.rxb.chars('xyz'))
+                this.rxb.and('abc', this.rxb.chars('xz'))
             ),
             this.rxb.or(this.rxb.chars('q'), 'opr')
         )
-        expect(this.source()).toBe('((?:abc[xyz])(?:[q]|opr))')
+        expect(this.source()).toBe('((?:abc[xz])(?:[q]|opr))')
     })
 
     it('has flags', function() {

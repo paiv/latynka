@@ -31,7 +31,7 @@ describe('GOST 7.79 System B', function() {
 
     it('converts ц- pairs', function() {
         const converted = this.convert('ці ци цє цю ця')
-        expect(converted).toBe('ci cy\u0300 cye cyu cya')
+        expect(converted).toBe('ci cỳ cye cyu cya')
     })
 
     it('converts шщ chars', function() {
@@ -51,7 +51,7 @@ describe('GOST 7.79 System B', function() {
 
     it('converts ийії chars', function() {
         const converted = this.convert('и й і ї')
-        expect(converted).toBe('y\u0300 j i yi')
+        expect(converted).toBe('ỳ j i yi')
     })
 
     it('converts apos', function() {
@@ -62,7 +62,7 @@ describe('GOST 7.79 System B', function() {
 
     it('converts pangram', function() {
         const converted = this.convert('Щастям б\'єш жук їх глицю в фон й ґедзь пріч.')
-        expect(converted).toBe('Shhastyam b\'yesh zhuk yix gly\u0300cyu v fon j g\u0300edz\u0300 prich.')
+        expect(converted).toBe('Shhastyam b\'yesh zhuk yix glỳcyu v fon j g\u0300edz\u0300 prich.')
     })
 
 })
