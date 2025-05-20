@@ -50,13 +50,13 @@ describe('ДСТУ 9112:2021, Система Б', function() {
     })
 
     it('converts йа йе йі йу', function() {
-        const converted = this.convert('йа йе йі йу')
-        expect(converted).toBe('j\'a j\'e j\'i j\'u')
+        const converted = this.convert('йа йе йі йу лйа лйе лйі лйу')
+        expect(converted).toBe("j'a j'e j'i j'u lj'a lj'e lj'i lj'u")
     })
 
     it('converts ьа ье ьі ьу', function() {
-        const converted = this.convert('ьа ье ьі ьу')
-        expect(converted).toBe('j\'a j\'e j\'i j\'u')
+        const converted = this.convert('ьа ье ьі ьу льа лье льі льу')
+        expect(converted).toBe("j'a j'e j'i j'u lj'a lj'e lj'i lj'u")
     })
 
     it('converts apos', function() {
