@@ -118,7 +118,7 @@ class Settings {
     }
 
     get whitelist_enabled() {
-        return this._get_bool(this.storage_keys.whitelist_enabled, false)
+        return this._get_bool(this.storage_keys.whitelist_enabled, true)
     }
     set whitelist_enabled(value) {
         this._store(this.storage_keys.whitelist_enabled, value)
