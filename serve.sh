@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-MY_DIR=`cd "$(dirname $BASH_SOURCE[0])" && pwd`
+MY_DIR=`cd "$(dirname ${BASH_SOURCE[0]:-${(%):-%x}})" && pwd`
 
 rm -r "$MY_DIR/_site"
 

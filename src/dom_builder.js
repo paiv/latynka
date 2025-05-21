@@ -10,12 +10,12 @@ class DomBuilder {
         return document.createTextNode(value)
     }
 
-    static resetChildren(parent, child) {
+    static resetChildren(parent, ...children) {
         let last;
         while (last = parent.lastElementChild) {
             parent.removeChild(last)
         }
-        if (child) {
+        for (const child of children) {
             parent.appendChild(child)
         }
     }

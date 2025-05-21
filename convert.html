@@ -137,20 +137,82 @@ class RegexBuilder {
             case 'NONE':
                 return null
             case 'CAPT_GROUP':
-                return ['(', this.args.join(''), ')'].join('')
+                return ['(', ...this.args, ')'].join('')
             case 'CAPT_OR_GROUP':
                 return ['(', this.args.join('|'), ')'].join('')
             case 'NONCAPT_GROUP':
-                return ['(?:', this.args.join(''), ')'].join('')
+                return ['(?:', ...this.args, ')'].join('')
             case 'AND':
                 return this.args.join('')
             case 'OR':
                 return ['(?:', this.args.join('|'), ')'].join('')
             case 'CHARS':
-                return ['[', this.args.join(''), ']'].join('')
+                return ['[', this._pack_ranges(this.args.join('')), ']'].join('')
             case 'XCHARS':
-                return ['[^', this.args.join(''), ']'].join('')
+                return ['[^', this._pack_ranges(this.args.join('')), ']'].join('')
+            case 'OPT':
+                switch (this.args.length) {
+                    case 0:
+                        return ''
+                    case 1:
+                        if (this.args[0] instanceof RegexBuilder) {
+                            return (this.args.join('') + '?')
+                        }
+                        if (typeof this.args[0] === 'string') {
+                            switch (this.args[0].length) {
+                                case 0:
+                                    return ''
+                                case 1:
+                                    return (this.args.join('') + '?')
+                                default:
+                                    break
+                            }
+                        }
+                        // fall through
+                    default:
+                        return ['(?:', ...this.args, ')?'].join('')
+                }
         }
+    }
+
+    _pack_ranges(s) {
+        const xs = [...(new Set(s))]
+        xs.sort()
+        let res = ''
+        let state = 0
+        xs.forEach((c, i) => {
+            switch (state) {
+                case 0:
+                    res += c
+                    state = 1
+                    break
+                case 1:
+                    if (c.charCodeAt(0) - xs[i-1].charCodeAt(0) !== 1) {
+                        res += c
+                    }
+                    else {
+                        state = 2
+                    }
+                    break
+                case 2:
+                    if (c.charCodeAt(0) - xs[i-1].charCodeAt(0) !== 1) {
+                        if (xs[i-1].charCodeAt(0) - res.charCodeAt(res.length-1) > 1) {
+                            res += '-'
+                        }
+                        res += xs[i-1]
+                        res += c
+                        state = 1
+                    }
+                    break
+            }
+        })
+        if (state === 2) {
+            if (xs[xs.length-1].charCodeAt(0) - res.charCodeAt(res.length-1) > 1) {
+                res += '-'
+            }
+            res += xs[xs.length-1]
+        }
+        return res
     }
 
     none() {
@@ -187,6 +249,10 @@ class RegexBuilder {
 
     xchars() {
         return new RegexBuilder('XCHARS', [...arguments])
+    }
+
+    optional() {
+        return new RegexBuilder('OPT', [...arguments])
     }
 }
 
@@ -342,13 +408,49 @@ class Transliterator {
         const word_start_rules = {}
         const after_cons_rules = {}
 
-        const TitleCase = (value) => value.toLocaleLowerCase().replace(/^./, (s) => s.toLocaleUpperCase())
-        const SillyCase = (value) => value.toLocaleLowerCase().replace(/.$/, (s) => s.toLocaleUpperCase())
+        function casesOf(s) {
+            function* inner(acc, xs, i) {
+                if (i >= xs.length) {
+                    yield acc
+                    return
+                }
+                const x = xs[i]
+                const y = x.toLocaleUpperCase()
+                yield* inner(acc + x, xs, i + 1)
+                if (y !== x) {
+                    yield* inner(acc + y, xs, i + 1)
+                }
+            }
+            const lo = [...s.toLocaleLowerCase()]
+            return [...inner('', lo, 0)]
+        }
+
+        function TitleCase(value) {
+            return value.toLocaleLowerCase()
+                .replace(/^./, (s) => s.toLocaleUpperCase())
+        }
+
+        function SillyCase(value) {
+            return value.toLocaleLowerCase()
+                .replace(/.$/, (s) => s.toLocaleUpperCase())
+        }
+
+        function isUpper(s) {
+            return s !== s.toLocaleLowerCase()
+        }
+
+        function matchCaseOf(k, s) {
+            if (isUpper(k[0])) {
+                return TitleCase(s)
+            }
+            else if (isUpper(k[k.length-1])) {
+                return SillyCase(s)
+            }
+            return s.toLocaleLowerCase()
+        }
 
 
         Object.keys(rules).forEach((key) => {
-            const lokey = key.toLocaleLowerCase()
-            const hikey = lokey.toLocaleUpperCase()
             let rule = rules[key]
 
             if (rule == null) {
@@ -359,78 +461,63 @@ class Transliterator {
 
                 if ('start' in rule) {
                     const value = rule.start || ''
-                    word_start_rules[lokey] = value
-                    word_start_rules[hikey] = TitleCase(value)
-                    if (key.length > 1) {
-                        word_start_rules[SillyCase(key)] = SillyCase(value)
-                        word_start_rules[TitleCase(key)] = TitleCase(value)
-                    }
+                    casesOf(key).forEach((k) => {
+                        word_start_rules[k] = matchCaseOf(k, value)
+                    })
                 }
 
                 if ('cons' in rule) {
                     const value = rule.cons || ''
-                    after_cons_rules[lokey] = value
-                    after_cons_rules[hikey] = TitleCase(value)
+                    casesOf(key).forEach((k) => {
+                        after_cons_rules[k] = matchCaseOf(k, value)
+                    })
                 }
 
                 const value = rule.other || ''
-                default_rules[lokey] = value
-                default_rules[hikey] = TitleCase(value)
-                if (key.length > 1) {
-                    default_rules[SillyCase(key)] = SillyCase(value)
-                    default_rules[TitleCase(key)] = TitleCase(value)
-                }
-
+                casesOf(key).forEach((k) => {
+                    default_rules[k] = matchCaseOf(k, value)
+                })
             }
             else {
-
                 if (key.indexOf('\'') >= 0) {
-                    apos.forEach((char) => {
-                        const newkey = key.replace('\'', char)
-                        default_rules[newkey] = rule
+                    apos.forEach((c) => {
+                        const newkey = key.replace('\'', c)
+                        casesOf(newkey).forEach((k) => {
+                            default_rules[k] = matchCaseOf(k, rule)
+                        })
                     })
                 }
                 else {
-                    default_rules[lokey] = rule
-                    default_rules[hikey] = TitleCase(rule)
-
-                    if (key.length > 1) {
-                        default_rules[SillyCase(key)] = SillyCase(rule)
-                        default_rules[TitleCase(key)] = TitleCase(rule)
-                    }
+                    casesOf(key).forEach((k) => {
+                        default_rules[k] = matchCaseOf(k, rule)
+                    })
                 }
             }
         })
 
 
         const keys1 = Object.keys(default_rules).filter((key) => key.length === 1)
-        const default_keyset1 = keys1.map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase()
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const default_keyset1 = [...new Set(
+            keys1.map((x) => x.toLocaleLowerCase())
+        )]
 
         const keys2 = Object.keys(default_rules).filter((key) => key.length > 1)
-            .sort((a,b) => b.length - a.length)
-        const default_keyset2 = keys2.map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase(),
-            TitleCase(x),
-            SillyCase(x)
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const default_keyset2 = [...new Set(
+            keys2.map((s) => s.toLocaleLowerCase())
+        )].sort((a,b) => b.length - a.length)
 
-        const word_start_keyset = Object.keys(word_start_rules).map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase()
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const word_start_keyset = [...new Set(
+            Object.keys(word_start_rules).map((s) => s.toLocaleLowerCase())
+        )].sort((a,b) => b.length - a.length)
 
-        const consonants_keyset = consonants + consonants.toLocaleUpperCase()
-        const after_cons_keyset = Object.keys(after_cons_rules).map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase()
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const consonants_keyset = consonants
+        const after_cons_keyset = [...new Set(
+            Object.keys(after_cons_rules).map((x) => x.toLocaleLowerCase())
+        )].sort((a,b) => b.length - a.length)
 
 
         const rxb = new RegexBuilder()
+        const noop = '\uFFFC\uFFFC'
 
         const rx = rxb.or(
             // word start
@@ -438,34 +525,37 @@ class Transliterator {
                 // char preceding
                 rxb.orgroup(  // 1
                     '^',
-                    rxb.xchars(loabc, hiabc, ...apos)
+                    rxb.and(
+                        rxb.xchars(loabc, ...apos),
+                        rxb.optional(rxb.chars(...apos))
+                    )
                 ),
                 // char to translate
                 rxb.orgroup(  // 2
-                    rxb.chars(...word_start_keyset)
+                    ...(word_start_keyset.length > 0 ? word_start_keyset : [noop])
                 )
             ),
             // or word inner
             rxb.or(
                 rxb.orgroup(  // 3
-                    ...(default_keyset2.length > 0 ? default_keyset2 : ['\uFFFC\uFFFC'])
+                    ...(default_keyset2.length > 0 ? default_keyset2 : [noop])
                 ),
                 rxb.group(  // 4
-                    rxb.chars(consonants_keyset),
-                    rxb.chars(...after_cons_keyset)
+                    ...(after_cons_keyset.length > 0 ?
+                        [rxb.chars(consonants_keyset), rxb.or(...after_cons_keyset)]
+                        : [noop])
                 ),
                 rxb.orgroup(  // 5
                     rxb.chars(...default_keyset1)
                 )
             )
         )
-        .regex('g')
+        .regex('gi')
 
-
-        const cb = (text, xkey, match_start, match_pairs, match_cons, match_inner) => {
+        const cb = (text, prefix, match_start, match_pairs, match_cons, match_inner) => {
             if (match_start) {
                 const value = word_start_rules[match_start]
-                return xkey + value
+                return prefix + value
             }
 
             if (match_pairs) {
@@ -475,7 +565,7 @@ class Transliterator {
 
             if (match_cons) {
                 const cons = default_rules[match_cons[0]]
-                const value = after_cons_rules[match_cons[1]]
+                const value = after_cons_rules[match_cons.substring(1)]
                 return cons + value
             }
 
@@ -489,12 +579,22 @@ class Transliterator {
     }
 
     convert(text) {
-        return text.replace(this.compiled.regex, this.compiled.callback)
+        return text
+            .normalize('NFC')
+            .replace(this.compiled.regex, this.compiled.callback)
+            .normalize('NFC')
+    }
+
+    processTextNodes(nodes) {
+        nodes.forEach((node) => {
+            const text = node.data || ''
+            node.data = this.convert(text)
+        })
     }
 }
 
 const BundledTables =
-{"abecadlo":{"id":"abecadlo","title":"Abecad\u0142o \u041b\u043e\u0437\u0438\u043d\u0441\u044c\u043a\u043e\u0433\u043e 1834","description":"[wikipedia.org](https://uk.wikipedia.org/wiki/%D0%90%D0%B1%D0%B5%D1%86%D0%B0%D0%B4%D0%BB%D0%BE)","rules":{"\u0430":"a","\u0431":"b","\u0432":"w","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u044c":"\u010f","\u0435":"e","\u0454":{"cons":"ie","other":"je"},"\u0436":"\u017c","\u0437":"z","\u0437\u044c":"\u017a","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"\u0142","\u043b\u0454":"le","\u043b\u0456":"li","\u043b\u044c":"l","\u043b\u044e":"lu","\u043b\u044f":"la","\u043b\u043b\u0454":"lle","\u043b\u043b\u0456":"lli","\u043b\u043b\u044c":"ll","\u043b\u043b\u044e":"llu","\u043b\u043b\u044f":"lla","\u043c":"m","\u043d":"n","\u043d\u044c":"\u0144","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u044c":"\u0155","\u0441":"s","\u0441\u044c":"\u015b","\u0442":"t","\u0442\u044c":"\u0165","\u0443":"u","\u0444":"f","\u0445":"ch","\u0446":"c","\u0446\u044c":"\u0107","\u0447":"cz","\u0448":"sz","\u0449":"szcz","\u044c":"","\u044e":{"cons":"iu","other":"ju"},"\u044f":{"cons":"ia","other":"ja"},"'":""}},"bgn_1965":{"id":"bgn_1965","title":"BGN/PCGN 1965","description":"[wikipedia.org](https://en.wikipedia.org/wiki/BGN/PCGN_romanization)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":"ye","\u0436":"zh","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":"yi","\u0439":"y","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"kh","\u0446":"ts","\u0447":"ch","\u0448":"sh","\u0449":"shch","\u044c":"'","\u044e":"yu","\u044f":"ya","'":"\"","\u0437\u0433":"z\u00b7h","\u043a\u0433":"k\u00b7h","\u0441\u0433":"s\u00b7h","\u0442\u0441":"t\u00b7s","\u0442\u0441\u0433":"ts\u00b7h"}},"bgn_2019":{"id":"bgn_2019","title":"BGN/PCGN 2019","description":"[wikipedia.org](https://en.wikipedia.org/wiki/BGN/PCGN_romanization)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":{"start":"ye","other":"ie"},"\u0436":"zh","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":{"start":"yi","other":"i"},"\u0439":{"start":"y","other":"i"},"\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"kh","\u0446":"ts","\u0447":"ch","\u0448":"sh","\u0449":"shch","\u044c":"","\u044e":{"start":"yu","other":"iu"},"\u044f":{"start":"ya","other":"ia"},"'":"","\u0437\u0433":"zgh"}},"dotted":{"id":"dotted","title":"\u041a\u0440\u0430\u043f\u043a\u043e\u0432\u0430","description":"","rules":{"\u0430":"a","\u0431":"b","\u0431\u044c":"\u1e05","\u0431\u0454":"\u1e05e","\u0431\u044e":"\u1e05u","\u0431\u044f":"\u1e05a","\u0432":"v","\u0432\u044c":"\u1e7f","\u0432\u0454":"\u1e7fe","\u0432\u044e":"\u1e7fu","\u0432\u044f":"\u1e7fa","\u0433":"h","\u0433\u044c":"\u1e25","\u0433\u0454":"\u1e25e","\u0433\u044e":"\u1e25u","\u0433\u044f":"\u1e25a","\u0491":"g","\u0434":"d","\u0434\u044c":"\u1e0d","\u0434\u0454":"\u1e0de","\u0434\u044e":"\u1e0du","\u0434\u044f":"\u1e0da","\u0435":"e","\u0454":{"cons":"\u0323e","other":"je"},"\u0436":"\u017c","\u0437":"z","\u0437\u044c":"\u1e93","\u0437\u0454":"\u1e93e","\u0437\u044e":"\u1e93u","\u0437\u044f":"\u1e93a","\u0438":"y","\u0456":"i","\u0457":"\u00ef","\u0439":"j","\u0439\u0454":"jje","\u0439\u044e":"jju","\u0439\u044f":"jja","\u043a":"k","\u043a\u044c":"\u1e33","\u043a\u0454":"\u1e33e","\u043a\u044e":"\u1e33u","\u043a\u044f":"\u1e33a","\u043b":"l","\u043b\u044c":"\u1e37","\u043b\u0454":"\u1e37e","\u043b\u044e":"\u1e37u","\u043b\u044f":"\u1e37a","\u043c":"m","\u043c\u044c":"\u1e43","\u043c\u0454":"\u1e43e","\u043c\u044e":"\u1e43u","\u043c\u044f":"\u1e43a","\u043d":"n","\u043d\u044c":"\u1e47","\u043d\u0454":"\u1e47e","\u043d\u044e":"\u1e47u","\u043d\u044f":"\u1e47a","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u044c":"\u1e5b","\u0440\u0454":"\u1e5be","\u0440\u044e":"\u1e5bu","\u0440\u044f":"\u1e5ba","\u0441":"s","\u0441\u044c":"\u1e63","\u0441\u0454":"\u1e63e","\u0441\u044e":"\u1e63u","\u0441\u044f":"\u1e63a","\u0442":"t","\u0442\u044c":"\u1e6d","\u0442\u0454":"\u1e6de","\u0442\u044e":"\u1e6du","\u0442\u044f":"\u1e6da","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0447":"\u010b","\u0448":"\u1e61","\u0449":"\u1e61\u010b","\u044c":"\u0323","\u044e":{"cons":"\u0323u","other":"ju"},"\u044f":{"cons":"\u0323a","other":"ja"},"'":""}},"dstu_diac":{"id":"dstu_diac","title":"\u0414\u0421\u0422\u0423 9112:2021, \u0421\u0438\u0441\u0442\u0435\u043c\u0430 \u0410","description":"[zakon.rada.gov.ua](https://zakon.rada.gov.ua/rada/show/v0260774-21)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"\u011f","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":"\u00ef","\u0439":{"cons":"'j","other":"j"},"\u0439\u0430":"j'a","\u0439\u0435":"j'e","\u0439\u0443":"j'u","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u015d","\u044c":{"cons":"j","other":"\u0135"},"\u044c\u0430":"j'a","\u044c\u0435":"j'e","\u044c\u0443":"j'u","\u044e":"ju","\u044f":"ja","'":"'"}},"dstu_intl":{"id":"dstu_intl","title":"\u0414\u0421\u0422\u0423 9112:2021, \u0421\u0438\u0441\u0442\u0435\u043c\u0430 \u0411","description":"[zakon.rada.gov.ua](https://zakon.rada.gov.ua/rada/show/v0260774-21)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"gh","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":"je","\u0436":"zh","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":{"cons":"'j","other":"j"},"\u0439\u0430":"j'a","\u0439\u0435":"j'e","\u0439\u0456":"j'i","\u0439\u0443":"j'u","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"kh","\u0446":"c","\u0447":"ch","\u0448":"sh","\u0448\u0447":"sh'ch","\u0449":"shch","\u044c":{"cons":"j","other":"hj"},"\u044c\u0430":"j'a","\u044c\u0435":"j'e","\u044c\u0456":"j'i","\u044c\u0443":"j'u","\u044e":"ju","\u044f":"ja","'":"'"}},"gost779b":{"id":"gost779b","title":"GOST 7.79 System B","description":"[wikipedia.org](https://en.wikipedia.org/wiki/ISO_9)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"g","\u0491":"g\u0300","\u0434":"d","\u0435":"e","\u0454":"ye","\u0436":"zh","\u0437":"z","\u0438":"y\u0300","\u0456":"i","\u0457":"yi","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"cz","\u0446\u0456":"ci","\u0446\u0438":"cy\u0300","\u0446\u0454":"cye","\u0446\u044e":"cyu","\u0446\u044f":"cya","\u0447":"ch","\u0448":"sh","\u0449":"shh","\u044c":"\u0300","\u044e":"yu","\u044f":"ya","'":"'"}},"iso9_1968":{"id":"iso9_1968","title":"\u041d\u0430\u0443\u043a\u043e\u0432\u0430 \u0442\u0440\u0430\u043d\u0441\u043b\u0456\u0442\u0435\u0440\u0430\u0446\u0456\u044f 1968","description":"ISO/R 9:1968 [wikipedia.org](https://en.wikipedia.org/wiki/ISO_9#ISO/R_9)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":"\u00ef","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"ch","\u0446":"c","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"\u02b9","\u044e":"ju","\u044f":"ja","'":"\u2033"}},"iso9_1995":{"id":"iso9_1995","title":"ISO 9:1995, GOST 7.79 System A","description":"[wikipedia.org](https://en.wikipedia.org/wiki/ISO_9)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"g","\u0491":"g\u0300","\u0434":"d","\u0435":"e","\u0454":"\u00ea","\u0436":"\u017e","\u0437":"z","\u0438":"i","\u0456":"\u00ec","\u0457":"\u00ef","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"h","\u0446":"c","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u015d","\u044c":"\u02b9","\u044e":"\u00fb","\u044f":"\u00e2","'":"\u02bc"}},"jirecek":{"id":"jirecek","title":"\u0407\u0440\u0435\u0447\u043a\u0456\u0432\u043a\u0430 1859","description":"[latynka.tak.today](http://latynka.tak.today/works/proekt-jirecheka/)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u0454":"\u010fe","\u0434\u044c":"\u010f","\u0434\u044e":"\u010fu","\u0434\u044f":"\u010fa","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0437\u0454":"\u017ae","\u0437\u044c":"\u017a","\u0437\u044e":"\u017au","\u0437\u044f":"\u017aa","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043b\u0454":"\u013ee","\u043b\u044c":"\u013e","\u043b\u044e":"\u013eu","\u043b\u044f":"\u013ea","\u043c":"m","\u043d":"n","\u043d\u0454":"\u0144e","\u043d\u044c":"\u0144","\u043d\u044e":"\u0144u","\u043d\u044f":"\u0144a","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u0454":"\u0155e","\u0440\u044c":"\u0155","\u0440\u044e":"\u0155u","\u0440\u044f":"\u0155a","\u0441":"s","\u0441\u0454":"\u015be","\u0441\u044c":"\u015b","\u0441\u044e":"\u015bu","\u0441\u044f":"\u015ba","\u0442":"t","\u0442\u0454":"\u0165e","\u0442\u044c":"\u0165","\u0442\u044e":"\u0165u","\u0442\u044f":"\u0165a","\u0443":"u","\u0444":"f","\u0445":"ch","\u0446":"c","\u0446\u0454":"\u0107e","\u0446\u044c":"\u0107","\u0446\u044e":"\u0107u","\u0446\u044f":"\u0107a","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"","\u044e":"ju","\u044f":"ja","'":""}},"kmu_2010":{"id":"kmu_2010","title":"Official \u041a\u041c\u0423 2010","description":"[zakon.rada.gov.ua](https://zakon.rada.gov.ua/laws/show/55-2010-%D0%BF)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":{"start":"ye","other":"ie"},"\u0436":"zh","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":{"start":"yi","other":"i"},"\u0439":{"start":"y","other":"i"},"\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"kh","\u0446":"ts","\u0447":"ch","\u0448":"sh","\u0449":"shch","\u044c":"","\u044e":{"start":"yu","other":"iu"},"\u044f":{"start":"ya","other":"ia"},"'":"","\u0437\u0433":"zgh"}},"kolomyjec":{"id":"kolomyjec","title":"\u0410\u0432\u0435\u043d\u0456\u0440 \u041a\u043e\u043b\u043e\u043c\u0438\u0454\u0446\u044c 1946","description":"[zbruc.eu](https://zbruc.eu/node/103627)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u0436":"\u1e11","\u0434\u0436\u0454":"\u1e11e","\u0434\u0436\u044e":"\u1e11u","\u0434\u0436\u044f":"\u1e11a","\u0434\u0437":"q","\u0434\u0434\u0454":"d\u0301d\u0301e","\u0434\u0434\u0456":"d\u0301di","\u0434\u0434\u044c":"d\u0301d\u0301","\u0434\u0434\u044e":"d\u0301d\u0301u","\u0434\u0434\u044f":"d\u0301d\u0301a","\u0435":"e","\u0454":{"cons":"\u0301e","other":"je"},"\u0436":"\u0225","\u0436\u0454":"\u0225e","\u0436\u044e":"\u0225u","\u0436\u044f":"\u0225a","\u0437":"z","\u0437\u0454":"\u017ae","\u0437\u044c":"\u017a","\u0437\u044e":"\u017au","\u0437\u044f":"\u017aa","\u0437\u0437\u0454":"\u017a\u017ae","\u0437\u0437\u0456":"\u017azi","\u0437\u0437\u044c":"\u017a\u017a","\u0437\u0437\u044e":"\u017a\u017au","\u0437\u0437\u044f":"\u017a\u017aa","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u0439\u0454":"jje","\u0439\u044e":"jju","\u0439\u044f":"jja","\u043a":"k","\u043b":"l","\u043b\u0454":"\u013ae","\u043b\u044c":"\u013a","\u043b\u044e":"\u013au","\u043b\u044f":"\u013aa","\u043b\u043b\u0454":"\u013a\u013ae","\u043b\u043b\u0456":"\u013ali","\u043b\u043b\u044c":"\u013a\u013a","\u043b\u043b\u044e":"\u013a\u013au","\u043b\u043b\u044f":"\u013a\u013aa","\u043c":"m","\u043d":"n","\u043d\u0454":"\u0144e","\u043d\u044c":"\u0144","\u043d\u044e":"\u0144u","\u043d\u044f":"\u0144a","\u043d\u043d\u0454":"\u0144\u0144e","\u043d\u043d\u0456":"\u0144ni","\u043d\u043d\u044c":"\u0144\u0144","\u043d\u043d\u044e":"\u0144\u0144u","\u043d\u043d\u044f":"\u0144\u0144a","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u0454":"\u0155e","\u0440\u044c":"\u0155","\u0440\u044e":"\u0155u","\u0440\u044f":"\u0155a","\u0441":"s","\u0441\u0454":"\u015be","\u0441\u044c":"\u015b","\u0441\u044e":"\u015bu","\u0441\u044f":"\u015ba","\u0441\u0441\u0454":"\u015b\u015be","\u0441\u0441\u0456":"\u015bsi","\u0441\u0441\u044c":"\u015b\u015b","\u0441\u0441\u044e":"\u015b\u015bu","\u0441\u0441\u044f":"\u015b\u015ba","\u0442":"t","\u0442\u0442\u0454":"t\u0301t\u0301e","\u0442\u0442\u0456":"t\u0301ti","\u0442\u0442\u044c":"t\u0301t\u0301","\u0442\u0442\u044e":"t\u0301t\u0301u","\u0442\u0442\u044f":"t\u0301t\u0301a","\u0442\u044c\u0441\u044f":"\u0107\u0107a","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0446\u0454":"\u0107e","\u0446\u044c":"\u0107","\u0446\u044e":"\u0107u","\u0446\u044f":"\u0107a","\u0446\u0446\u0454":"\u0107\u0107e","\u0446\u0446\u0456":"\u0107ci","\u0446\u0446\u044c":"\u0107\u0107","\u0446\u0446\u044e":"\u0107\u0107u","\u0446\u0446\u044f":"\u0107\u0107a","\u0447":"\u00e7","\u0447\u0454":"\u00e7e","\u0447\u044e":"\u00e7u","\u0447\u044f":"\u00e7a","\u0448":"\u015f","\u0448\u0454":"\u015fe","\u0448\u044e":"\u015fu","\u0448\u044f":"\u015fa","\u0449":"\u015f\u00e7","\u044c":"\u0301","\u044e":{"cons":"\u0301u","other":"ju"},"\u044f":{"cons":"\u0301a","other":"ja"},"'":""}},"lahoda":{"id":"lahoda","title":"Lahoda 2008","description":"[omniglot.com](https://www.omniglot.com/pdfs/latynka.pdf)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0432\u0432":"w","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u0454":"\u010fe","\u0434\u044c":"\u010f","\u0434\u044e":"\u010fu","\u0434\u044f":"\u010fa","\u0434\u044c\u0454":"\u010fie","\u0434\u044c\u0439\u043e":"\u010fio","\u0434\u044c\u044e":"\u010fiu","\u0434\u044c\u044f":"\u010fia","\u0435":"e","\u0454":{"cons":"ie","other":"je"},"\u0436":"\u017e","\u0437":"z","\u0437\u0454":"\u017ae","\u0437\u044c":"\u017a","\u0437\u044e":"\u017au","\u0437\u044f":"\u017aa","\u0437\u044c\u0454":"\u017aie","\u0437\u044c\u0439\u043e":"\u017aio","\u0437\u044c\u044e":"\u017aiu","\u0437\u044c\u044f":"\u017aia","\u0438":"y","\u0438\u0439":"\u00fd","\u0456":"i","\u0456\u0430":"\u00eda","\u0456\u0435":"\u00ede","\u0456\u0443":"\u00edu","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043b\u0454":"\u013ee","\u043b\u044c":"\u013e","\u043b\u044e":"\u013eu","\u043b\u044f":"\u013ea","\u043b\u044c\u0454":"\u013eie","\u043b\u044c\u0439\u043e":"\u013eio","\u043b\u044c\u044e":"\u013eiu","\u043b\u044c\u044f":"\u013eia","\u043c":"m","\u043d":"n","\u043d\u0454":"\u0144e","\u043d\u044c":"\u0144","\u043d\u044e":"\u0144u","\u043d\u044f":"\u0144a","\u043d\u044c\u0454":"\u0144ie","\u043d\u044c\u0439\u043e":"\u0144io","\u043d\u044c\u044e":"\u0144iu","\u043d\u044c\u044f":"\u0144ia","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u0454":"\u0155e","\u0440'\u0454":"rie","\u0440\u0439\u043e":"rio","\u0440\u044c":"\u0155","\u0440\u044e":"\u0155u","\u0440\u044f":"\u0155a","\u0441":"s","\u0441\u0454":"\u015be","\u0441\u044c":"\u015b","\u0441\u044e":"\u015bu","\u0441\u044f":"\u015ba","\u0441\u044c\u0454":"\u015bie","\u0441\u044c\u0439\u043e":"\u015bio","\u0441\u044c\u044e":"\u015biu","\u0441\u044c\u044f":"\u015bia","\u0442":"t","\u0442\u0454":"\u0165e","\u0442\u044c":"\u0165","\u0442\u044e":"\u0165u","\u0442\u044f":"\u0165a","\u0442\u044c\u0454":"\u0165ie","\u0442\u044c\u0439\u043e":"\u0165io","\u0442\u044c\u044e":"\u0165iu","\u0442\u044c\u044f":"\u0165ia","\u0443":"u","\u0444":"f","\u0445":"ch","\u0446":"c","\u0446\u0454":"\u0107e","\u0446\u044c":"\u0107","\u0446\u044e":"\u0107u","\u0446\u044f":"\u0107a","\u0446\u044c\u0454":"\u0107ie","\u0446\u044c\u0439\u043e":"\u0107io","\u0446\u044c\u044e":"\u0107iu","\u0446\u044c\u044f":"\u0107ia","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"","\u044e":{"cons":"iu","other":"ju"},"\u044f":{"cons":"ia","other":"ja"},"'":""}},"lucuk":{"id":"lucuk","title":"\u041b\u0443\u0447\u0443\u043a\u0456\u0432\u043a\u0430 2000","description":"[pravopys.pdf](http://www.vntl.com/im/pdf/pravopys.pdf)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u0454":"\u010fe","\u0434\u044c":"\u010f","\u0434\u044e":"\u010fu","\u0434\u044f":"\u010fa","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0437\u0454":"\u017ae","\u0437\u044c":"\u017a","\u0437\u044e":"\u017au","\u0437\u044f":"\u017aa","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043b\u0454":"\u013ee","\u043b\u044c":"\u013e","\u043b\u044e":"\u013eu","\u043b\u044f":"\u013ea","\u043c":"m","\u043d":"n","\u043d\u0454":"\u0144e","\u043d\u044c":"\u0144","\u043d\u044e":"\u0144u","\u043d\u044f":"\u0144a","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u0454":"\u0155e","\u0440\u044c":"\u0155","\u0440\u044e":"\u0155u","\u0440\u044f":"\u0155a","\u0441":"s","\u0441\u0454":"\u015be","\u0441\u044c":"\u015b","\u0441\u044e":"\u015bu","\u0441\u044f":"\u015ba","\u0442":"t","\u0442\u0454":"\u0165e","\u0442\u044c":"\u0165","\u0442\u044e":"\u0165u","\u0442\u044f":"\u0165a","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0446\u0454":"\u0107e","\u0446\u044c":"\u0107","\u0446\u044e":"\u0107u","\u0446\u044f":"\u0107a","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"","\u044e":"ju","\u044f":"ja","'":""}},"melnyk":{"id":"melnyk","title":"Me\u013anyk 2008","description":"[archive.org](http://web.archive.org/web/20090901072239/http://www.latynka.com/pravopys/)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u044c":"\u010f","\u0434\u044c\u043e":"dio","\u0435":"e","\u0454":{"cons":"ie","other":"je"},"\u0436":"\u017e","\u0437":"z","\u0437\u044c":"\u017a","\u0437\u044c\u043e":"zio","\u0438":"y","\u0438\u0439":"\u00fd","\u0438\u0454":"\u00fde","\u0438\u0457":"\u00fdi","\u0438\u044e":"\u00fdu","\u0438\u044f":"\u00fda","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043b\u044c":"\u013a","\u043b\u044c\u043e":"lio","\u043c":"m","\u043d":"n","\u043d\u044c":"\u0144","\u043d\u044c\u043e":"nio","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u044c":"\u0155","\u0440\u044c\u043e":"rio","\u0441":"s","\u0441\u044c":"\u015b","\u0441\u044c\u043e":"sio","\u0442":"t","\u0442\u044c":"\u0165","\u0442\u044c\u043e":"tio","\u0443":"u","\u0444":"f","\u0445":"ch","\u0446":"c","\u0446\u044c":"\u0107","\u0446\u044c\u043e":"cio","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"","\u044e":{"cons":"iu","other":"ju"},"\u044f":{"cons":"ia","other":"ja"},"'":""}},"nachasi":{"id":"nachasi","title":"Na chasi 2017","description":"[nachasi.com](https://nachasi.com/ul/manifest/)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"g","\u0491":"\u011f","\u0434":"d","\u0434\u044c":"\u010f","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0437\u044c":"\u017a","\u0438":"y","\u0456":"i","\u0457":"\u0457","\u0439":"j","\u043a":"k","\u043b":"l","\u043b\u044c":"\u013e","\u043c":"m","\u043d":"n","\u043d\u044c":"\u0144","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u044c":"\u0155","\u0441":"s","\u0441\u044c":"\u015b","\u0442":"t","\u0442\u044c":"\u0165","\u0443":"u","\u0444":"f","\u0445":"h","\u0446":"c","\u0446\u044c":"\u0107","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"","\u044e":"ju","\u044f":"ja","'":"'"}},"nova_latynka":{"id":"nova_latynka","title":"Nova Latynka","description":"[nova-latynka.livejournal.com](https://nova-latynka.livejournal.com/775.html)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"j","\u044e":"ju","\u044f":"ja"}},"nova_latynka_alt":{"id":"nova_latynka_alt","title":"Nova Latynka alt","description":"[nova-latynka.livejournal.com](https://nova-latynka.livejournal.com/775.html)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0435":"e","\u0454":"je","\u0436":"z\u030c","\u0437":"z","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043d":"n","\u043e":"o","\u043f":"p","\u0440":"r","\u0441":"s","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0447":"c\u030c","\u0448":"s\u030c","\u0449":"s\u030cc\u030c","\u044c":"j","\u044e":"ju","\u044f":"ja"}},"paiv":{"id":"paiv","title":"Avtor\u015bka 2023","description":"","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"\u011f","\u0433\u0454":"\u01f5e","\u0433\u044c":"\u01f5","\u0433\u044e":"\u01f5u","\u0433\u044f":"\u01f5a","\u0491":"g","\u0491\u0454":"\u01f5e","\u0491\u044c":"\u01f5","\u0491\u044e":"\u01f5u","\u0491\u044f":"\u01f5a","\u0434":"d","\u0435":"e","\u0454":{"cons":"\u0301e","other":"je"},"\u0436":"\u017e","\u0436\u0454":"\u017ee","\u0436\u044c":"\u017e","\u0436\u044e":"\u017eu","\u0436\u044f":"\u017ea","\u0437":"z","\u0437\u0454":"\u017ae","\u0437\u044c":"\u017a","\u0437\u044e":"\u017au","\u0437\u044f":"\u017aa","\u0438":"y","\u0456":"i","\u0457":{"cons":"ji","other":"\u00ef"},"'\u0457":"ji","\u0439":"j","\u0439\u0430":"j'a","\u0439\u0435":"j'e","\u0439\u0456":"j'i","\u0439\u0443":"j'u","\u0439\u0454":"jje","\u0439\u044e":"jju","\u0439\u044f":"jja","\u043a":"k","\u043a\u0454":"\u1e31e","\u043a\u044c":"\u1e31","\u043a\u044e":"\u1e31u","\u043a\u044f":"\u1e31a","\u043b":"l","\u043b\u0454":"\u013ae","\u043b\u044c":"\u013a","\u043b\u044e":"\u013au","\u043b\u044f":"\u013aa","\u043c":"m","\u043c\u0454":"\u1e3fe","\u043c\u044c":"\u1e3f","\u043c\u044e":"\u1e3fu","\u043c\u044f":"\u1e3fa","\u043d":"n","\u043d\u0454":"\u0144e","\u043d\u044c":"\u0144","\u043d\u044e":"\u0144u","\u043d\u044f":"\u0144a","\u043e":"o","\u043f":"p","\u043f\u0454":"\u1e55e","\u043f\u044c":"\u1e55","\u043f\u044e":"\u1e55u","\u043f\u044f":"\u1e55a","\u0440":"r","\u0440\u0454":"\u0155e","\u0440\u044c":"\u0155","\u0440\u044e":"\u0155u","\u0440\u044f":"\u0155a","\u0441":"s","\u0441\u0454":"\u015be","\u0441\u044c":"\u015b","\u0441\u044e":"\u015bu","\u0441\u044f":"\u015ba","\u0442":"t","\u0442\u044c\u0441\u044f":"t\u015ba","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0446\u0454":"\u0107e","\u0446\u044c":"\u0107","\u0446\u044e":"\u0107u","\u0446\u044f":"\u0107a","\u0447":"\u010d","\u0447\u0454":"\u010de","\u0447\u044c":"\u010d","\u0447\u044e":"\u010du","\u0447\u044f":"\u010da","\u0448":"\u0161","\u0448\u0454":"\u0161e","\u0448\u044c":"\u0161","\u0448\u044e":"\u0161u","\u0448\u044f":"\u0161a","\u0448\u0447":"\u0161'\u010d","\u0448\u0447\u0454":"\u0161'\u010de","\u0448\u0447\u044c":"\u0161'\u010d","\u0448\u0447\u044e":"\u0161'\u010du","\u0448\u0447\u044f":"\u0161'\u010da","\u0449":"\u0161\u010d","\u0449\u0454":"\u0161\u010de","\u0449\u044c":"\u0161\u010d","\u0449\u044e":"\u0161\u010du","\u0449\u044f":"\u0161\u010da","\u044c":"\u0301","\u044c\u0430":"\u0301'a","\u044c\u0435":"\u0301'e","\u044c\u0457":"\u0301ji","\u044c\u0443":"\u0301'u","\u044e":{"cons":"\u0301u","other":"ju"},"\u044f":{"cons":"\u0301a","other":"ja"},"'":""}},"pseudo_jirecek":{"id":"pseudo_jirecek","title":"\u041f\u0441\u0435\u0432\u0434\u043e-\u0407\u0440\u0435\u0447\u043a\u0456\u0432\u043a\u0430","description":"[latynka.tak.today](http://latynka.tak.today/works/psevdojireckivka/)","rules":{"\u0430":"a","\u0431":"b","\u0432":"v","\u0433":"h","\u0491":"g","\u0434":"d","\u0434\u044c":"\u010f","\u0434\u044c\u043e":"dio","\u0435":"e","\u0454":{"cons":"ie","other":"je"},"\u0436":"\u017e","\u0437":"z","\u0437\u044c":"\u017a","\u0437\u044c\u043e":"zio","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043b\u044c":"\u013e","\u043b\u044c\u043e":"lio","\u043c":"m","\u043d":"n","\u043d\u044c":"\u0144","\u043d\u044c\u043e":"nio","\u043e":"o","\u043f":"p","\u0440":"r","\u0440\u044c":"\u0155","\u0440\u044c\u043e":"rio","\u0441":"s","\u0441\u044c":"\u015b","\u0441\u044c\u043e":"sio","\u0442":"t","\u0442\u044c":"\u0165","\u0442\u044c\u043e":"tio","\u0443":"u","\u0444":"f","\u0445":"ch","\u0446":"c","\u0446\u044c":"\u0107","\u0446\u044c\u043e":"cio","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u0161\u010d","\u044c":"","\u044e":{"cons":"iu","other":"ju"},"\u044f":{"cons":"ia","other":"ja"},"'":""}},"tkpn_combo":{"id":"tkpn_combo","title":"\u0422\u041a\u041f\u041d \u0412\u0430\u043a\u0443\u043b\u0435\u043d\u043a\u043e 1994 combo","description":"[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)","rules":{"\u0430":"a","\u0431":"b","\u0431\u0439\u043e":"b'jo","\u0432":"v","\u0432\u0439\u043e":"v'jo","\u0433":"\u011f","\u0491":"g","\u0434":"d","\u0434\u0439\u043e":"d'jo","\u0435":"e","\u0454":"je","\u0436":"\u017e","\u0437":"z","\u0437\u0439\u043e":"z'jo","\u0438":"y","\u0456":"i","\u0457":"\u00ef","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043c\u0439\u043e":"m'jo","\u043d":"n","\u043e":"o","\u043f":"p","\u043f\u0439\u043e":"p'jo","\u0440":"r","\u0440\u0439\u043e":"r'jo","\u0441":"s","\u0441\u0439\u043e":"s'jo","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u015d","\u044c":"j","\u044e":"ju","\u044f":"ja","'":"'"}},"tkpn_diac":{"id":"tkpn_diac","title":"\u0422\u041a\u041f\u041d \u0412\u0430\u043a\u0443\u043b\u0435\u043d\u043a\u043e 1994 diac","description":"[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)","rules":{"\u0430":"a","\u0431":"b","\u0431\u0439\u043e":"b'jo","\u0432":"v","\u0432\u0439\u043e":"v'jo","\u0433":"\u011f","\u0491":"g","\u0434":"d","\u0434\u0439\u043e":"d'jo","\u0435":"e","\u0454":"\u00eb","\u0436":"\u017e","\u0437":"z","\u0437\u0439\u043e":"z'jo","\u0438":"y","\u0456":"i","\u0457":"\u00ef","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043c\u0439\u043e":"m'jo","\u043d":"n","\u043e":"o","\u043f":"p","\u043f\u0439\u043e":"p'jo","\u0440":"r","\u0440\u0439\u043e":"r'jo","\u0441":"s","\u0441\u0439\u043e":"s'jo","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"x","\u0446":"c","\u0447":"\u010d","\u0448":"\u0161","\u0449":"\u015d","\u044c":"j","\u044e":"\u00fc","\u044f":"\u00e4","'":"'"}},"tkpn_intl":{"id":"tkpn_intl","title":"\u0422\u041a\u041f\u041d \u0412\u0430\u043a\u0443\u043b\u0435\u043d\u043a\u043e 1994 intl","description":"[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)","rules":{"\u0430":"a","\u0431":"b","\u0431\u0439\u043e":"b'jo","\u0432":"v","\u0432\u0439\u043e":"v'jo","\u0433":"gh","\u0491":"g","\u0434":"d","\u0434\u0439\u043e":"d'jo","\u0435":"e","\u0454":"je","\u0436":"zh","\u0437":"z","\u0437\u0439\u043e":"z'jo","\u0438":"y","\u0456":"i","\u0457":"ji","\u0439":"j","\u043a":"k","\u043b":"l","\u043c":"m","\u043c\u0439\u043e":"m'jo","\u043d":"n","\u043e":"o","\u043f":"p","\u043f\u0439\u043e":"p'jo","\u0440":"r","\u0440\u0439\u043e":"r'jo","\u0441":"s","\u0441\u0439\u043e":"s'jo","\u0442":"t","\u0443":"u","\u0444":"f","\u0445":"kh","\u0446":"c","\u0447":"ch","\u0448":"sh","\u0449":"shh","\u044c":"j","\u044e":"ju","\u044f":"ja","'":"'"}}};
+{"abecadlo":{"id":"abecadlo","title":"Abecadło Лозинського 1834","description":"[wikipedia.org](https://uk.wikipedia.org/wiki/%D0%90%D0%B1%D0%B5%D1%86%D0%B0%D0%B4%D0%BB%D0%BE)","rules":{"а":"a","б":"b","в":"w","г":"h","ґ":"g","д":"d","дь":"ď","е":"e","є":{"cons":"ie","other":"je"},"ж":"ż","з":"z","зь":"ź","и":"y","і":"i","ї":"ji","й":"j","к":"k","л":"ł","лє":"le","лі":"li","ль":"l","лю":"lu","ля":"la","ллє":"lle","ллі":"lli","лль":"ll","ллю":"llu","лля":"lla","м":"m","н":"n","нь":"ń","о":"o","п":"p","р":"r","рь":"ŕ","с":"s","сь":"ś","т":"t","ть":"ť","у":"u","ф":"f","х":"ch","ц":"c","ць":"ć","ч":"cz","ш":"sz","щ":"szcz","ь":"","ю":{"cons":"iu","other":"ju"},"я":{"cons":"ia","other":"ja"},"'":""}},"bgn_1965":{"id":"bgn_1965","title":"BGN/PCGN 1965","description":"[wikipedia.org](https://en.wikipedia.org/wiki/BGN/PCGN_romanization)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","е":"e","є":"ye","ж":"zh","з":"z","и":"y","і":"i","ї":"yi","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"kh","ц":"ts","ч":"ch","ш":"sh","щ":"shch","ь":"'","ю":"yu","я":"ya","'":"\"","зг":"z·h","кг":"k·h","сг":"s·h","тс":"t·s","тсг":"ts·h"}},"bgn_2019":{"id":"bgn_2019","title":"BGN/PCGN 2019","description":"[wikipedia.org](https://en.wikipedia.org/wiki/BGN/PCGN_romanization)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","е":"e","є":{"start":"ye","other":"ie"},"ж":"zh","з":"z","и":"y","і":"i","ї":{"start":"yi","other":"i"},"й":{"start":"y","other":"i"},"к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"kh","ц":"ts","ч":"ch","ш":"sh","щ":"shch","ь":"","ю":{"start":"yu","other":"iu"},"я":{"start":"ya","other":"ia"},"'":"","зг":"zgh"}},"dotted":{"id":"dotted","title":"Крапкова","description":"","rules":{"а":"a","б":"b","бь":"ḅ","бє":"ḅe","бю":"ḅu","бя":"ḅa","в":"v","вь":"ṿ","вє":"ṿe","вю":"ṿu","вя":"ṿa","г":"h","гь":"ḥ","гє":"ḥe","гю":"ḥu","гя":"ḥa","ґ":"g","д":"d","дь":"ḍ","дє":"ḍe","дю":"ḍu","дя":"ḍa","е":"e","є":{"cons":"̣e","other":"je"},"ж":"ż","з":"z","зь":"ẓ","зє":"ẓe","зю":"ẓu","зя":"ẓa","и":"y","і":"i","ї":"ï","й":"j","йє":"jje","йю":"jju","йя":"jja","к":"k","кь":"ḳ","кє":"ḳe","кю":"ḳu","кя":"ḳa","л":"l","ль":"ḷ","лє":"ḷe","лю":"ḷu","ля":"ḷa","м":"m","мь":"ṃ","мє":"ṃe","мю":"ṃu","мя":"ṃa","н":"n","нь":"ṇ","нє":"ṇe","ню":"ṇu","ня":"ṇa","о":"o","п":"p","р":"r","рь":"ṛ","рє":"ṛe","рю":"ṛu","ря":"ṛa","с":"s","сь":"ṣ","сє":"ṣe","сю":"ṣu","ся":"ṣa","т":"t","ть":"ṭ","тє":"ṭe","тю":"ṭu","тя":"ṭa","у":"u","ф":"f","х":"x","ц":"c","ч":"ċ","ш":"ṡ","щ":"ṡċ","ь":"̣","ю":{"cons":"̣u","other":"ju"},"я":{"cons":"̣a","other":"ja"},"'":""}},"dstu_diac":{"id":"dstu_diac","title":"ДСТУ 9112:2021, Система А","description":"[zakon.rada.gov.ua](https://zakon.rada.gov.ua/rada/show/v0260774-21)","rules":{"а":"a","б":"b","в":"v","г":"ğ","ґ":"g","д":"d","е":"e","є":"je","ж":"ž","з":"z","и":"y","і":"i","ї":"ï","й":{"cons":"'j","other":"j"},"йа":{"cons":"j'a","other":"j'a"},"йе":{"cons":"j'e","other":"j'e"},"йу":{"cons":"j'u","other":"j'u"},"к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"x","ц":"c","ч":"č","ш":"š","щ":"ŝ","ь":{"cons":"j","other":"ĵ"},"ьа":{"cons":"j'a","other":"j'a"},"ье":{"cons":"j'e","other":"j'e"},"ьу":{"cons":"j'u","other":"j'u"},"ю":"ju","я":"ja","'":"'"}},"dstu_intl":{"id":"dstu_intl","title":"ДСТУ 9112:2021, Система Б","description":"[zakon.rada.gov.ua](https://zakon.rada.gov.ua/rada/show/v0260774-21)","rules":{"а":"a","б":"b","в":"v","г":"gh","ґ":"g","д":"d","е":"e","є":"je","ж":"zh","з":"z","и":"y","і":"i","ї":"ji","й":{"cons":"'j","other":"j"},"йа":{"cons":"j'a","other":"j'a"},"йе":{"cons":"j'e","other":"j'e"},"йі":{"cons":"j'i","other":"j'i"},"йу":{"cons":"j'u","other":"j'u"},"к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"kh","ц":"c","ч":"ch","ш":"sh","шч":"sh'ch","щ":"shch","ь":{"cons":"j","other":"hj"},"ьа":{"cons":"j'a","other":"j'a"},"ье":{"cons":"j'e","other":"j'e"},"ьі":{"cons":"j'i","other":"j'i"},"ьу":{"cons":"j'u","other":"j'u"},"ю":"ju","я":"ja","'":"'"}},"etypical":{"id":"etypical","title":"Etypical 2020","description":"paiv","rules":{"а":"a","б":"b","в":"w","г":"ğ","гь":"ǵ","гьо":"ğio","ґ":"g","ґь":"ǵ","ґьо":"gio","д":"d","е":"e","є":{"cons":"ie","other":"je"},"ж":"ż","жє":"że","жь":"ż","жю":"żu","жя":"ża","з":"z","зь":"ź","зьо":"zio","и":"y","і":"i","ї":"ji","й":"j","йа":"j'a","йе":"j'e","йє":"jje","йі":"j'i","йу":"j'u","йю":"jju","йя":"jja","к":"k","кь":"ḱ","л":"l","ль":"ĺ","льо":"lio","м":"m","мь":"ḿ","мьо":"mio","н":"n","нь":"ń","ньо":"nio","о":"o","п":"p","пь":"ṕ","пьо":"pio","р":"r","рь":"ŕ","рьо":"rio","с":"s","сз":"s'z","сь":"ś","сьо":"sio","т":"t","ться":"tsia","у":"u","ф":"f","х":"ch","ц":"c","цз":"c'z","ць":"ć","цьо":"cio","ч":"cz","чє":"cze","чь":"cz","чю":"czu","чя":"cza","ш":"sz","шч":"sz'cz","шчь":"sz'cz","шє":"sze","шь":"sz","шю":"szu","шя":"sza","щ":"szcz","щє":"szcze","щь":"szcz","щю":"szczu","щя":"szcza","ь":"́","ьа":"́'a","ье":"́'e","ьо":"io","ьі":"́'i","ьу":"́'u","ю":{"cons":"iu","other":"ju"},"я":{"cons":"ia","other":"ja"},"'":""}},"gost779b":{"id":"gost779b","title":"GOST 7.79 System B","description":"[wikipedia.org](https://en.wikipedia.org/wiki/ISO_9)","rules":{"а":"a","б":"b","в":"v","г":"g","ґ":"g̀","д":"d","е":"e","є":"ye","ж":"zh","з":"z","и":"ỳ","і":"i","ї":"yi","й":"j","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"x","ц":"cz","ці":"ci","ци":"cỳ","цє":"cye","цю":"cyu","ця":"cya","ч":"ch","ш":"sh","щ":"shh","ь":"̀","ю":"yu","я":"ya","'":"'"}},"iso9_1968":{"id":"iso9_1968","title":"Наукова транслітерація 1968","description":"ISO/R 9:1968 [wikipedia.org](https://en.wikipedia.org/wiki/ISO_9#ISO/R_9)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","е":"e","є":"je","ж":"ž","з":"z","и":"y","і":"i","ї":"ï","й":"j","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"ch","ц":"c","ч":"č","ш":"š","щ":"šč","ь":"ʹ","ю":"ju","я":"ja","'":"″"}},"iso9_1995":{"id":"iso9_1995","title":"ISO 9:1995, GOST 7.79 System A","description":"[wikipedia.org](https://en.wikipedia.org/wiki/ISO_9)","rules":{"а":"a","б":"b","в":"v","г":"g","ґ":"g̀","д":"d","е":"e","є":"ê","ж":"ž","з":"z","и":"i","і":"ì","ї":"ï","й":"j","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"h","ц":"c","ч":"č","ш":"š","щ":"ŝ","ь":"ʹ","ю":"û","я":"â","'":"ʼ"}},"jirecek":{"id":"jirecek","title":"Їречківка 1859","description":"[latynka.tak.today](http://latynka.tak.today/works/proekt-jirecheka/)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","дє":"ďe","дь":"ď","дю":"ďu","дя":"ďa","е":"e","є":"je","ж":"ž","з":"z","зє":"źe","зь":"ź","зю":"źu","зя":"źa","и":"y","і":"i","ї":"ji","й":"j","к":"k","л":"l","лє":"ľe","ль":"ľ","лю":"ľu","ля":"ľa","м":"m","н":"n","нє":"ńe","нь":"ń","ню":"ńu","ня":"ńa","о":"o","п":"p","р":"r","рє":"ŕe","рь":"ŕ","рю":"ŕu","ря":"ŕa","с":"s","сє":"śe","сь":"ś","сю":"śu","ся":"śa","т":"t","тє":"ťe","ть":"ť","тю":"ťu","тя":"ťa","у":"u","ф":"f","х":"ch","ц":"c","цє":"će","ць":"ć","цю":"ću","ця":"ća","ч":"č","ш":"š","щ":"šč","ь":"","ю":"ju","я":"ja","'":""}},"kmu_2010":{"id":"kmu_2010","title":"Official КМУ 2010","description":"[zakon.rada.gov.ua](https://zakon.rada.gov.ua/laws/show/55-2010-%D0%BF)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","е":"e","є":{"start":"ye","other":"ie"},"ж":"zh","з":"z","и":"y","і":"i","ї":{"start":"yi","other":"i"},"й":{"start":"y","other":"i"},"к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"kh","ц":"ts","ч":"ch","ш":"sh","щ":"shch","ь":"","ю":{"start":"yu","other":"iu"},"я":{"start":"ya","other":"ia"},"'":"","зг":"zgh"}},"kolomyjec":{"id":"kolomyjec","title":"Авенір Коломиєць 1946","description":"[zbruc.eu](https://zbruc.eu/node/103627)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","дж":"ḑ","джє":"ḑe","джю":"ḑu","джя":"ḑa","дз":"q","ддє":"d́d́e","дді":"d́di","ддь":"d́d́","ддю":"d́d́u","ддя":"d́d́a","е":"e","є":{"cons":"́e","other":"je"},"ж":"ȥ","жє":"ȥe","жю":"ȥu","жя":"ȥa","з":"z","зє":"źe","зь":"ź","зю":"źu","зя":"źa","ззє":"źźe","ззі":"źzi","ззь":"źź","ззю":"źźu","ззя":"źźa","и":"y","і":"i","ї":"ji","й":"j","йє":"jje","йю":"jju","йя":"jja","к":"k","л":"l","лє":"ĺe","ль":"ĺ","лю":"ĺu","ля":"ĺa","ллє":"ĺĺe","ллі":"ĺli","лль":"ĺĺ","ллю":"ĺĺu","лля":"ĺĺa","м":"m","н":"n","нє":"ńe","нь":"ń","ню":"ńu","ня":"ńa","ннє":"ńńe","нні":"ńni","ннь":"ńń","нню":"ńńu","ння":"ńńa","о":"o","п":"p","р":"r","рє":"ŕe","рь":"ŕ","рю":"ŕu","ря":"ŕa","с":"s","сє":"śe","сь":"ś","сю":"śu","ся":"śa","ссє":"śśe","ссі":"śsi","ссь":"śś","ссю":"śśu","сся":"śśa","т":"t","ттє":"t́t́e","тті":"t́ti","тть":"t́t́","ттю":"t́t́u","ття":"t́t́a","ться":"ćća","у":"u","ф":"f","х":"x","ц":"c","цє":"će","ць":"ć","цю":"ću","ця":"ća","ццє":"ćće","цці":"ćci","цць":"ćć","ццю":"ćću","цця":"ćća","ч":"ç","чє":"çe","чю":"çu","чя":"ça","ш":"ş","шє":"şe","шю":"şu","шя":"şa","щ":"şç","ь":"́","ю":{"cons":"́u","other":"ju"},"я":{"cons":"́a","other":"ja"},"'":""}},"lahoda":{"id":"lahoda","title":"Lahoda 2008","description":"[omniglot.com](https://www.omniglot.com/pdfs/latynka.pdf)","rules":{"а":"a","б":"b","в":"v","вв":"w","г":"h","ґ":"g","д":"d","дє":"ďe","дь":"ď","дю":"ďu","дя":"ďa","дьє":"ďie","дьйо":"ďio","дью":"ďiu","дья":"ďia","е":"e","є":{"cons":"ie","other":"je"},"ж":"ž","з":"z","зє":"źe","зь":"ź","зю":"źu","зя":"źa","зьє":"źie","зьйо":"źio","зью":"źiu","зья":"źia","и":"y","ий":"ý","і":"i","іа":"ía","іе":"íe","іу":"íu","ї":"ji","й":"j","к":"k","л":"l","лє":"ľe","ль":"ľ","лю":"ľu","ля":"ľa","льє":"ľie","льйо":"ľio","лью":"ľiu","лья":"ľia","м":"m","н":"n","нє":"ńe","нь":"ń","ню":"ńu","ня":"ńa","ньє":"ńie","ньйо":"ńio","нью":"ńiu","нья":"ńia","о":"o","п":"p","р":"r","рє":"ŕe","р'є":"rie","рйо":"rio","рь":"ŕ","рю":"ŕu","ря":"ŕa","с":"s","сє":"śe","сь":"ś","сю":"śu","ся":"śa","сьє":"śie","сьйо":"śio","сью":"śiu","сья":"śia","т":"t","тє":"ťe","ть":"ť","тю":"ťu","тя":"ťa","тьє":"ťie","тьйо":"ťio","тью":"ťiu","тья":"ťia","у":"u","ф":"f","х":"ch","ц":"c","цє":"će","ць":"ć","цю":"ću","ця":"ća","цьє":"ćie","цьйо":"ćio","цью":"ćiu","цья":"ćia","ч":"č","ш":"š","щ":"šč","ь":"","ю":{"cons":"iu","other":"ju"},"я":{"cons":"ia","other":"ja"},"'":""}},"lucuk":{"id":"lucuk","title":"Лучуківка 2000","description":"[pravopys.pdf](http://www.vntl.com/im/pdf/pravopys.pdf)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","дє":"ďe","дь":"ď","дю":"ďu","дя":"ďa","е":"e","є":"je","ж":"ž","з":"z","зє":"źe","зь":"ź","зю":"źu","зя":"źa","и":"y","і":"i","ї":"ji","й":"j","к":"k","л":"l","лє":"ľe","ль":"ľ","лю":"ľu","ля":"ľa","м":"m","н":"n","нє":"ńe","нь":"ń","ню":"ńu","ня":"ńa","о":"o","п":"p","р":"r","рє":"ŕe","рь":"ŕ","рю":"ŕu","ря":"ŕa","с":"s","сє":"śe","сь":"ś","сю":"śu","ся":"śa","т":"t","тє":"ťe","ть":"ť","тю":"ťu","тя":"ťa","у":"u","ф":"f","х":"x","ц":"c","цє":"će","ць":"ć","цю":"ću","ця":"ća","ч":"č","ш":"š","щ":"šč","ь":"","ю":"ju","я":"ja","'":""}},"melnyk":{"id":"melnyk","title":"Meĺnyk 2008","description":"[archive.org](http://web.archive.org/web/20090901072239/http://www.latynka.com/pravopys/)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","дь":"ď","дьо":"dio","е":"e","є":{"cons":"ie","other":"je"},"ж":"ž","з":"z","зь":"ź","зьо":"zio","и":"y","ий":"ý","иє":"ýe","иї":"ýi","ию":"ýu","ия":"ýa","і":"i","ї":"ji","й":"j","к":"k","л":"l","ль":"ĺ","льо":"lio","м":"m","н":"n","нь":"ń","ньо":"nio","о":"o","п":"p","р":"r","рь":"ŕ","рьо":"rio","с":"s","сь":"ś","сьо":"sio","т":"t","ть":"ť","тьо":"tio","у":"u","ф":"f","х":"ch","ц":"c","ць":"ć","цьо":"cio","ч":"č","ш":"š","щ":"šč","ь":"","ю":{"cons":"iu","other":"ju"},"я":{"cons":"ia","other":"ja"},"'":""}},"nachasi":{"id":"nachasi","title":"Na chasi 2017","description":"[nachasi.com](https://nachasi.com/ul/manifest/)","rules":{"а":"a","б":"b","в":"v","г":"g","ґ":"ğ","д":"d","дь":"ď","е":"e","є":"je","ж":"ž","з":"z","зь":"ź","и":"y","і":"i","ї":"ї","й":"j","к":"k","л":"l","ль":"ľ","м":"m","н":"n","нь":"ń","о":"o","п":"p","р":"r","рь":"ŕ","с":"s","сь":"ś","т":"t","ть":"ť","у":"u","ф":"f","х":"h","ц":"c","ць":"ć","ч":"č","ш":"š","щ":"šč","ь":"","ю":"ju","я":"ja","'":"'"}},"nova_latynka":{"id":"nova_latynka","title":"Nova Latynka","description":"[nova-latynka.livejournal.com](https://nova-latynka.livejournal.com/775.html)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","е":"e","є":"je","ж":"ž","з":"z","и":"y","і":"i","ї":"ji","й":"j","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"x","ц":"c","ч":"č","ш":"š","щ":"šč","ь":"j","ю":"ju","я":"ja"}},"paiv":{"id":"paiv","title":"Avtorśka 2023","description":"paiv","rules":{"а":"a","б":"b","в":"v","г":"ğ","гє":"ǵe","гь":"ǵ","гю":"ǵu","гя":"ǵa","ґ":"g","ґє":"ǵe","ґь":"ǵ","ґю":"ǵu","ґя":"ǵa","д":"d","е":"e","є":{"cons":"́e","other":"je"},"ж":"ž","жє":"že","жь":"ž","жю":"žu","жя":"ža","з":"z","зє":"źe","зь":"ź","зю":"źu","зя":"źa","и":"y","і":"i","ї":{"cons":"ji","other":"ï"},"'ї":"ji","й":"j","йа":"j'a","йе":"j'e","йі":"j'i","йу":"j'u","йє":"jje","йю":"jju","йя":"jja","к":"k","кє":"ḱe","кь":"ḱ","кю":"ḱu","кя":"ḱa","л":"l","лє":"ĺe","ль":"ĺ","лю":"ĺu","ля":"ĺa","м":"m","мє":"ḿe","мь":"ḿ","мю":"ḿu","мя":"ḿa","н":"n","нє":"ńe","нь":"ń","ню":"ńu","ня":"ńa","о":"o","п":"p","пє":"ṕe","пь":"ṕ","пю":"ṕu","пя":"ṕa","р":"r","рє":"ŕe","рь":"ŕ","рю":"ŕu","ря":"ŕa","с":"s","сє":"śe","сь":"ś","сю":"śu","ся":"śa","т":"t","ться":"tśa","у":"u","ф":"f","х":"x","ц":"c","цє":"će","ць":"ć","цю":"ću","ця":"ća","ч":"č","чє":"če","чь":"č","чю":"ču","чя":"ča","ш":"š","шє":"še","шь":"š","шю":"šu","шя":"ša","шч":"š'č","шчє":"š'če","шчь":"š'č","шчю":"š'ču","шчя":"š'ča","щ":"šč","щє":"šče","щь":"šč","щю":"šču","щя":"šča","ь":"́","ьа":"́'a","ье":"́'e","ьї":"́ji","ьу":"́'u","ю":{"cons":"́u","other":"ju"},"я":{"cons":"́a","other":"ja"},"'":""}},"pseudo_jirecek":{"id":"pseudo_jirecek","title":"Псевдо-Їречківка","description":"[latynka.tak.today](http://latynka.tak.today/works/psevdojireckivka/)","rules":{"а":"a","б":"b","в":"v","г":"h","ґ":"g","д":"d","дь":"ď","дьо":"dio","е":"e","є":{"cons":"ie","other":"je"},"ж":"ž","з":"z","зь":"ź","зьо":"zio","и":"y","і":"i","ї":"ji","й":"j","к":"k","л":"l","ль":"ľ","льо":"lio","м":"m","н":"n","нь":"ń","ньо":"nio","о":"o","п":"p","р":"r","рь":"ŕ","рьо":"rio","с":"s","сь":"ś","сьо":"sio","т":"t","ть":"ť","тьо":"tio","у":"u","ф":"f","х":"ch","ц":"c","ць":"ć","цьо":"cio","ч":"č","ш":"š","щ":"šč","ь":"","ю":{"cons":"iu","other":"ju"},"я":{"cons":"ia","other":"ja"},"'":""}},"tkpn_combo":{"id":"tkpn_combo","title":"ТКПН Вакуленко 1994 combo","description":"[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)","rules":{"а":"a","б":"b","бйо":"b'jo","в":"v","вйо":"v'jo","г":"ğ","ґ":"g","д":"d","дйо":"d'jo","е":"e","є":"je","ж":"ž","з":"z","зйо":"z'jo","и":"y","і":"i","ї":"ï","й":"j","к":"k","л":"l","м":"m","мйо":"m'jo","н":"n","о":"o","п":"p","пйо":"p'jo","р":"r","рйо":"r'jo","с":"s","сйо":"s'jo","т":"t","у":"u","ф":"f","х":"x","ц":"c","ч":"č","ш":"š","щ":"ŝ","ь":"j","ю":"ju","я":"ja","'":"'"}},"tkpn_diac":{"id":"tkpn_diac","title":"ТКПН Вакуленко 1994 diac","description":"[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)","rules":{"а":"a","б":"b","бйо":"b'jo","в":"v","вйо":"v'jo","г":"ğ","ґ":"g","д":"d","дйо":"d'jo","е":"e","є":"ë","ж":"ž","з":"z","зйо":"z'jo","и":"y","і":"i","ї":"ï","й":"j","к":"k","л":"l","м":"m","мйо":"m'jo","н":"n","о":"o","п":"p","пйо":"p'jo","р":"r","рйо":"r'jo","с":"s","сйо":"s'jo","т":"t","у":"u","ф":"f","х":"x","ц":"c","ч":"č","ш":"š","щ":"ŝ","ь":"j","ю":"ü","я":"ä","'":"'"}},"tkpn_intl":{"id":"tkpn_intl","title":"ТКПН Вакуленко 1994 intl","description":"[linguistics.kspu.edu](http://linguistics.kspu.edu/webfm_send/945)","rules":{"а":"a","б":"b","бйо":"b'jo","в":"v","вйо":"v'jo","г":"gh","ґ":"g","д":"d","дйо":"d'jo","е":"e","є":"je","ж":"zh","з":"z","зйо":"z'jo","и":"y","і":"i","ї":"ji","й":"j","к":"k","л":"l","м":"m","мйо":"m'jo","н":"n","о":"o","п":"p","пйо":"p'jo","р":"r","рйо":"r'jo","с":"s","сйо":"s'jo","т":"t","у":"u","ф":"f","х":"kh","ц":"c","ч":"ch","ш":"sh","щ":"shh","ь":"j","ю":"ju","я":"ja","'":"'"}}}
 
 const _AppState = {};
 function onTableChange(select, info) {

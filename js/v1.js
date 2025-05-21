@@ -20,12 +20,12 @@ class DomBuilder {
         return document.createTextNode(value)
     }
 
-    static resetChildren(parent, child) {
+    static resetChildren(parent, ...children) {
         let last;
         while (last = parent.lastElementChild) {
             parent.removeChild(last)
         }
-        if (child) {
+        for (const child of children) {
             parent.appendChild(child)
         }
     }
@@ -312,20 +312,82 @@ class RegexBuilder {
             case 'NONE':
                 return null
             case 'CAPT_GROUP':
-                return ['(', this.args.join(''), ')'].join('')
+                return ['(', ...this.args, ')'].join('')
             case 'CAPT_OR_GROUP':
                 return ['(', this.args.join('|'), ')'].join('')
             case 'NONCAPT_GROUP':
-                return ['(?:', this.args.join(''), ')'].join('')
+                return ['(?:', ...this.args, ')'].join('')
             case 'AND':
                 return this.args.join('')
             case 'OR':
                 return ['(?:', this.args.join('|'), ')'].join('')
             case 'CHARS':
-                return ['[', this.args.join(''), ']'].join('')
+                return ['[', this._pack_ranges(this.args.join('')), ']'].join('')
             case 'XCHARS':
-                return ['[^', this.args.join(''), ']'].join('')
+                return ['[^', this._pack_ranges(this.args.join('')), ']'].join('')
+            case 'OPT':
+                switch (this.args.length) {
+                    case 0:
+                        return ''
+                    case 1:
+                        if (this.args[0] instanceof RegexBuilder) {
+                            return (this.args.join('') + '?')
+                        }
+                        if (typeof this.args[0] === 'string') {
+                            switch (this.args[0].length) {
+                                case 0:
+                                    return ''
+                                case 1:
+                                    return (this.args.join('') + '?')
+                                default:
+                                    break
+                            }
+                        }
+                        // fall through
+                    default:
+                        return ['(?:', ...this.args, ')?'].join('')
+                }
         }
+    }
+
+    _pack_ranges(s) {
+        const xs = [...(new Set(s))]
+        xs.sort()
+        let res = ''
+        let state = 0
+        xs.forEach((c, i) => {
+            switch (state) {
+                case 0:
+                    res += c
+                    state = 1
+                    break
+                case 1:
+                    if (c.charCodeAt(0) - xs[i-1].charCodeAt(0) !== 1) {
+                        res += c
+                    }
+                    else {
+                        state = 2
+                    }
+                    break
+                case 2:
+                    if (c.charCodeAt(0) - xs[i-1].charCodeAt(0) !== 1) {
+                        if (xs[i-1].charCodeAt(0) - res.charCodeAt(res.length-1) > 1) {
+                            res += '-'
+                        }
+                        res += xs[i-1]
+                        res += c
+                        state = 1
+                    }
+                    break
+            }
+        })
+        if (state === 2) {
+            if (xs[xs.length-1].charCodeAt(0) - res.charCodeAt(res.length-1) > 1) {
+                res += '-'
+            }
+            res += xs[xs.length-1]
+        }
+        return res
     }
 
     none() {
@@ -362,6 +424,10 @@ class RegexBuilder {
 
     xchars() {
         return new RegexBuilder('XCHARS', [...arguments])
+    }
+
+    optional() {
+        return new RegexBuilder('OPT', [...arguments])
     }
 }
 
@@ -852,13 +918,49 @@ class Transliterator {
         const word_start_rules = {}
         const after_cons_rules = {}
 
-        const TitleCase = (value) => value.toLocaleLowerCase().replace(/^./, (s) => s.toLocaleUpperCase())
-        const SillyCase = (value) => value.toLocaleLowerCase().replace(/.$/, (s) => s.toLocaleUpperCase())
+        function casesOf(s) {
+            function* inner(acc, xs, i) {
+                if (i >= xs.length) {
+                    yield acc
+                    return
+                }
+                const x = xs[i]
+                const y = x.toLocaleUpperCase()
+                yield* inner(acc + x, xs, i + 1)
+                if (y !== x) {
+                    yield* inner(acc + y, xs, i + 1)
+                }
+            }
+            const lo = [...s.toLocaleLowerCase()]
+            return [...inner('', lo, 0)]
+        }
+
+        function TitleCase(value) {
+            return value.toLocaleLowerCase()
+                .replace(/^./, (s) => s.toLocaleUpperCase())
+        }
+
+        function SillyCase(value) {
+            return value.toLocaleLowerCase()
+                .replace(/.$/, (s) => s.toLocaleUpperCase())
+        }
+
+        function isUpper(s) {
+            return s !== s.toLocaleLowerCase()
+        }
+
+        function matchCaseOf(k, s) {
+            if (isUpper(k[0])) {
+                return TitleCase(s)
+            }
+            else if (isUpper(k[k.length-1])) {
+                return SillyCase(s)
+            }
+            return s.toLocaleLowerCase()
+        }
 
 
         Object.keys(rules).forEach((key) => {
-            const lokey = key.toLocaleLowerCase()
-            const hikey = lokey.toLocaleUpperCase()
             let rule = rules[key]
 
             if (rule == null) {
@@ -869,78 +971,63 @@ class Transliterator {
 
                 if ('start' in rule) {
                     const value = rule.start || ''
-                    word_start_rules[lokey] = value
-                    word_start_rules[hikey] = TitleCase(value)
-                    if (key.length > 1) {
-                        word_start_rules[SillyCase(key)] = SillyCase(value)
-                        word_start_rules[TitleCase(key)] = TitleCase(value)
-                    }
+                    casesOf(key).forEach((k) => {
+                        word_start_rules[k] = matchCaseOf(k, value)
+                    })
                 }
 
                 if ('cons' in rule) {
                     const value = rule.cons || ''
-                    after_cons_rules[lokey] = value
-                    after_cons_rules[hikey] = TitleCase(value)
+                    casesOf(key).forEach((k) => {
+                        after_cons_rules[k] = matchCaseOf(k, value)
+                    })
                 }
 
                 const value = rule.other || ''
-                default_rules[lokey] = value
-                default_rules[hikey] = TitleCase(value)
-                if (key.length > 1) {
-                    default_rules[SillyCase(key)] = SillyCase(value)
-                    default_rules[TitleCase(key)] = TitleCase(value)
-                }
-
+                casesOf(key).forEach((k) => {
+                    default_rules[k] = matchCaseOf(k, value)
+                })
             }
             else {
-
                 if (key.indexOf('\'') >= 0) {
-                    apos.forEach((char) => {
-                        const newkey = key.replace('\'', char)
-                        default_rules[newkey] = rule
+                    apos.forEach((c) => {
+                        const newkey = key.replace('\'', c)
+                        casesOf(newkey).forEach((k) => {
+                            default_rules[k] = matchCaseOf(k, rule)
+                        })
                     })
                 }
                 else {
-                    default_rules[lokey] = rule
-                    default_rules[hikey] = TitleCase(rule)
-
-                    if (key.length > 1) {
-                        default_rules[SillyCase(key)] = SillyCase(rule)
-                        default_rules[TitleCase(key)] = TitleCase(rule)
-                    }
+                    casesOf(key).forEach((k) => {
+                        default_rules[k] = matchCaseOf(k, rule)
+                    })
                 }
             }
         })
 
 
         const keys1 = Object.keys(default_rules).filter((key) => key.length === 1)
-        const default_keyset1 = keys1.map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase()
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const default_keyset1 = [...new Set(
+            keys1.map((x) => x.toLocaleLowerCase())
+        )]
 
         const keys2 = Object.keys(default_rules).filter((key) => key.length > 1)
-            .sort((a,b) => b.length - a.length)
-        const default_keyset2 = keys2.map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase(),
-            TitleCase(x),
-            SillyCase(x)
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const default_keyset2 = [...new Set(
+            keys2.map((s) => s.toLocaleLowerCase())
+        )].sort((a,b) => b.length - a.length)
 
-        const word_start_keyset = Object.keys(word_start_rules).map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase()
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const word_start_keyset = [...new Set(
+            Object.keys(word_start_rules).map((s) => s.toLocaleLowerCase())
+        )].sort((a,b) => b.length - a.length)
 
-        const consonants_keyset = consonants + consonants.toLocaleUpperCase()
-        const after_cons_keyset = Object.keys(after_cons_rules).map((x) => [
-            x.toLocaleLowerCase(),
-            x.toLocaleUpperCase()
-        ]).reduce((acc, x) => acc.concat(x), [])
+        const consonants_keyset = consonants
+        const after_cons_keyset = [...new Set(
+            Object.keys(after_cons_rules).map((x) => x.toLocaleLowerCase())
+        )].sort((a,b) => b.length - a.length)
 
 
         const rxb = new RegexBuilder()
+        const noop = '\uFFFC\uFFFC'
 
         const rx = rxb.or(
             // word start
@@ -948,34 +1035,37 @@ class Transliterator {
                 // char preceding
                 rxb.orgroup(  // 1
                     '^',
-                    rxb.xchars(loabc, hiabc, ...apos)
+                    rxb.and(
+                        rxb.xchars(loabc, ...apos),
+                        rxb.optional(rxb.chars(...apos))
+                    )
                 ),
                 // char to translate
                 rxb.orgroup(  // 2
-                    rxb.chars(...word_start_keyset)
+                    ...(word_start_keyset.length > 0 ? word_start_keyset : [noop])
                 )
             ),
             // or word inner
             rxb.or(
                 rxb.orgroup(  // 3
-                    ...(default_keyset2.length > 0 ? default_keyset2 : ['\uFFFC\uFFFC'])
+                    ...(default_keyset2.length > 0 ? default_keyset2 : [noop])
                 ),
                 rxb.group(  // 4
-                    rxb.chars(consonants_keyset),
-                    rxb.chars(...after_cons_keyset)
+                    ...(after_cons_keyset.length > 0 ?
+                        [rxb.chars(consonants_keyset), rxb.or(...after_cons_keyset)]
+                        : [noop])
                 ),
                 rxb.orgroup(  // 5
                     rxb.chars(...default_keyset1)
                 )
             )
         )
-        .regex('g')
+        .regex('gi')
 
-
-        const cb = (text, xkey, match_start, match_pairs, match_cons, match_inner) => {
+        const cb = (text, prefix, match_start, match_pairs, match_cons, match_inner) => {
             if (match_start) {
                 const value = word_start_rules[match_start]
-                return xkey + value
+                return prefix + value
             }
 
             if (match_pairs) {
@@ -985,7 +1075,7 @@ class Transliterator {
 
             if (match_cons) {
                 const cons = default_rules[match_cons[0]]
-                const value = after_cons_rules[match_cons[1]]
+                const value = after_cons_rules[match_cons.substring(1)]
                 return cons + value
             }
 
@@ -999,7 +1089,10 @@ class Transliterator {
     }
 
     convert(text) {
-        return text.replace(this.compiled.regex, this.compiled.callback)
+        return text
+            .normalize('NFC')
+            .replace(this.compiled.regex, this.compiled.callback)
+            .normalize('NFC')
     }
 
     processTextNodes(nodes) {
