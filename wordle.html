@@ -202,19 +202,32 @@ button {
     justify-content: center;
     align-items: center;
 }
-.keyboard .kbdel {
+.kbtn span {
+    pointer-events: none;
+}
+.kbtn[data-key=⌫] {
     flex: 1.5;
 }
-.keyboard .kbret {
+.kbtn[data-key=↵] {
     flex: 1.5;
     font-size: 0.75em;
 }
-.keyboard .kbret::before {
-    content: "Enter";
+.kbtn[data-key=↵] > span {
+    display: none;
+}
+.kbtn[data-key=↵] > span + span {
+    display: initial;
+}
+.keyboard.dead .kbtn {
+    color: transparent;
+}
+.keyboard.dead .kbtn.dead {
+    color: revert;
 }
 @media (width <= 400px) {
-    .keyboard .kbret { font-size: 1.25em; }
-    .keyboard .kbret::before { content: "↵"; }
+    .kbtn[data-key=↵] { font-size: 1.25em; }
+    .kbtn[data-key=↵] > span { display: initial; }
+    .kbtn[data-key=↵] > span + span { display: none; }
 }
 .keyboard .kbrow .spacer {
     flex: 0.5;
@@ -290,41 +303,41 @@ button {
 </div>
 <div class="keyboard">
     <div class="kbrow">
-        <button class="kbtn">š</button>
-        <button class="kbtn">ŝ</button>
-        <button class="kbtn">e</button>
-        <button class="kbtn">r</button>
-        <button class="kbtn">t</button>
-        <button class="kbtn">y</button>
-        <button class="kbtn">u</button>
-        <button class="kbtn">i</button>
-        <button class="kbtn">ï</button>
-        <button class="kbtn">o</button>
-        <button class="kbtn">p</button>
+        <button class="kbtn" data-key="š">š</button>
+        <button class="kbtn" data-key="ŝ">ŝ</button>
+        <button class="kbtn" data-key="e">e</button>
+        <button class="kbtn" data-key="r">r</button>
+        <button class="kbtn" data-key="t">t</button>
+        <button class="kbtn" data-key="y">y</button>
+        <button class="kbtn" data-key="u">u</button>
+        <button class="kbtn" data-key="i">i</button>
+        <button class="kbtn" data-key="ï">ï</button>
+        <button class="kbtn" data-key="o">o</button>
+        <button class="kbtn" data-key="p">p</button>
     </div>
     <div class="kbrow">
-        <button class="kbtn">a</button>
-        <button class="kbtn">s</button>
-        <button class="kbtn">d</button>
-        <button class="kbtn">f</button>
-        <button class="kbtn">g</button>
-        <button class="kbtn">ğ</button>
-        <button class="kbtn">j</button>
-        <button class="kbtn">k</button>
-        <button class="kbtn">l</button>
-        <button class="kbtn kbdel">⌫</button>
+        <button class="kbtn" data-key="a">a</button>
+        <button class="kbtn" data-key="s">s</button>
+        <button class="kbtn" data-key="d">d</button>
+        <button class="kbtn" data-key="f">f</button>
+        <button class="kbtn" data-key="g">g</button>
+        <button class="kbtn" data-key="ğ">ğ</button>
+        <button class="kbtn" data-key="j">j</button>
+        <button class="kbtn" data-key="k">k</button>
+        <button class="kbtn" data-key="l">l</button>
+        <button class="kbtn" data-key="⌫">⌫</button>
     </div>
     <div class="kbrow">
-        <button class="kbtn">z</button>
-        <button class="kbtn">ž</button>
-        <button class="kbtn">x</button>
-        <button class="kbtn">c</button>
-        <button class="kbtn">č</button>
-        <button class="kbtn">v</button>
-        <button class="kbtn">b</button>
-        <button class="kbtn">n</button>
-        <button class="kbtn">m</button>
-        <button class="kbtn kbret"></button>
+        <button class="kbtn" data-key="z">z</button>
+        <button class="kbtn" data-key="ž">ž</button>
+        <button class="kbtn" data-key="x">x</button>
+        <button class="kbtn" data-key="c">c</button>
+        <button class="kbtn" data-key="č">č</button>
+        <button class="kbtn" data-key="v">v</button>
+        <button class="kbtn" data-key="b">b</button>
+        <button class="kbtn" data-key="n">n</button>
+        <button class="kbtn" data-key="m">m</button>
+        <button class="kbtn" data-key="↵"><span>↵</span><span>Enter</span></button>
     </div>
 </div>
 </div>
@@ -376,7 +389,7 @@ function getWord(row) {
 }
 function getKbKey(c) {
     return [...document.querySelectorAll('.keyboard .kbtn')].find(el =>
-        el.textContent === c);
+        el.dataset.key === c);
 }
 function updateRowReveal() {
     const [row, col] = _State.reveal;
@@ -449,8 +462,6 @@ function playKey(key) {
     tile.dataset.animation = 'pop';
     _State.col += 1;
 }
-function playDeadKey(key) {
-}
 function eraseKey() {
     if (_State.col === 0) { return; }
     const tile = getPrev();
@@ -491,34 +502,107 @@ function handleKeyDown(e) {
     if (_State.gameOver) { return; }
     if (e.repeat || e.defaultPrevented) { return; }
     if (e.key === 'Dead') {
-        return playDeadKey(e.code);
+        return setDeadKey(e.code);
     }
-    if (e.ctrlKey || e.altKey || e.metaKey) { return; }
+    if (e.ctrlKey || e.altKey || e.metaKey || e.key === 'Shift') { return; }
+    const deadKey = _State.deadKey;
+    setDeadKey();
     if (e.key === 'Backspace') {
+        if (deadKey) { return; }
         return eraseKey();
     }
     if (e.key === 'Enter' && e.target && e.target.tagName === 'BODY') {
+        if (deadKey) { return; }
         return submitGuess();
     }
     if (_State.abc.test(e.key)) {
+        if (deadKey) { return playComboKey(deadKey, e.key); }
         return playKey(e.key);
     }
 }
+function setDeadKey(deadKey) {
+    _State.deadKey = undefined;
+    document.querySelector('.keyboard').classList.remove('dead');
+    for (let c of 'cgisz') {
+        getKbKey(c).textContent = c;
+        getKbKey(c).classList.remove('dead');
+    }
+    switch (deadKey) {
+        case 'Digit6':
+            getKbKey('s').textContent = 'ŝ';
+            getKbKey('s').classList.add('dead');
+            break;
+        case 'KeyB':
+            getKbKey('g').textContent = 'ğ';
+            getKbKey('g').classList.add('dead');
+            break;
+        case 'KeyU':
+            getKbKey('i').textContent = 'ï';
+            getKbKey('i').classList.add('dead');
+            break;
+        case 'KeyV':
+            getKbKey('c').textContent = 'č';
+            getKbKey('s').textContent = 'š';
+            getKbKey('z').textContent = 'ž';
+            getKbKey('c').classList.add('dead');
+            getKbKey('s').classList.add('dead');
+            getKbKey('z').classList.add('dead');
+            break;
+        default:
+            return;
+    }
+    _State.deadKey = deadKey;
+    document.querySelector('.keyboard').classList.add('dead');
+}
+function playComboKey(deadKey, key) {
+    switch (deadKey) {
+        case 'Digit6':
+            switch (key) {
+                case 'S':
+                case 's': return playKey('ŝ');
+            }
+            break;
+        case 'KeyB':
+            switch (key) {
+                case 'G':
+                case 'g': return playKey('ğ');
+            }
+            break;
+        case 'KeyU':
+            switch (key) {
+                case 'I':
+                case 'i': return playKey('ï');
+            }
+            break;
+        case 'KeyV':
+            switch (key) {
+                case 'C':
+                case 'c': return playKey('č');
+                case 'S':
+                case 's': return playKey('š');
+                case 'Z':
+                case 'z': return playKey('ž');
+            }
+            break;
+    }
+}
 function handleKeyboardKey(e) {
-    const key = e.target.textContent;
+    const deadKey = _State.deadKey;
+    setDeadKey();
+    const key = e.target.dataset.key;
     e.target.blur();
     if (_State.abc.test(key)) {
-        playKey(key);
+        if (deadKey) { return playComboKey(deadKey, key); }
+        return playKey(key);
     }
-    else {
-        switch (key) {
-            case '⌫':
-                eraseKey();
-                break;
-            case 'Enter':
-                submitGuess();
-                break;
-        }
+    if (deadKey) { return; }
+    switch (key) {
+        case '⌫':
+            eraseKey();
+            break;
+        case '↵':
+            submitGuess();
+            break;
     }
 }
 function getDay() {
@@ -661,9 +745,9 @@ function initApp() {
     document.documentElement.addEventListener('keydown', handleKeyDown);
     document.documentElement.addEventListener('paste', handlePaste);
     document.getElementById('bshr').addEventListener('click', handleButtonShare);
-    [...document.querySelectorAll('.keyboard .kbtn')].forEach(el =>
-        el.addEventListener('click', handleKeyboardKey));
-    document.querySelector('.keyboard .kbret').addEventListener('click', submitGuess);
+    for (let el of document.querySelectorAll('.keyboard .kbtn')) {
+        el.addEventListener('click', handleKeyboardKey);
+    }
     const share = document.getElementById('share');
     const bts = share.querySelectorAll('button');
     bts[0].addEventListener('click', (e) => share.close());
