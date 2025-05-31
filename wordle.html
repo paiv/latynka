@@ -108,6 +108,7 @@ dialog .lbtn {
     font-size: 2rem;
     font-weight: bold;
     text-transform: uppercase;
+    -webkit-user-select: none;
     user-select: none;
 }
 .grid .tile::before {
@@ -172,6 +173,7 @@ dialog .lbtn {
     40%,60% { transform: translateX(4px); }
 }
 .keyboard {
+    -webkit-user-select: none;
     user-select: none;
 }
 button {
@@ -196,11 +198,12 @@ button {
     height: 58px;
     border-radius: 4px;
     flex: 1;
-    user-select: none;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+    -webkit-user-select: none;
+    user-select: none;
 }
 .kbtn span {
     pointer-events: none;
@@ -523,6 +526,7 @@ function handleKeyDown(e) {
     }
 }
 function setDeadKey(deadKey) {
+    // ABC Extended layout
     _State.deadKey = undefined;
     document.querySelector('.keyboard').classList.remove('dead');
     for (let c of 'cgisz') {
