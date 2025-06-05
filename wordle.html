@@ -19,9 +19,6 @@
     --plt-yellow: #ffd700;
     --plt-lgray: #efefef;
 }
-@supports (font: -apple-system-body) {
-    :root { font: -apple-system-body; }
-}
 @media (prefers-color-scheme: dark) {
     :root {
         --plt-gray: #3a3a3a;
@@ -816,7 +813,7 @@ function initApp() {
     const bts = share.querySelectorAll('button');
     bts[0].addEventListener('click', (e) => share.close());
     bts[1].addEventListener('click', handleWriteClipboard);
-    document.documentElement.focus();
+    document.querySelector('.game').focus();
 }
 initApp();
 </script>
