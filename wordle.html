@@ -29,10 +29,10 @@
     .tile { text-shadow: 1px 1px 1px black; }
 }
 noscript {
-	position: absolute;
-	top: 3rem; left: 0.5rem; padding: 1rem;
-	color: #fff; background-color: #f0f;
-	border-radius: 0.2rem;
+    position: absolute;
+    top: 3rem; left: 0.5rem; padding: 1rem;
+    color: #fff; background-color: #f0f;
+    border-radius: 0.2rem;
 }
 div {
     border: 0;
@@ -681,10 +681,10 @@ function remapCyr(s) {
     return s.replace(/[а-щьіїґ]/g, (c) => lat[cyr.indexOf(c)]);
 }
 function ipow(n) {
-	return n.replace(/./g, (i) => 
-		'Am(*$ŋ!!%%Ş)ÐTĈWWWWWGDFũŒFDFWWWŒ'.replace(/./g, (c,i) => String.fromCharCode((75-i) ^ c.charCodeAt(0)))
-		['WTXAWN@BAHUIT@)S^ELOKVMSahgkfuiy'.replace(/./g, (c,i) => String.fromCharCode((119-i) ^ c.charCodeAt(0)))
-		.indexOf(i)]);
+    return n.replace(/./g, (i) =>
+        'Am(*$ŋ!!%%Ş)ÐTĈWWWWWGDFũŒFDFWWWŒ'.replace(/./g, (c,i) => String.fromCharCode((75-i) ^ c.charCodeAt(0)))
+        ['WTXAWN@BAHUIT@)S^ELOKVMSahgkfuiy'.replace(/./g, (c,i) => String.fromCharCode((119-i) ^ c.charCodeAt(0)))
+        .indexOf(i)]);
 }
 function storeState() {
     localStorage.setItem('game', JSON.stringify(_State.daily));
@@ -759,8 +759,8 @@ function updateStateRow(s) {
 }
 function resetState() {
     const tx = document.getElementById('tex').textContent.trim();
-	const n = 5 * (1 + parseInt(tx.slice(-5)));
-	const ws = [tx.slice(0, -5), tx.slice(-n, -5)];
+    const n = 5 * (1 + parseInt(tx.slice(-5)));
+    const ws = [tx.slice(0, -5), tx.slice(-n, -5)];
     Object.assign(_State, {row:0, col:0,
         abc: /^[a-zïčğŝšžа-щьіїґ]$/i,
         db: new Set(ipow(ws[0]).match(/.{5}/g)),
