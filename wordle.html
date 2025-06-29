@@ -644,6 +644,7 @@ function playComboKey(deadKey, key) {
     }
 }
 function handleKeyboardKey(e) {
+    if (_State.gameOver) { return; }
     const deadKey = _State.deadKey;
     setDeadKey();
     const key = e.target.dataset.key;
