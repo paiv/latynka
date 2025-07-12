@@ -424,6 +424,22 @@ function getKbKey(c) {
     return [...document.querySelectorAll('.keyboard .kbtn')].find(el =>
         el.dataset.key === c);
 }
+function getKbState(c) {
+    return getKbKey(c).dataset.state;
+}
+function clearKbState() {
+    [...document.querySelectorAll('.keyboard .kbtn')].forEach(el => {
+        delete el.dataset.state;
+    });
+}
+function setKbState(c, s) {
+    if (s !== undefined) {
+        getKbKey(c).dataset.state = s;
+    }
+    else {
+        delete getKbKey(c).dataset.state;
+    }
+}
 function updateRowReveal() {
     const [row, col] = _State.reveal;
     const tile = getTile(row, col);
@@ -450,18 +466,21 @@ function updateRowReveal() {
     }
     else {
         const guess = getWord(row);
-        if (guess[col] === ipow(_State.x)[col]) {
+        const c = guess[col];
+        if (c === ipow(_State.x)[col]) {
             tile.dataset.state = 'hot';
-            getKbKey(guess[col]).dataset.state = 'hot';
-        }
-        else if (ipow(_State.x).indexOf(guess[col]) >= 0 &&
-            guess.substring(0, col).indexOf(guess[col]) < 0) {
-            tile.dataset.state = 'warm';
-            getKbKey(guess[col]).dataset.state = 'warm';
+            setKbState(c, maxMatch('hot', getKbState(c)));
         }
         else {
-            tile.dataset.state = 'cold';
-            getKbKey(guess[col]).dataset.state = 'cold';
+            const j = ipow(_State.x).indexOf(c);
+            if (j >= 0 && guess[j] !== c) {
+                tile.dataset.state = 'warm';
+                setKbState(c, maxMatch('warm', getKbState(c)));
+            }
+            else {
+                tile.dataset.state = 'cold';
+                setKbState(c, maxMatch('cold', getKbState(c)));
+            }
         }
         tile.dataset.animation = 'flipout';
     }
@@ -670,11 +689,26 @@ function getMatch(i, s) {
     if (s[i] === ipow(_State.x[i])) {
         return 'hot';
     }
-    if (ipow(_State.x).indexOf(s[i]) >= 0 &&
-        s.substring(0, i).indexOf(s[i]) < 0) {
+    const j = ipow(_State.x).indexOf(s[i]);
+    if (j >= 0 && s[j] !== s[i]) {
         return 'warm';
     }
     return 'cold';
+}
+function maxMatch(a, b) {
+    if (b !== undefined) {
+        switch (a) {
+            case 'cold':
+                return b;
+            case 'warm':
+                if (b === 'cold') { return a; }
+                return b;
+            case 'hot':
+                return a;
+        }
+        return b;
+    }
+    return a;
 }
 function remapCyr(s) {
     const lat = 'abcčdefgğiïjjklmnoprsŝštuvxyzž';
@@ -707,7 +741,7 @@ function getProjection(state) {
             let m = getMatch(i, s);
             tx[j][i] = s[i];
             ms[j][i] = m;
-            ks.set(s[i], m);
+            ks.set(s[i], maxMatch(m, ks.get(s[i])));
         }
         const t = ms[j].reduce((a, x) => a && (x === 'hot'), true);
         if (s.length === 5 && t) {
@@ -734,8 +768,9 @@ function restoreState() {
         getTiles(j).forEach((t, i) =>
             setTileState(t, proj.s[j][i], proj.m[j][i]));
     }
+    clearKbState();
     for (let [c, s] of proj.k) {
-        getKbKey(c).dataset.state = s;
+        setKbState(c, maxMatch(s, getKbState(c)));
     }
     _State.row = proj.row;
     _State.col = proj.col;
