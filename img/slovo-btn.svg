@@ -1,15 +1,15 @@
 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_2521_102)">
 <rect width="18" height="18" fill="#999999"/>
-<rect x="0.299805" y="0.300049" width="5.6" height="5.6" fill="#EEEEEE"/>
-<rect x="6.2002" y="0.300049" width="5.6" height="5.6" fill="#EEEEEE"/>
-<rect x="12.1001" y="0.300049" width="5.6" height="5.6" fill="#EEEEEE"/>
-<rect x="0.299805" y="6.19995" width="5.6" height="5.6" fill="#EEEEEE"/>
-<rect x="6.2002" y="6.19995" width="5.6" height="5.6" fill="#FFD702"/>
-<rect x="12.1001" y="6.19995" width="5.6" height="5.6" fill="#01E752"/>
-<rect x="0.299805" y="12.1001" width="5.6" height="5.6" fill="#01E752"/>
-<rect x="6.2002" y="12.1001" width="5.6" height="5.6" fill="#01E752"/>
-<rect x="12.1001" y="12.1001" width="5.6" height="5.6" fill="#01E752"/>
+<rect x="0.299805" y="0.300049" width="5.6" height="5.6" rx="1" fill="#EEEEEE"/>
+<rect x="6.2002" y="0.300049" width="5.6" height="5.6" rx="1" fill="#EEEEEE"/>
+<rect x="12.1001" y="0.300049" width="5.6" height="5.6" rx="1" fill="#EEEEEE"/>
+<rect x="0.299805" y="6.19995" width="5.6" height="5.6" rx="1" fill="#EEEEEE"/>
+<rect x="6.2002" y="6.19995" width="5.6" height="5.6" rx="1" fill="#FFD702"/>
+<rect x="12.1001" y="6.19995" width="5.6" height="5.6" rx="1" fill="#01E752"/>
+<rect x="0.299805" y="12.1001" width="5.6" height="5.6" rx="1" fill="#01E752"/>
+<rect x="6.2002" y="12.1001" width="5.6" height="5.6" rx="1" fill="#01E752"/>
+<rect x="12.1001" y="12.1001" width="5.6" height="5.6" rx="1" fill="#01E752"/>
 </g>
 <defs>
 <clipPath id="clip0_2521_102">
